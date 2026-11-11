@@ -72,14 +72,16 @@
     left: 0;
     right: 0;
     z-index: 1100;
-    height: var(--topbar-h);
+    min-height: 54px;
+    height: auto;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 0 18px;
-    gap: 10px;
+    padding: 6px 18px;
+    gap: 6px 10px;
   }
 
   .topbar-left {
@@ -87,10 +89,13 @@
     align-items: center;
     gap: 10px;
     min-width: 0;
-    flex: 1;
+    flex: 1 1 auto;
+    order: 1;
   }
 
   .sidebar-toggle-btn {
+    position: relative;
+    z-index: 5;
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text-secondary);
@@ -102,6 +107,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
     transition: all 0.15s;
     flex-shrink: 0;
   }
@@ -124,6 +130,7 @@
     border-radius: 7px;
     cursor: pointer;
     flex-shrink: 0;
+    white-space: nowrap;
     letter-spacing: -0.2px;
     transition: all 0.15s;
   }
@@ -131,11 +138,8 @@
     background: #d5ecee;
     color: var(--teal-hover);
   }
-  @media (max-width: 600px) {
-    .brand-logo-topbar {
-      font-size: 13px;
-      padding: 4px 8px;
-    }
+  .brand-text-short {
+    display: none;
   }
 
   /* First-Time Welcome / Login Gate Modal */
@@ -693,6 +697,8 @@
     color: var(--text-muted);
     overflow: hidden;
     white-space: nowrap;
+    flex: 1 1 auto;
+    min-width: 0;
   }
   .crumb-link {
     color: var(--text-secondary);
@@ -701,6 +707,8 @@
     text-decoration: none;
     padding: 4px 6px;
     border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
     transition: background 0.15s, color 0.15s;
   }
   .crumb-link:hover {
@@ -712,10 +720,13 @@
     font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 1;
   }
   .crumb-sep {
     color: #cbd5e1;
     font-size: 12px;
+    flex-shrink: 0;
   }
 
   .topbar-right {
@@ -723,15 +734,27 @@
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    min-width: 0;
+    order: 3;
   }
 
   .topbar-quiz-hud {
     display: none;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
+    order: 2;
+    min-width: 0;
   }
   .topbar-quiz-hud.active {
+    display: flex;
+  }
+  .topbar-quiz-timers {
     display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+    min-width: 0;
   }
 
   .q-timer-badge {
@@ -744,6 +767,8 @@
     font-weight: 700;
     font-family: "SFMono-Regular", Consolas, monospace;
     border: 1px solid transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
     transition: background 0.25s, color 0.25s, border-color 0.25s;
   }
   .q-timer-badge.qt-green {
@@ -781,6 +806,8 @@
     background: var(--surface-subtle);
     color: var(--text-secondary);
     border: 1px solid var(--border);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .pomo-pill {
@@ -793,6 +820,8 @@
     padding: 4px 9px;
     font-size: 12px;
     color: var(--text-secondary);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .pomo-label {
     font-weight: 600;
@@ -835,6 +864,8 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .subtle-link-btn:hover {
     border-color: var(--border-hover);
@@ -845,6 +876,22 @@
     background: var(--teal-light);
     color: var(--teal);
     border-color: var(--teal-border);
+  }
+  .btn-topic-notes {
+    background: var(--teal-light);
+    color: var(--teal);
+    border: 1px solid var(--teal-border);
+    font-weight: 700;
+  }
+  .btn-topic-notes:hover {
+    background: #d5ecee;
+    border-color: var(--teal);
+    color: var(--teal-hover);
+  }
+  .btn-topic-notes.active-split {
+    background: var(--teal);
+    color: #ffffff;
+    border-color: var(--teal);
   }
 
   /* ================= COLLAPSIBLE AMBOSS HIERARCHY SIDEBAR ================= */
@@ -1141,10 +1188,10 @@
   .mi-val { font-size: 18px; font-weight: 700; color: var(--text); }
   .mi-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 
-  /* Two Clean Cards on Dashboard: Library & Quizzes */
+  /* Three Clean Cards on Dashboard: Library, QBank & Exams */
   .nav-cards-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
   .nav-portal-card {
@@ -1949,6 +1996,486 @@
     }
   }
 
+
+  /* Past Exams Analysis Switcher & Type 1 / Type 2 Panels */
+  .sea-analysis-bar {
+    background: var(--teal-light);
+    border: 1.5px solid #99f6e4;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sea-analysis-bar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sea-analysis-btns {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+  }
+  .sea-amode-btn {
+    padding: 9px 10px;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .sea-amode-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: 0 2px 6px rgba(10, 108, 116, 0.08);
+  }
+  .sea-amode-btn.active-amode {
+    background: var(--teal);
+    color: #ffffff;
+    border-color: var(--teal);
+  }
+  .sea-dr-note-bar {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 7px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .sea-dr-note-text {
+    flex: 1 1 320px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #78350f;
+    font-weight: 600;
+  }
+  .sea-dr-stat-btn {
+    padding: 7px 14px;
+    border-radius: 6px;
+    border: 1.5px solid #d97706;
+    background: #ffffff;
+    color: #b45309;
+    font-size: 12.5px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .sea-dr-stat-btn:hover {
+    background: #d97706;
+    color: #ffffff;
+  }
+  .sea-dr-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .sea-dr-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-subtle);
+    padding: 11px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .sea-dr-card-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--teal);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 5px;
+  }
+  .sea-dr-shift-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sea-dr-shift-bar {
+    flex: 1;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .sea-dr-shift-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 999px;
+  }
+  .sea-card-mini-toggles {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+  }
+  .sea-mini-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .sea-mini-btn:hover {
+    background: var(--surface-subtle);
+    color: var(--teal);
+  }
+  .sea-mini-btn.active-mini {
+    background: var(--teal);
+    color: #ffffff;
+  }
+  .sea-solved-pill {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+  }
+  .sea-body-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .sea-chap-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .sea-type2-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .sea-t2-kpi {
+    border: 1px solid var(--border);
+    background: var(--surface-subtle);
+    border-radius: 7px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sea-t2-kpi.kpi-repeat {
+    border-color: #cbd5e1;
+    background: #f0fdfa;
+  }
+  .sea-t2-kpi.kpi-new {
+    border-color: #fde68a;
+    background: #fffbeb;
+  }
+  .sea-t2-lbl {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+  .sea-t2-val {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .sea-t2-btn {
+    margin-top: 4px;
+    align-self: flex-start;
+    padding: 4px 10px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border-radius: 5px;
+    border: 1px solid var(--teal);
+    background: var(--surface);
+    color: var(--teal);
+    cursor: pointer;
+  }
+  .sea-t2-btn:hover {
+    background: var(--teal);
+    color: #ffffff;
+  }
+  .sea-type2-sources-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 16px;
+  }
+  .sea-repeat-row {
+    display: grid;
+    grid-template-columns: minmax(150px, 1.4fr) 1fr 96px;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .sea-repeat-row:hover {
+    background: var(--teal-light);
+  }
+  .sea-sources-collapse-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .sea-sources-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 13px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sea-sources-toggle-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--surface-subtle);
+  }
+  .sea-sources-toggle-btn.expanded {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    color: var(--teal);
+  }
+  /* Type 3 Cycle Comparison Mode */
+  .sea-cmp-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .sea-cmp-toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-subtle);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sea-cmp-toggle-pill.active-cmp-pill {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #ffffff;
+  }
+  .sea-cmp-avg-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .sea-cmp-avg-box {
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 12px 14px;
+  }
+  .sea-cmp-avg-box.col-trial { border-top: 3px solid #16a34a; }
+  .sea-cmp-avg-box.col-sim { border-top: 3px solid #7c3aed; }
+  .sea-cmp-avg-box.col-real { border-top: 3px solid #0284c7; }
+  .sea-cmp-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .sea-cmp-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--surface-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .sea-cmp-quick-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .sea-cmp-qpill {
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .sea-cmp-qpill.q-trial { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  .sea-cmp-qpill.q-sim { background: #f3e8ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+  .sea-cmp-qpill.q-real { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+  .sea-cmp-cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .sea-cmp-col {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-subtle);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sea-cmp-col.col-trial { border-top: 3px solid #16a34a; }
+  .sea-cmp-col.col-sim { border-top: 3px solid #7c3aed; }
+  .sea-cmp-col.col-real { border-top: 3px solid #0284c7; }
+  .sea-cmp-col-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sea-cmp-slot {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 7px;
+    padding: 9px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sea-cmp-slot-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sea-cmp-bar-track {
+    height: 9px;
+    border-radius: 999px;
+    background: #fef3c7;
+    overflow: hidden;
+    display: flex;
+  }
+  .sea-cmp-bar-rep {
+    height: 100%;
+    background: var(--teal);
+  }
+  .sea-cmp-slot-metrics {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .sea-cmp-slot-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 2px;
+  }
+  .sea-cmp-overlap-bar {
+    margin: 0 16px 14px 16px;
+    padding: 9px 12px;
+    border-radius: 7px;
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  @media (max-width: 980px) {
+    .sea-analysis-btns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .sea-dr-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 820px) {
+    .sea-analysis-btns {
+      grid-template-columns: 1fr;
+    }
+    .sea-dr-grid {
+      grid-template-columns: 1fr;
+    }
+    .sea-type2-kpis {
+      grid-template-columns: 1fr;
+    }
+    .sea-type2-sources-grid {
+      grid-template-columns: 1fr;
+    }
+    .sea-repeat-row {
+      grid-template-columns: minmax(120px, 1.3fr) 1fr 86px;
+    }
+    .sea-cmp-avg-strip,
+    .sea-cmp-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+
   /* Search & Custom Exam Modals */
   .search-input-box {
     width: 100%;
@@ -2162,10 +2689,11 @@
     border-top: 3px solid var(--teal);
     border-radius: 8px;
     padding: 20px 24px;
-    max-height: calc(100vh - 86px);
+    max-height: calc(100vh - var(--topbar-h) - 24px);
     overflow-y: auto;
     position: sticky;
-    top: 68px;
+    top: calc(var(--topbar-h) + 12px);
+    scroll-margin-top: calc(var(--topbar-h) + 12px);
     min-width: 0;
     box-shadow: 0 4px 16px rgba(10, 108, 116, 0.06);
   }
@@ -2479,6 +3007,13 @@
 
   <style>
     /* ================= FIREBASE AUTH & CLOUD SYNC STYLES ================= */
+    .auth-pill-wrap {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 4px;
+      flex-shrink: 1;
+      min-width: 0;
+    }
     .auth-topbar-pill {
       display: inline-flex;
       align-items: center;
@@ -2492,6 +3027,16 @@
       cursor: pointer;
       transition: all 0.15s;
       color: var(--text);
+      white-space: nowrap;
+      max-width: 180px;
+      overflow: hidden;
+      min-width: 0;
+    }
+    #authTopLabel {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
     }
     .auth-topbar-pill:hover {
       border-color: var(--teal);
@@ -2586,35 +3131,65 @@
       font-weight: 500;
     }
     /* ================= COMPREHENSIVE MOBILE & TABLET RESPONSIVE ENHANCEMENTS ================= */
+  @media (max-width: 1320px) {
+    .pomo-pill .pomo-label {
+      display: none;
+    }
+    .topbar-quiz-hud.active {
+      order: 4;
+      flex: 1 0 100%;
+      width: 100%;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+      margin-top: 1px;
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .breadcrumbs {
+      display: none !important;
+    }
+    .auth-topbar-pill {
+      max-width: 135px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .btn-label-desktop {
+      display: none !important;
+    }
+  }
+
   @media (max-width: 820px) {
     .topbar {
-      padding: 0 10px;
-      gap: 6px;
+      padding: 6px 10px;
+      gap: 6px 8px;
     }
     .topbar-left {
       gap: 6px;
       flex: 0 1 auto;
       min-width: 0;
     }
-    .breadcrumbs {
-      max-width: 130px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 12px;
-    }
     .topbar-right {
       gap: 5px;
-      flex-shrink: 1;
+      flex: 1 1 auto;
       min-width: 0;
       justify-content: flex-end;
     }
     .pomo-pill {
-      padding: 3px 8px;
+      padding: 3px 7px;
       font-size: 11.5px;
+      gap: 4px;
     }
-    .pomo-pill .pomo-label {
-      display: none;
+    .auth-pill-wrap {
+      margin-left: 0;
+    }
+    .auth-topbar-pill {
+      max-width: 112px;
+      padding: 4px 9px;
+      font-size: 11.5px;
     }
     .sidebar {
       position: fixed;
@@ -2656,38 +3231,92 @@
     }
   }
 
-  @media (max-width: 600px) {
-    .main-container {
-      padding: 12px 10px 50px 10px !important;
+  @media (max-width: 640px) {
+    .brand-logo-topbar {
+      font-size: 13px;
+      padding: 4px 8px;
+      gap: 5px;
     }
-    .sidebar-toggle-btn span:last-child {
-      display: none; /* Hide 'Library' text on phones, show icon */
+    .brand-text-full {
+      display: none;
+    }
+    .brand-text-short {
+      display: inline;
     }
     .sidebar-toggle-btn {
       padding: 5px 8px;
+      font-size: 12.5px;
     }
-    .breadcrumbs {
-      display: none !important; /* Hide breadcrumbs on phones for maximum button space */
+    .topbar-quiz-hud.active {
+      gap: 6px;
+      padding-top: 5px;
     }
-    .topbar-quiz-hud .session-timer-badge {
-      display: none !important;
+    .q-timer-badge, .session-timer-badge {
+      padding: 3px 7px;
+      font-size: 11.5px;
+      gap: 4px;
     }
-    #btnSplitNotes #btnSplitNotesLabel {
-      display: none;
-    }
-    .btn-label-desktop {
-      display: none !important; /* Icons only for Search & Custom Exam on phones */
+    .subtle-link-btn.btn-topic-notes {
+      padding: 4px 10px;
+      font-size: 12px;
     }
     .auth-topbar-pill {
       padding: 3px 8px;
       font-size: 11.5px;
-      max-width: 100px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      max-width: 96px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .topbar {
+      padding: 5px 8px;
+      gap: 5px 6px;
+      min-height: 48px;
+    }
+    .topbar-left {
+      gap: 5px;
+    }
+    .sidebar-toggle-btn {
+      padding: 5px 7px;
+    }
+    .sidebar-toggle-btn .sb-btn-lbl {
+      display: none;
     }
     .topbar-right {
       gap: 4px;
+    }
+    .pomo-pill {
+      padding: 3px 6px;
+      gap: 3px;
+    }
+    .pomo-pill .pomo-reset-btn {
+      display: none;
+    }
+    .pomo-timer {
+      min-width: 34px;
+      font-size: 11.5px;
+    }
+    .subtle-link-btn {
+      padding: 4px 7px;
+      font-size: 11.5px;
+    }
+    .topbar-quiz-hud .session-timer-badge {
+      display: none !important;
+    }
+    .subtle-link-btn.btn-topic-notes {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+    .auth-topbar-pill {
+      max-width: 82px;
+      padding: 3px 7px;
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .main-container {
+      padding: 12px 10px 50px 10px !important;
     }
     .article-card, .quiz-card {
       padding: 15px 12px !important;
@@ -2878,21 +3507,22 @@
 <body>
 
 <!-- ================= FIXED STICKY TOP BAR (WITH QUIZ TIMERS & POMODORO) ================= -->
-<header class="topbar">
+<header class="topbar" id="mainTopbar">
   <div class="topbar-left">
-    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Show / Hide Library Hierarchy Sidebar">
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show / Hide Library Hierarchy Sidebar">
       <span>☰</span>
-      <span>Library</span>
+      <span class="sb-btn-lbl">Library</span>
     </button>
     <div class="brand-logo-topbar" onclick="navigateTo('home')" title="EMLE in a Nutshell — Main Dashboard">
       <span>🩺</span>
-      <span>EMLE in a Nutshell</span>
+      <span class="brand-text-full">EMLE in a Nutshell</span>
+      <span class="brand-text-short">EMLE</span>
     </div>
     <nav class="breadcrumbs" id="breadcrumbNav"></nav>
   </div>
 
-  <div class="topbar-right">
-    <div class="topbar-quiz-hud" id="topbarQuizHud">
+  <div class="topbar-quiz-hud" id="topbarQuizHud">
+    <div class="topbar-quiz-timers">
       <div class="q-timer-badge qt-green" id="qTimerBadge" title="Ascending Question Timer (Green: 0-29s, Yellow: 30-44s, Red Alert: >=45s)">
         <span>Q:</span>
         <span id="qTimerText">00:00</span>
@@ -2905,24 +3535,26 @@
         <span id="sessionTimerText">00:00</span>
         <button class="pomo-icon-btn" id="sTimerPauseBtn" onclick="togglePauseQuizTimers()" title="Pause / Resume Session Timer">⏸</button>
       </div>
-
-      <button class="subtle-link-btn" id="btnSplitNotes" onclick="toggleSplitNotes()">
-        <span>📖</span>
-        <span id="btnSplitNotesLabel">Topic Notes</span>
-      </button>
     </div>
 
+    <button class="subtle-link-btn btn-topic-notes" id="btnSplitNotes" onclick="toggleSplitNotes()" title="Show / Hide Topic VIP Notes alongside questions">
+      <span>📖</span>
+      <span id="btnSplitNotesLabel">Topic Notes</span>
+    </button>
+  </div>
+
+  <div class="topbar-right">
     <div class="pomo-pill">
       <span class="pomo-label" onclick="togglePomoPreset()" title="Click to switch 25m / 50m">Pomodoro</span>
       <span class="pomo-timer" id="pomoTime">25:00</span>
       <button class="pomo-icon-btn" id="pomoPlayBtn" onclick="togglePomoRun()" title="Start / Pause">▶</button>
-      <button class="pomo-icon-btn" onclick="resetPomo()" title="Reset">↺</button>
+      <button class="pomo-icon-btn pomo-reset-btn" onclick="resetPomo()" title="Reset">↺</button>
     </div>
 
-    <button class="subtle-link-btn" onclick="openSearchModal()" title="Instant Search across 135 Topics & 2,052 Questions (Ctrl+K)">🔍 Search</button>
-    <button class="subtle-link-btn" onclick="openCustomExamModal()" title="Build a Custom Exam Block (Tutor or Timed Exam Mode)">⚡ Custom Exam</button>
+    <button class="subtle-link-btn" id="searchBtn" onclick="openSearchModal()" title="Instant Search across 135 Topics & 2,052 Questions (Ctrl+K)">🔍<span class="btn-label-desktop"> Search</span></button>
+    <button class="subtle-link-btn" id="customExamBtn" onclick="openCustomExamModal()" title="Build a Custom Exam Block (Tutor Mode)">⚡<span class="btn-label-desktop"> Custom Exam</span></button>
         
-    <div id="authPillContainer" style="display:inline-flex; align-items:center; margin-left:4px;">
+    <div id="authPillContainer" class="auth-pill-wrap">
       <button class="auth-topbar-pill" id="authTopBtn" onclick="openAuthModal()" title="Cloud Sync & Account">
         <span class="sync-indicator-dot sync-dot-gray" id="authSyncDot"></span>
         <span id="authTopLabel">Sign In</span>
@@ -2938,6 +3570,9 @@
   </div>
   <div class="sb-home-link" id="sbQuizzesLink" onclick="navigateTo('quizzes')">
     <span>📝 QBank</span>
+  </div>
+  <div class="sb-home-link" id="sbExamsLink" onclick="navigateTo('exams')">
+    <span>🎓 Exams</span>
   </div>
   <div class="sb-home-link" id="sbAnalyticsLink" onclick="navigateTo('analytics')">
     <span>📊 Exam Analytics</span>
@@ -3018,6 +3653,18 @@
           </div>
           <div class="npc-footer">
             <span>Open QBank</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+
+        <div class="nav-portal-card" onclick="navigateTo('exams')">
+          <div>
+            <span class="npc-tag">Past EMLE Papers</span>
+            <h2 class="npc-title">🎓 Exams</h2>
+            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">حل امتحانات <strong>EMLE</strong> السابقة كاملة على بعضها (<strong>49 امتحان</strong>) بنظام <strong>Tutor Mode</strong> مع تحليل اختياري.</p>
+          </div>
+          <div class="npc-footer">
+            <span>Open Exams</span>
             <span>&rarr;</span>
           </div>
         </div>
@@ -3349,6 +3996,21 @@
       <div id="studyPlanPageContainer"></div>
     </section>
 
+    <!-- PAGE 8: PAST EXAMS & OPTIONAL ANALYSIS PAGE -->
+    <section class="view-page" id="page-exams">
+      <div class="page-title-block" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h1>🎓 Past EMLE Exams</h1>
+          <p dir="rtl" style="text-align:right; margin-top:4px;">حل أي امتحان سابق كامل على بعضه بنظام <strong>Tutor Mode</strong> (تصحيح وشرح فوري)، ويمكنك إظهار التحليل في أي وقت.</p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-outline" onclick="navigateTo('analytics')">📊 Overall Analytics</button>
+          <button class="btn-outline" onclick="navigateTo('home')">&larr; Back to Dashboard</button>
+        </div>
+      </div>
+      <div id="examsPageContainer"></div>
+    </section>
+
     <!-- GLOBAL SITE FOOTER: TELEGRAM CHANNELS -->
     <footer class="global-site-footer" dir="rtl" style="margin-top: 40px; padding-top: 10px;">
       <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; box-shadow: 0 1px 3px rgba(16,24,40,0.04);">
@@ -3444,15 +4106,7 @@
     </div>
 
     <div class="form-row">
-      <label class="form-label">1. Session Mode</label>
-      <div class="yield-filter-bar" style="margin-bottom:0;">
-        <button class="yf-btn active-yf" id="ceModeTutor" onclick="setCeOpt('mode','tutor')">📖 Tutor Mode (Instant Answer)</button>
-        <button class="yf-btn" id="ceModeExam" onclick="setCeOpt('mode','exam')">⏱ Exam Mode (Grade at End)</button>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <label class="form-label">2. Question Pool &amp; Topic Yield Tier (Multi-Select)</label>
+      <label class="form-label">1. Question Pool &amp; Topic Yield Tier (Multi-Select)</label>
       <div class="yield-filter-bar" style="margin-bottom:6px;">
         <button class="yf-btn active-yf" id="cePoolAll" onclick="setCeOpt('pool','all')">All Qs</button>
         <button class="yf-btn" id="cePoolUnans" onclick="setCeOpt('pool','unanswered')">Unanswered</button>
@@ -3465,25 +4119,25 @@
     </div>
 
     <div class="form-row">
-      <label class="form-label">3. Select Subject / Division (One or More, or ALL)</label>
+      <label class="form-label">2. Select Subject / Division (One or More, or ALL)</label>
       <div class="yield-filter-bar" style="margin-bottom:0;" id="ceDivisionsContainer"></div>
     </div>
 
     <div class="form-row">
-      <label class="form-label">4. Select Chapter (One or More, or ALL)</label>
+      <label class="form-label">3. Select Chapter (One or More, or ALL)</label>
       <div class="yield-filter-bar" style="margin-bottom:0; max-height:115px; overflow-y:auto; padding:4px; border:1px solid var(--border-subtle); border-radius:6px;" id="ceChaptersContainer"></div>
     </div>
 
     <div class="form-row">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <label class="form-label" style="margin-bottom:0;">5. Select Topic (One or More, or ALL)</label>
+        <label class="form-label" style="margin-bottom:0;">4. Select Topic (One or More, or ALL)</label>
         <input type="text" id="ceTopicSearchInput" placeholder="Filter topics..." oninput="updateCeModalUI()" style="padding:3px 8px; font-size:11.5px; border:1px solid var(--border); border-radius:4px; width:170px;" />
       </div>
       <div class="yield-filter-bar" style="margin-bottom:0; max-height:145px; overflow-y:auto; padding:6px; border:1px solid var(--border-subtle); border-radius:6px;" id="ceTopicsContainer"></div>
     </div>
 
     <div class="form-row" style="margin-bottom:8px;">
-      <label class="form-label">6. Number of Questions (Randomly Shuffled)</label>
+      <label class="form-label">5. Number of Questions (Randomly Shuffled)</label>
       <div class="yield-filter-bar" style="margin-bottom:0;">
         <button class="yf-btn" id="ceCount10" onclick="setCeOpt('count',10)">10 Qs</button>
         <button class="yf-btn active-yf" id="ceCount25" onclick="setCeOpt('count',25)">25 Qs</button>
@@ -3502,6 +4156,22 @@
     </div>
   </div>
 </div>
+<!-- ================= DR. AHMED AMER REAL SHIFT STATS MODAL ================= -->
+<div class="modal-backdrop" id="drAhmedStatsModal" onclick="if(event.target===this) closeDrAhmedStatsModal()">
+  <div class="modal-box" style="max-width:820px; width:96%; max-height:90vh; overflow-y:auto;" dir="rtl">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:12px;">
+      <div>
+        <h3 style="margin:0; color:var(--text);">📊 إحصائية د. أحمد عامر — تفصيل التكرارات (أول / ثاني / ثالث فعلي)</h3>
+        <div style="font-size:12.5px; color:var(--text-secondary); margin-top:4px; line-height:1.5;">
+          عدد الأسئلة المتكررة في كل يوم امتحاني منفصل (<strong>أول فعلي / ثاني فعلي / ثالث فعلي</strong>) لأن المنصة تدمج أيام كل دور فعلي معاً في امتحان واحد:
+        </div>
+      </div>
+      <button class="subtle-link-btn" onclick="closeDrAhmedStatsModal()" style="flex-shrink:0;">&times; Close</button>
+    </div>
+    <div id="drAhmedStatsBody"></div>
+  </div>
+</div>
+
 <!-- ================= FIRST-TIME WELCOME & SIGN-IN GATE ================= -->
 <div class="welcome-auth-backdrop" id="welcomeAuthOverlay">
   <div class="welcome-auth-card">
@@ -3516,98 +4186,13 @@
       ☁️ تسجيل الدخول يحفظ تقدمك ويزامن إجاباتك تلقائياً بين جميع أجهزتك.
     </div>
 
-    <datalist id="egyptUniversitiesList">
-      <option value="كلية طب القصر العيني (جامعة القاهرة)"></option>
-      <option value="كلية الطب بجامعة عين شمس"></option>
-      <option value="كلية طب جامعة المنصورة"></option>
-      <option value="كلية الطب بجامعة الإسكندرية"></option>
-      <option value="كلية طب جامعة العاصمة (حلوان سابقًا)"></option>
-      <option value="كلية طب جامعة أسيوط"></option>
-      <option value="كلية طب الأزهر بالقاهرة (بنين)"></option>
-      <option value="كلية طب الأزهر بالقاهرة (بنات)"></option>
-      <option value="كلية طب الأزهر بأسيوط"></option>
-      <option value="كلية طب الأزهر بدمياط"></option>
-      <option value="كلية طب جامعة الفيوم"></option>
-      <option value="كلية طب جامعة المنيا"></option>
-      <option value="كلية طب جامعة بنها"></option>
-      <option value="كلية طب جامعة بني سويف"></option>
-      <option value="كلية طب جامعة كفر الشيخ"></option>
-      <option value="كلية طب جامعة المنوفية"></option>
-      <option value="كلية طب قنا (جامعة جنوب الوادي)"></option>
-      <option value="كلية طب جامعة قناة السويس"></option>
-      <option value="كلية طب جامعة طنطا"></option>
-      <option value="كلية طب جامعة الزقازيق"></option>
-      <option value="كلية الطب البشري بفاقوس (جامعة الزقازيق)"></option>
-      <option value="كلية طب جامعة سوهاج"></option>
-      <option value="كلية طب جامعة بورسعيد"></option>
-      <option value="كلية طب جامعة أسوان"></option>
-      <option value="كلية طب جامعة دمياط"></option>
-      <option value="كلية طب جامعة السويس"></option>
-      <option value="كلية طب القوات المسلحة"></option>
-      <option value="كلية طب جامعة الوادي الجديد"></option>
-      <option value="كلية الطب جامعة الأقصر"></option>
-      <option value="كلية الطب جامعة العريش"></option>
-      <option value="كلية الطب جامعة مدينة السادات"></option>
-      <option value="كلية طب جامعة 6 أكتوبر (O6U)"></option>
-      <option value="كلية طب جامعة مصر للعلوم والتكنولوجيا (MUST)"></option>
-      <option value="كلية طب جامعة نيو جيزة (NGU)"></option>
-      <option value="كلية طب جامعة النهضة (NUB)"></option>
-      <option value="كلية طب جامعة بدر بالقاهرة (BUC)"></option>
-      <option value="كلية طب الجامعة الحديثة (MTI)"></option>
-      <option value="كلية طب جامعة الدلتا (Delta)"></option>
-      <option value="كلية طب جامعة ميريت (MUE)"></option>
-      <option value="كلية الطب البشري جامعة حورس"></option>
-      <option value="كلية الطب البشري جامعة باديا"></option>
-      <option value="كلية الطب البشري جامعة مصر الدولية (MIU)"></option>
-      <option value="كلية الطب البشري جامعة المستقبل"></option>
-      <option value="كلية الطب البشري جامعة الأهرام الكندية"></option>
-      <option value="كلية الطب البشري جامعة سيناء"></option>
-      <option value="كلية طب جامعة المنصورة الجديدة"></option>
-      <option value="كلية طب الأكاديمية العربية للعلوم والتكنولوجيا والنقل البحري"></option>
-      <option value="كلية طب جامعة العلمين الدولية"></option>
-      <option value="كلية طب جامعة الجلالة (GU)"></option>
-      <option value="كلية طب جامعة الملك سلمان (KSIU)"></option>
-      <option value="كلية طب جامعة الإسكندرية الأهلية"></option>
-      <option value="كلية طب جامعة أسيوط الأهلية"></option>
-      <option value="كلية طب جامعة بنها الأهلية"></option>
-      <option value="كلية طب جامعة شرق بورسعيد الأهلية"></option>
-      <option value="كلية طب جامعة المنصورة الأهلية"></option>
-      <option value="كلية طب جامعة المنيا الأهلية"></option>
-      <option value="كلية طب جامعة الإسماعيلية الجديدة الأهلية"></option>
-      <option value="كلية طب جامعة جنوب الوادي الأهلية"></option>
-      <option value="كلية طب جامعة الزقازيق الأهلية"></option>
-      <option value="كلية طب جامعة بني سويف الأهلية"></option>
-      <option value="كلية طب جامعة المنوفية الأهلية"></option>
-      <option value="كلية طب جامعة القاهرة الأهلية"></option>
-      <option value="كلية طب جامعة عين شمس الأهلية"></option>
-      <option value="كلية طب جامعة سوهاج الأهلية"></option>
-      <option value="كلية طب جامعة كفر الشيخ الأهلية"></option>
-      <option value="كلية طب جامعة طنطا الأهلية"></option>
-      <option value="كلية طب جامعة الفيوم الأهلية"></option>
-      <option value="كلية طب جامعة حلوان الأهلية"></option>
-    </datalist>
-
-    <div class="welcome-login-box" style="text-align:right; direction:rtl;">
-      <div style="font-size:13.5px; font-weight:800; color:var(--text); margin-bottom:10px; text-align:center;">
-        🎓 بيانات الطالب
-      </div>
-      <div id="welcomeAuthErrorMsg" style="display:none; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:10px; line-height:1.4;"></div>
-
-      <div style="margin-bottom:10px;">
-        <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">👤 الاسم:</label>
-        <input type="text" id="welcomeStudentName" placeholder="اكتب اسمك" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--surface); color:var(--text);" />
-      </div>
-
-      <div style="margin-bottom:14px;">
-        <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">🏛️ الجامعة:</label>
-        <input type="text" id="welcomeStudentUniv" list="egyptUniversitiesList" placeholder="اختر أو اكتب اسم جامعتك" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--surface); color:var(--text);" />
-      </div>
+    <div class="welcome-login-box">
+      <div id="welcomeAuthErrorMsg" style="display:none; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:10px; line-height:1.4; direction:rtl; text-align:right;"></div>
 
       <button class="welcome-google-btn" onclick="signInWithGoogle('welcome')" type="button" style="direction:ltr;">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.36 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.36 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-        <span>Sign in / Sign up with Google</span>
+        <span>Sign in with Google</span>
       </button>
-      
     </div>
 
     <button class="welcome-guest-btn" onclick="continueWithoutSignIn()" type="button">
@@ -3641,11 +4226,7 @@
           <span id="userAvatarInitial">?</span>
         </div>
         <div id="userDisplayName" style="font-weight:700; font-size:15px; color:var(--text);">Student</div>
-        <div id="userUnivDisplay" style="font-size:13px; font-weight:700; color:var(--teal); margin-top:3px;"></div>
         <div id="userEmailDisplay" style="font-size:12.5px; color:var(--text-muted); margin-top:2px;">student@example.com</div>
-        <div style="margin-top:8px;">
-          <button class="btn-outline" style="padding:4px 10px; font-size:11.5px;" onclick="openCompleteProfileView()">✏️ تعديل الاسم والجامعة</button>
-        </div>
         <div style="margin-top:10px;">
           <span class="auth-badge-pill" id="modalSyncBadge" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;">
             <span class="sync-indicator-dot sync-dot-green" id="modalSyncDot"></span>
@@ -3675,30 +4256,7 @@
       </div>
     </div>
 
-    <!-- State C: Complete New Student Profile (Name & University) -->
-    <div id="authCompleteProfileView" style="display:none; direction:rtl; text-align:right;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3 style="margin:0; font-size:16px; color:var(--teal);">🎓 إكمال بيانات الطالب</h3>
-        <button class="subtle-link-btn" onclick="closeAuthModal()">&times; إغلاق</button>
-      </div>
-      <div style="background:var(--teal-light); border:1px solid var(--teal-border); border-radius:8px; padding:11px 13px; margin-bottom:12px; color:var(--teal); font-weight:700; font-size:12.5px; line-height:1.6;">
-        أهلاً بك في <strong>EMLE in a Nutshell</strong>! يُرجى إدخال <strong>الاسم</strong> و<strong>الجامعة</strong> لحفظهما في حسابك:
-      </div>
-      <div id="completeProfileErrorMsg" style="display:none; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:10px;"></div>
-      <div style="margin-bottom:10px;">
-        <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">👤 الاسم:</label>
-        <input type="text" id="completeProfileNameInput" placeholder="اكتب اسمك" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--surface); color:var(--text);" />
-      </div>
-      <div style="margin-bottom:16px;">
-        <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">🏛️ الجامعة:</label>
-        <input type="text" id="completeProfileUnivInput" list="egyptUniversitiesList" placeholder="اختر أو اكتب اسم جامعتك" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--surface); color:var(--text);" />
-      </div>
-      <button class="btn-teal" style="width:100%; justify-content:center; padding:10px;" onclick="saveCompletedStudentProfile()">
-        ✅ حفظ الاسم والجامعة
-      </button>
-    </div>
-
-    <!-- State B: User is NOT logged in -->
+    <!-- State B: User is NOT logged in (Google Sign In Only) -->
     <div id="authLoginView">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <div>
@@ -3710,29 +4268,14 @@
 
       <div id="authErrorMsg" style="display:none; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:12px; line-height:1.4;"></div>
 
-      <div style="direction:rtl; text-align:right; background:#f0fdf4; border:1px solid #bbf7d0; border-right:3px solid #15803d; border-radius:6px; padding:9px 12px; margin-bottom:12px; font-size:12.5px; color:#14532d; line-height:1.6;">
-        ☁️ تسجيل الدخول يحفظ تقدمك ويزامن إجاباتك تلقائياً بين جميع أجهزتك.
-      </div>
-
-      <!-- Student Name & University Fields for New Account -->
-      <div style="direction:rtl; text-align:right; background:var(--surface-subtle); border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:12px;">
-        <div style="font-size:12.5px; font-weight:800; color:var(--teal); margin-bottom:8px;">
-          🎓 بيانات الطالب:
-        </div>
-        <div style="margin-bottom:8px;">
-          <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">👤 الاسم:</label>
-          <input type="text" id="authStudentNameInput" placeholder="اكتب اسمك" style="width:100%; padding:8px 11px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--surface); color:var(--text);" />
-        </div>
-        <div>
-          <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">🏛️ الجامعة:</label>
-          <input type="text" id="authStudentUnivInput" list="egyptUniversitiesList" placeholder="اختر أو اكتب اسم جامعتك" style="width:100%; padding:8px 11px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--surface); color:var(--text);" />
-        </div>
+      <div style="direction:rtl; text-align:right; background:#f0fdf4; border:1px solid #bbf7d0; border-right:3px solid #15803d; border-radius:6px; padding:10px 12px; margin-bottom:14px; font-size:12.5px; color:#14532d; line-height:1.6;">
+        ☁️ تسجيل الدخول بحساب جوجل يحفظ تقدمك ويزامن إجاباتك تلقائياً بين جميع أجهزتك.
       </div>
 
       <!-- Google Sign In Button -->
       <button class="google-signin-btn" onclick="signInWithGoogle('modal')" id="btnGoogleSignIn" type="button">
         <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.36 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.36 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-        <span>Sign in / Sign up with Google</span>
+        <span>Sign in with Google</span>
       </button>
 
       
@@ -3775,12 +4318,9 @@ let state = {
   studyPlanScope: "all",
   chapterOrder: [],
   showChapReorder: false,
-  studentProfile: { name: "", university: "" },
   streak: { current: 1, best: 1, lastDate: "", days: {}, todayQs: 0, goal: 30 },
   eliminatedOpts: {},
   customQs: [],
-  examMode: false,
-  examSubmitted: false,
   quizIndex: 0,
   splitNotesOpen: false,
   dotsExpanded: false,
@@ -3800,7 +4340,6 @@ function loadState() {
       if (parsed.eliminatedOpts) state.eliminatedOpts = parsed.eliminatedOpts;
       if (parsed.studyPlanScope) state.studyPlanScope = parsed.studyPlanScope;
       if (Array.isArray(parsed.chapterOrder)) state.chapterOrder = parsed.chapterOrder;
-      if (parsed.studentProfile) state.studentProfile = parsed.studentProfile;
     }
   } catch (e) {}
 }
@@ -3817,8 +4356,7 @@ function saveState() {
       streak: state.streak,
       eliminatedOpts: state.eliminatedOpts,
       studyPlanScope: state.studyPlanScope,
-      chapterOrder: state.chapterOrder,
-      studentProfile: state.studentProfile
+      chapterOrder: state.chapterOrder
     }));
   } catch (e) {}
 
@@ -4689,6 +5227,8 @@ function handleChapClick(chapId, available) {
 function renderSidebarTree() {
   document.getElementById("sbHomeLink").classList.toggle("active-nav", state.currentView === "home");
   document.getElementById("sbQuizzesLink").classList.toggle("active-nav", state.currentView === "quizzes");
+  const sbEx = document.getElementById("sbExamsLink");
+  if (sbEx) sbEx.classList.toggle("active-nav", state.currentView === "exams");
   const sbAn = document.getElementById("sbAnalyticsLink");
   if (sbAn) sbAn.classList.toggle("active-nav", state.currentView === "analytics");
   const sbSp = document.getElementById("sbStudyPlanLink");
@@ -4867,6 +5407,8 @@ function navigateTo(view, param) {
   if (topbarQuizHud) {
     topbarQuizHud.classList.toggle("active", view === "quiz");
   }
+  syncTopbarHeight();
+  requestAnimationFrame(syncTopbarHeight);
 
   const mainContainer = document.getElementById("mainContainer");
   mainContainer.classList.toggle("wide-split", view === "quiz" && state.splitNotesOpen);
@@ -4880,6 +5422,7 @@ function navigateTo(view, param) {
   else if (view === "chapter") renderChapter();
   else if (view === "topic") renderTopicPage(state.currentTopicId);
   else if (view === "quiz") renderQuizPage(true);
+  else if (view === "exams") renderExamsPage();
   else if (view === "analytics") renderAnalyticsPage();
   else if (view === "studyplan") renderStudyPlanPage();
 
@@ -4909,6 +5452,12 @@ function renderBreadcrumbs() {
       <a class="crumb-link" onclick="navigateTo('home')">Dashboard</a>
       <span class="crumb-sep">/</span>
       <span class="crumb-current">QBank</span>
+    `;
+  } else if (v === "exams") {
+    nav.innerHTML = `
+      <a class="crumb-link" onclick="navigateTo('home')">Dashboard</a>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-current">🎓 Past Exams</span>
     `;
   } else if (v === "analytics") {
     nav.innerHTML = `
@@ -4954,6 +5503,9 @@ function renderBreadcrumbs() {
       const cid = state.quizFilter.replace("chapter_", "");
       quizTitle = `${getChapterTitle(cid)} Quiz`;
       backCall = `navigateTo('quizzes')`;
+    } else if (state.quizFilter === "custom_exam" && state.customExamTitle) {
+      quizTitle = state.customExamTitle;
+      backCall = state.customExamReturnView === "exams" ? "navigateTo('exams')" : "navigateTo('quizzes')";
     }
     nav.innerHTML = `
       <a class="crumb-link" onclick="${backCall}">&larr; Back</a>
@@ -5173,8 +5725,6 @@ function openSearchedQuestion(qnum) {
   closeSearchModal();
   const q = DATA.questions.find(x => x.number === qnum);
   if (!q) return;
-  state.examMode = false;
-  state.examSubmitted = false;
   state.quizFilter = "topic_" + q.topic_id;
   const qs = getQuestionsForFilter(state.quizFilter);
   const idx = qs.findIndex(x => x.number === qnum);
@@ -5185,7 +5735,6 @@ function openSearchedQuestion(qnum) {
 
 // ================= CUSTOM EXAM SIMULATOR (MULTI-SELECT DIVISIONS, CHAPTERS, TOPICS & YIELDS) =================
 let ceConfig = {
-  mode: "tutor",
   pool: "all",
   yields: ["high", "medium", "low"],
   divs: [],     // empty array means ALL divisions
@@ -5306,9 +5855,6 @@ function getCeMatchingQuestions() {
 }
 
 function updateCeModalUI() {
-  document.getElementById("ceModeTutor").classList.toggle("active-yf", ceConfig.mode === "tutor");
-  document.getElementById("ceModeExam").classList.toggle("active-yf", ceConfig.mode === "exam");
-
   ["all","unanswered","wrong","flagged","rep5","discrepancy"].forEach(p => {
     const mapId = { all:"cePoolAll", unanswered:"cePoolUnans", wrong:"cePoolWrong", flagged:"cePoolFlag", rep5:"cePoolRep5", discrepancy:"cePoolDisc" }[p];
     const el = document.getElementById(mapId);
@@ -5403,34 +5949,23 @@ function launchCustomExamBlock() {
   }
 
   state.customQs = ceConfig.count > 0 ? shuffled.slice(0, ceConfig.count) : shuffled;
-  state.examMode = (ceConfig.mode === "exam");
-  state.examSubmitted = false;
+  state.customExamTitle = "Custom Exam Block";
+  state.customExamReturnView = "quizzes";
   closeCustomExamModal();
   startQuiz("custom_exam");
-  showToast(`🚀 Started ${state.customQs.length}-Question Block (${state.examMode ? 'Timed Exam Mode' : 'Tutor Mode'})`);
+  showToast(`🚀 Started ${state.customQs.length}-Question Block (Tutor Mode)`);
 }
 
-function submitExamBlock() {
-  state.examSubmitted = true;
-  stopQuizTimers();
-  const qs = state.customQs || [];
-  let correct = 0;
-  qs.forEach(q => {
-    const st = state.qStatus[q.number];
-    if (st && st.selected === q.verified_answer) correct++;
-  });
-  const pct = qs.length ? Math.round((correct / qs.length) * 100) : 0;
-  showToast(`🏁 Exam Graded: ${correct} / ${qs.length} (${pct}%)! Explanations unlocked.`);
-  renderQuizPage(false);
-}
-
-// ================= PAGE 6: FULL VISUAL ANALYTICS & SEPARATE EXAM ANALYSIS RENDERER =================
+// ================= PAGE 6: VISUAL ANALYTICS & PAGE 8: PAST EXAMS RENDERER =================
 let seaState = {
-  subTab: "all",       // "all" | "separate" | "overview"
-  filter: "ALL",       // "ALL" | "Real" | "Trial" | "Simulation"
+  filter: "ALL",               // "ALL" | "Real" | "Trial" | "Simulation"
   search: "",
-  sortBy: "newest",    // "newest" | "oldest" | "most_qs"
-  collapsedCards: {},  // tag -> boolean (false/undefined = expanded by default)
+  sortBy: "newest",            // "newest" | "oldest" | "most_qs"
+  analysisMode: "none",        // "none" (hidden by default!) | "chapters" | "repeats" | "compare"
+  cardAnalysisMode: {},        // per-card override: tag -> "none" | "chapters" | "repeats"
+  expandedRepeatSources: {},   // tag -> boolean (collapsed by default inside Type 2!)
+  mergeConsecutiveMonths: true,// group adjacent months into unified EMLE cycle (e.g. Nov-Dec 2025)
+  compareOnlyComplete: false,  // filter cycles having >= 2 exam categories
   showZeroChaps: false
 };
 
@@ -5442,361 +5977,923 @@ const CHAPTER_COLORS = {
   nephrology: "#7c3aed",
   neurology: "#4f46e5",
   psychiatry: "#9333ea",
-  geriatrics: "#64748b",
-  rheumatology: "#d97706",
-  endocrine: "#059669",
-  ophthalmology: "#0891b2",
-  general_surgery: "#e11d48",
-  orthopedics: "#ea580c",
-  pediatrics: "#16a34a",
-  obstetrics: "#db2777",
-  gynecology: "#c026d3",
-  emergency: "#b91c1c",
-  epidemiology: "#475569"
+  rheumatology: "#db2777",
+  endocrine: "#ea580c",
+  dermatology: "#d97706",
+  ophthalmology: "#059669",
+  ent: "#65a30d",
+  orthopedics: "#475569",
+  trauma: "#b91c1c",
+  pediatrics: "#0891b2",
+  obgyn: "#e11d48",
+  urology: "#0369a1",
+  ethics: "#64748b"
 };
 
 function parseExamTagMeta(rawTag) {
-  const tag = normalizeExamTag(rawTag);
-  const m = tag.match(/^(\d{1,2})\/(\d{4})([A-Za-z]*)$/);
+  const clean = normalizeExamTag(rawTag);
+  const m = clean.match(/^(\d{1,2})\/(\d{4})\s*([A-Za-z]*)$/);
+  const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   if (!m) {
     return {
-      tag,
+      tag: clean,
       month: 0,
       year: 0,
       code: "",
-      typeLabel: "Simulation Exam",
-      fullTitle: "Exam " + tag,
-      compactTitle: "Exam" + tag,
-      filterCat: "Simulation",
-      badgeClass: "sea-type-sim",
+      typeCategory: "Other",
+      typeLabel: "Exam",
+      badgeClass: "sea-type-other",
+      fullTitle: clean,
       sortKey: 0
     };
   }
   const month = parseInt(m[1], 10);
   const year = parseInt(m[2], 10);
   const code = (m[3] || "").toUpperCase();
-  let typeLabel = "Simulation Exam";
-  let filterCat = "Simulation";
-  let badgeClass = "sea-type-sim";
-  let codeRank = 0;
+  let typeCategory = "Trial";
+  let typeLabel = "Trial";
+  let badgeClass = "sea-type-trial";
+  let codeRank = 3; // Order within same month: D(1) < M(2) < T(3) < S(4) < R(5)
 
   if (code === "R") {
+    typeCategory = "Real";
     typeLabel = "Real Exam";
-    filterCat = "Real";
     badgeClass = "sea-type-real";
     codeRank = 5;
-  } else if (code === "T") {
-    typeLabel = "Trial Exam";
-    filterCat = "Trial";
-    badgeClass = "sea-type-trial";
-    codeRank = 3;
   } else if (code === "S") {
-    typeLabel = "Simulation Exam";
-    filterCat = "Simulation";
+    typeCategory = "Simulation";
+    typeLabel = "Simulation";
     badgeClass = "sea-type-sim";
     codeRank = 4;
   } else if (code === "M") {
+    typeCategory = "Simulation";
     typeLabel = "Mock Exam";
-    filterCat = "Simulation";
     badgeClass = "sea-type-sim";
     codeRank = 2;
   } else if (code === "D") {
+    typeCategory = "Simulation";
     typeLabel = "Demo Exam";
-    filterCat = "Simulation";
     badgeClass = "sea-type-sim";
     codeRank = 1;
   }
 
+  const mName = months[month] || ("M" + month);
   return {
-    tag,
+    tag: clean,
     month,
     year,
     code,
-    dateStr: `${month}/${year}`,
+    typeCategory,
     typeLabel,
-    fullTitle: `${typeLabel} ${month}/${year}`,
-    compactTitle: `${typeLabel}${month}/${year}`,
-    filterCat,
     badgeClass,
+    fullTitle: `${mName} ${year} (${typeLabel})`,
     sortKey: (year * 1000) + (month * 10) + codeRank
   };
 }
 
-const CORE_DIVISIONS = [
-  { id: "div_im", title: "Internal Medicine", color: "#0a6c74" },
-  { id: "div_surgery", title: "General Surgery", color: "#b91c1c" },
-  { id: "div_pediatrics", title: "Pediatrics", color: "#15803d" },
-  { id: "div_obgyn", title: "Obstetrics & Gynecology", color: "#9333ea" },
-  { id: "div_misc", title: "Public Health & Emergency", color: "#475467" }
-];
-
-function getDivIdFromChap(cid) {
-  if (!cid) return "div_im";
-  const c = cid.toLowerCase();
-  if (c === "general_surgery" || c === "orthopedics") return "div_surgery";
-  if (c === "pediatrics") return "div_pediatrics";
-  if (c === "obstetrics" || c === "gynecology") return "div_obgyn";
-  if (c === "emergency" || c === "epidemiology") return "div_misc";
-  return "div_im";
+function getAllChaptersCatalog() {
+  const list = [];
+  (DATA.tree || []).forEach(div => {
+    (div.chapters || []).forEach(ch => {
+      list.push({
+        id: ch.id,
+        title: ch.title,
+        color: CHAPTER_COLORS[ch.id] || "#0d9488"
+      });
+    });
+  });
+  return list;
 }
 
 function computeSeparateExamsData() {
   const examMap = {};
+  const qByNum = {};
   DATA.questions.forEach(q => {
-    const rawTags = q.exam_tags || [];
-    const seenInQ = new Set();
-    rawTags.forEach(rt => {
-      const tag = normalizeExamTag(rt);
-      if (!tag || seenInQ.has(tag)) return;
-      seenInQ.add(tag);
-      if (!examMap[tag]) {
-        const meta = parseExamTagMeta(tag);
-        examMap[tag] = {
-          ...meta,
-          questions: [],
-          divCounts: { "div_im": 0, "div_surgery": 0, "div_pediatrics": 0, "div_obgyn": 0, "div_misc": 0 }
+    qByNum[q.number] = q;
+    const seenInThisQ = new Set();
+    (q.exam_tags || []).forEach(rawTag => {
+      const cleanTag = normalizeExamTag(rawTag);
+      if (!cleanTag || seenInThisQ.has(cleanTag)) return;
+      seenInThisQ.add(cleanTag);
+      if (!examMap[cleanTag]) {
+        examMap[cleanTag] = {
+          tag: cleanTag,
+          meta: parseExamTagMeta(cleanTag),
+          qSet: new Set(),
+          qNums: [],
+          qObjs: []
         };
       }
-      examMap[tag].questions.push(q);
-      const did = getDivIdFromChap(q.chapter_id);
-      examMap[tag].divCounts[did] = (examMap[tag].divCounts[did] || 0) + 1;
+      examMap[cleanTag].qSet.add(q.number);
+      examMap[cleanTag].qNums.push(q.number);
+      examMap[cleanTag].qObjs.push(q);
     });
   });
 
-  const examsList = Object.values(examMap).map(ex => {
-    const totalQs = ex.questions.length;
-    const divisionsBreakdown = CORE_DIVISIONS.map(d => {
-      const count = ex.divCounts[d.id] || 0;
-      const pct = totalQs > 0 ? ((count / totalQs) * 100) : 0;
-      return {
-        id: d.id,
-        title: d.title,
-        color: d.color,
-        count,
-        pct,
-        pctStr: pct.toFixed(1)
-      };
+  const chaptersCatalog = getAllChaptersCatalog();
+  const rawList = Object.values(examMap);
+
+  // Sort chronologically (oldest -> newest) to compute strictly prior-exam repeats accurately
+  const chronoList = rawList.slice().sort((a, b) => a.meta.sortKey - b.meta.sortKey);
+
+  const exams = chronoList.map((ex, cIdx) => {
+    const totalQs = ex.qObjs.length;
+    const meta = ex.meta;
+
+    // Type 1: Chapter breakdown across all chapters represented in this exam
+    const chapCounts = {};
+    ex.qObjs.forEach(q => {
+      const cid = q.chapter_id || "other";
+      chapCounts[cid] = (chapCounts[cid] || 0) + 1;
     });
-    divisionsBreakdown.sort((a, b) => b.count - a.count);
+
+    const chaptersBreakdown = chaptersCatalog
+      .map(ch => {
+        const count = chapCounts[ch.id] || 0;
+        const pct = totalQs > 0 ? (count / totalQs) * 100 : 0;
+        return {
+          id: ch.id,
+          title: ch.title,
+          color: ch.color,
+          count,
+          pct,
+          pctStr: pct.toFixed(1)
+        };
+      })
+      .filter(ch => ch.count > 0)
+      .sort((a, b) => b.count - a.count || a.title.localeCompare(b.title));
+
+    // Type 2: Repeated questions ONLY from chronologically PRIOR exams (sortKey < ex.meta.sortKey)
+    const priorExams = chronoList.slice(0, cIdx).filter(p => p.meta.sortKey < meta.sortKey);
+    const priorUnionSet = new Set();
+    priorExams.forEach(p => {
+      p.qSet.forEach(qn => priorUnionSet.add(qn));
+    });
+
+    const repeatedQNums = [];
+    const newQNums = [];
+    ex.qObjs.forEach(q => {
+      if (priorUnionSet.has(q.number)) {
+        repeatedQNums.push(q.number);
+      } else {
+        newQNums.push(q.number);
+      }
+    });
+
+    const priorExamSources = [];
+    priorExams.forEach(p => {
+      const sharedNums = [];
+      ex.qObjs.forEach(q => {
+        if (p.qSet.has(q.number)) sharedNums.push(q.number);
+      });
+      if (sharedNums.length > 0) {
+        const pct = totalQs > 0 ? (sharedNums.length / totalQs) * 100 : 0;
+        priorExamSources.push({
+          tag: p.tag,
+          fullTitle: p.meta.fullTitle,
+          typeLabel: p.meta.typeLabel,
+          badgeClass: p.meta.badgeClass,
+          sortKey: p.meta.sortKey,
+          count: sharedNums.length,
+          pct,
+          pctStr: pct.toFixed(1),
+          qNums: sharedNums
+        });
+      }
+    });
+
+    priorExamSources.sort((a, b) => b.count - a.count || b.sortKey - a.sortKey);
+
+    const repeatedCount = repeatedQNums.length;
+    const newCount = newQNums.length;
+    const repeatedPct = totalQs > 0 ? (repeatedCount / totalQs) * 100 : 0;
+    const newPct = totalQs > 0 ? (newCount / totalQs) * 100 : 0;
+
     return {
-      ...ex,
+      tag: ex.tag,
+      fullTitle: meta.fullTitle,
+      typeCategory: meta.typeCategory,
+      typeLabel: meta.typeLabel,
+      badgeClass: meta.badgeClass,
+      sortKey: meta.sortKey,
+      month: meta.month,
+      year: meta.year,
       totalQs,
-      divisionsBreakdown
+      qNums: ex.qNums,
+      qObjs: ex.qObjs,
+      chaptersBreakdown,
+      priorRepeatStats: {
+        priorExamsCount: priorExams.length,
+        repeatedCount,
+        repeatedPctStr: repeatedPct.toFixed(1),
+        repeatedQNums,
+        newCount,
+        newPctStr: newPct.toFixed(1),
+        newQNums,
+        priorExamSources
+      }
     };
   });
 
-  // Default sort: Newest to Oldest
-  examsList.sort((a, b) => b.sortKey - a.sortKey || b.totalQs - a.totalQs);
-  return examsList;
+  // Sort by active UI order
+  if (seaState.sortBy === "oldest") {
+    exams.sort((a, b) => a.sortKey - b.sortKey);
+  } else if (seaState.sortBy === "most_qs") {
+    exams.sort((a, b) => b.totalQs - a.totalQs || b.sortKey - a.sortKey);
+  } else {
+    exams.sort((a, b) => b.sortKey - a.sortKey);
+  }
+  return exams;
+}
+
+const DR_AHMED_SHIFT_STATS = [
+  { round: "11/2023", shifts: [{ label: "أول فعلي", count: 34 }, { label: "تاني فعلي", count: 85 }, { label: "تالت فعلي", count: 97 }] },
+  { round: "2/2024",  shifts: [{ label: "أول فعلي", count: 27 }, { label: "تاني فعلي", count: 11 }, { label: "تالت فعلي", count: 29 }] },
+  { round: "8/2024",  shifts: [{ label: "أول فعلي", count: 49 }, { label: "تاني فعلي", count: 29 }, { label: "تالت فعلي", count: 97 }] },
+  { round: "11/2024", shifts: [{ label: "أول فعلي", count: 14 }, { label: "تاني فعلي", count: 9 },  { label: "تالت فعلي", count: 100 }] },
+  { round: "2/2025",  shifts: [{ label: "أول فعلي", count: 36 }, { label: "تاني فعلي", count: 23 }, { label: "تالت فعلي", count: 100 }] },
+  { round: "8/2025",  shifts: [{ label: "أول فعلي", count: 44 }, { label: "تاني فعلي", count: 49 }, { label: "تالت فعلي", count: 100 }] },
+  { round: "12/2025", shifts: [{ label: "أول فعلي", count: 43 }, { label: "تاني فعلي", count: 100 }] },
+  { round: "3/2026",  shifts: [{ label: "أول فعلي", count: 42 }, { label: "تاني فعلي", count: 93 }] },
+  { round: "7/2026",  shifts: [{ label: "أول فعلي", count: 99 }, { label: "تاني فعلي", count: 100 }] }
+];
+
+function openDrAhmedStatsModal() {
+  const modal = document.getElementById("drAhmedStatsModal");
+  const body = document.getElementById("drAhmedStatsBody");
+  if (!modal || !body) return;
+  body.innerHTML = `
+    <div class="sea-dr-grid">
+      ${DR_AHMED_SHIFT_STATS.map(item => `
+        <div class="sea-dr-card">
+          <div class="sea-dr-card-title">نسبة التكرار في ${item.round}:</div>
+          ${item.shifts.map(s => `
+            <div class="sea-dr-shift-row">
+              <span style="min-width:64px;">${s.label}</span>
+              <div class="sea-dr-shift-bar" title="${s.count} سؤال">
+                <div class="sea-dr-shift-fill" style="width:${Math.min(100, s.count)}%;"></div>
+              </div>
+              <span style="color:var(--teal); white-space:nowrap;">= ${s.count} سؤال</span>
+            </div>
+          `).join("")}
+        </div>
+      `).join("")}
+    </div>
+  `;
+  modal.classList.add("show");
+}
+
+function closeDrAhmedStatsModal() {
+  const modal = document.getElementById("drAhmedStatsModal");
+  if (modal) modal.classList.remove("show");
 }
 
 function openSeparateExamAnalysis() {
-  seaState.subTab = "separate";
-  navigateTo("analytics");
+  navigateTo("exams");
 }
 
-function setAnalyticsSubTab(tab) {
-  seaState.subTab = tab;
-  renderAnalyticsPage();
+function setSeaFilter(f) {
+  seaState.filter = f;
+  renderExamsPageOnly();
 }
 
-function setSeaFilter(filterVal) {
-  seaState.filter = filterVal;
-  renderSeparateExamSectionOnly();
-}
-
-function setSeaSort(sortVal) {
-  seaState.sortBy = sortVal;
-  renderSeparateExamSectionOnly();
+function setSeaSort(val) {
+  seaState.sortBy = val;
+  renderExamsPageOnly();
 }
 
 function onSeaSearchInput(val) {
-  seaState.search = val || "";
-  renderSeparateExamSectionOnly();
+  seaState.search = val;
+  renderExamsPageOnly();
 }
 
-function toggleAllSeaCards(collapse) {
-  const allExams = computeSeparateExamsData();
-  allExams.forEach(ex => {
-    seaState.collapsedCards[ex.tag] = collapse;
-  });
-  renderSeparateExamSectionOnly();
+function setSeaAnalysisMode(mode) {
+  if (mode === seaState.analysisMode && mode !== "none") {
+    seaState.analysisMode = "none";
+  } else {
+    seaState.analysisMode = mode;
+  }
+  seaState.cardAnalysisMode = {};
+  renderExamsPageOnly();
 }
 
-function practiceExamByTag(tag, targetDivId, event) {
-  if (event) event.stopPropagation();
-  const meta = parseExamTagMeta(tag);
-  const pool = DATA.questions.filter(q => {
-    const hasTag = (q.exam_tags || []).some(rt => normalizeExamTag(rt) === tag);
-    if (!hasTag) return false;
-    if (targetDivId && getDivIdFromChap(q.chapter_id) !== targetDivId) return false;
-    return true;
+function toggleCardSeaAnalysis(tag, mode, ev) {
+  if (ev) ev.stopPropagation();
+  const baseMode = (seaState.analysisMode === "chapters" || seaState.analysisMode === "repeats") ? seaState.analysisMode : "none";
+  const currentEffective = seaState.cardAnalysisMode[tag] || baseMode;
+  if (currentEffective === mode) {
+    seaState.cardAnalysisMode[tag] = "none";
+  } else {
+    seaState.cardAnalysisMode[tag] = mode;
+  }
+  renderExamsPageOnly();
+}
+
+function toggleRepeatSourcesCollapse(tag, ev) {
+  if (ev) ev.stopPropagation();
+  seaState.expandedRepeatSources[tag] = !seaState.expandedRepeatSources[tag];
+  renderExamsPageOnly();
+}
+
+function toggleSeaMergeConsecutive() {
+  seaState.mergeConsecutiveMonths = !seaState.mergeConsecutiveMonths;
+  renderExamsPageOnly();
+}
+
+function toggleSeaCompareCompleteOnly() {
+  seaState.compareOnlyComplete = !seaState.compareOnlyComplete;
+  renderExamsPageOnly();
+}
+
+function computeExamComparisonCycles(allExams, mergeConsecutive) {
+  const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const chrono = allExams.slice().sort((a, b) => a.sortKey - b.sortKey);
+  const groups = [];
+
+  for (const ex of chrono) {
+    const ym = (ex.year * 12) + ex.month;
+    const prevG = groups[groups.length - 1];
+    let canJoin = false;
+    if (prevG) {
+      if (ym === prevG.endYm) {
+        canJoin = true;
+      } else if (mergeConsecutive && (ym - prevG.startYm) <= 1 && !(prevG.hasReal && ym > prevG.endYm)) {
+        canJoin = true;
+      }
+    }
+    if (!canJoin) {
+      groups.push({
+        startYm: ym,
+        endYm: ym,
+        startMonth: ex.month,
+        startYear: ex.year,
+        endMonth: ex.month,
+        endYear: ex.year,
+        hasReal: ex.typeCategory === "Real",
+        exams: [ex]
+      });
+    } else {
+      prevG.endYm = ym;
+      prevG.endMonth = ex.month;
+      prevG.endYear = ex.year;
+      if (ex.typeCategory === "Real") prevG.hasReal = true;
+      prevG.exams.push(ex);
+    }
+  }
+
+  return groups.map(g => {
+    const label = g.startYm === g.endYm
+      ? `${months[g.startMonth] || ("M" + g.startMonth)} ${g.startYear}`
+      : (g.startYear === g.endYear
+          ? `${months[g.startMonth]}–${months[g.endMonth]} ${g.endYear}`
+          : `${months[g.startMonth]} ${g.startYear} – ${months[g.endMonth]} ${g.endYear}`);
+
+    const trialExams = g.exams.filter(e => e.typeCategory === "Trial");
+    const simExams = g.exams.filter(e => e.typeCategory === "Simulation");
+    const realExams = g.exams.filter(e => e.typeCategory === "Real");
+    const typesPresentCount = (trialExams.length ? 1 : 0) + (simExams.length ? 1 : 0) + (realExams.length ? 1 : 0);
+    const totalCycleQs = g.exams.reduce((a, e) => a + e.totalQs, 0);
+
+    // Compute same-cycle direct overlap from earlier Trial/Sim/Demo/Mock in this round into this round's Real Exam
+    const sameCycleOverlaps = [];
+    const prepTagSet = new Set([...trialExams, ...simExams].map(e => e.tag));
+    realExams.forEach(rEx => {
+      rEx.priorRepeatStats.priorExamSources.forEach(src => {
+        if (prepTagSet.has(src.tag)) {
+          sameCycleOverlaps.push({
+            realTag: rEx.tag,
+            realTitle: rEx.fullTitle,
+            prepTag: src.tag,
+            prepLabel: src.typeLabel,
+            count: src.count,
+            pctStr: src.pctStr
+          });
+        }
+      });
+    });
+
+    const isMergedConsecutive = (g.startYm !== g.endYm);
+    const spanText = isMergedConsecutive
+      ? `${String(g.startMonth).padStart(2, '0')}/${g.startYear} + ${String(g.endMonth).padStart(2, '0')}/${g.endYear}`
+      : `${String(g.startMonth).padStart(2, '0')}/${g.startYear}`;
+
+    return {
+      label,
+      isMergedConsecutive,
+      spanText,
+      startYm: g.startYm,
+      endYm: g.endYm,
+      totalCycleQs,
+      typesPresentCount,
+      exams: g.exams,
+      trialExams,
+      simExams,
+      realExams,
+      sameCycleOverlaps
+    };
   });
-  if (!pool.length) {
-    showToast("No questions found for this selection.");
+}
+
+function launchExamQuestionPool(pool, title, mode, emptyToast) {
+  const playable = pool.filter(q => !q.is_locked);
+  if (playable.length === 0) {
+    showToast(emptyToast || "🔒 أسئلة هذا الجزء متاحة في النسخة الكاملة للمنصة (تواصل معنا عبر التليجرام للاشتراك).");
     return;
   }
-  state.customQs = pool.map(q => q.number);
-  state.examMode = false;
-  state.examSubmitted = false;
+  state.customQs = playable;
+  state.customExamTitle = title;
+  state.customExamReturnView = "exams";
   startQuiz("custom_exam");
-  const divObj = CORE_DIVISIONS.find(d => d.id === targetDivId);
-  const divSuffix = divObj ? ` (${divObj.title})` : "";
-  showToast(`🚀 Started ${meta.fullTitle}${divSuffix} (${pool.length} Questions)`);
-}
-
-function toggleSeaExamCard(tag, event) {
-  if (event) {
-    const target = event.target;
-    if (target.closest("button") || target.closest("select") || target.closest("input")) return;
+  if (playable.length < pool.length) {
+    showToast(`🚀 تم فتح ${playable.length} سؤال متاح مجاناً من ${title} (من أصل ${pool.length} سؤال — الباقي في النسخة الكاملة)`);
+  } else {
+    showToast(`🚀 ${title} (${playable.length} سؤال — Tutor Mode)`);
   }
-  seaState.collapsedCards[tag] = !seaState.collapsedCards[tag];
-  renderSeparateExamSectionOnly();
 }
 
-function buildSeparateExamInnerHTML() {
+function practiceExamByTag(tag, targetChapId, modeOrEv, maybeEv) {
+  let mode = "tutor";
+  let ev = null;
+  if (typeof modeOrEv === "string") {
+    mode = modeOrEv;
+    ev = maybeEv || null;
+  } else {
+    ev = modeOrEv || null;
+  }
+  if (ev) ev.stopPropagation();
+
+  const cleanTarget = normalizeExamTag(tag);
+  let pool = DATA.questions.filter(q => (q.exam_tags || []).some(t => normalizeExamTag(t) === cleanTarget));
+  const meta = parseExamTagMeta(cleanTarget);
+  let title = meta.fullTitle;
+
+  if (targetChapId) {
+    pool = pool.filter(q => q.chapter_id === targetChapId);
+    title = `${meta.fullTitle} — ${getChapterTitle(targetChapId)}`;
+  }
+
+  launchExamQuestionPool(pool, title, mode);
+}
+
+function practiceExamRepeatSubset(tag, subsetType, priorTag, ev) {
+  if (ev) ev.stopPropagation();
+  const allExams = computeSeparateExamsData();
+  const targetExam = allExams.find(x => x.tag === normalizeExamTag(tag));
+  if (!targetExam) return;
+
+  const qByNum = {};
+  DATA.questions.forEach(q => { qByNum[q.number] = q; });
+
+  let subsetNums = [];
+  let title = targetExam.fullTitle;
+
+  if (subsetType === "repeated") {
+    subsetNums = targetExam.priorRepeatStats.repeatedQNums;
+    title = `${targetExam.fullTitle} — المتكرر من السنين السابقة`;
+  } else if (subsetType === "new") {
+    subsetNums = targetExam.priorRepeatStats.newQNums;
+    title = `${targetExam.fullTitle} — الأسئلة الجديدة فقط`;
+  } else if (subsetType === "source" && priorTag) {
+    const src = targetExam.priorRepeatStats.priorExamSources.find(s => s.tag === normalizeExamTag(priorTag));
+    if (!src) return;
+    subsetNums = src.qNums;
+    title = `المشترك بين ${targetExam.fullTitle} و ${src.fullTitle}`;
+  }
+
+  const pool = subsetNums.map(n => qByNum[n]).filter(Boolean);
+  launchExamQuestionPool(pool, title, "tutor");
+}
+
+function buildExamsPageInnerHTML() {
   const allExams = computeSeparateExamsData();
   const counts = {
     ALL: allExams.length,
-    Real: allExams.filter(e => e.filterCat === "Real").length,
-    Trial: allExams.filter(e => e.filterCat === "Trial").length,
-    Simulation: allExams.filter(e => e.filterCat === "Simulation").length
+    Real: allExams.filter(e => e.typeCategory === "Real").length,
+    Trial: allExams.filter(e => e.typeCategory === "Trial").length,
+    Simulation: allExams.filter(e => e.typeCategory === "Simulation").length
   };
 
-  let filtered = allExams.filter(e => {
-    if (seaState.filter !== "ALL" && e.filterCat !== seaState.filter) return false;
-    if (seaState.search.trim()) {
-      const q = seaState.search.trim().toLowerCase();
-      const hay = `${e.fullTitle} ${e.compactTitle} ${e.tag} ${e.dateStr}`.toLowerCase();
-      if (!hay.includes(q)) return false;
+  const qStr = (seaState.search || "").trim().toLowerCase();
+  const filtered = allExams.filter(ex => {
+    if (seaState.filter !== "ALL" && ex.typeCategory !== seaState.filter) return false;
+    if (qStr) {
+      const hay = `${ex.tag} ${ex.fullTitle} ${ex.typeLabel} ${ex.year}`.toLowerCase();
+      if (!hay.includes(qStr)) return false;
     }
     return true;
   });
 
-  if (seaState.sortBy === "oldest") {
-    filtered = filtered.slice().sort((a, b) => a.sortKey - b.sortKey || b.totalQs - a.totalQs);
-  } else if (seaState.sortBy === "most_qs") {
-    filtered = filtered.slice().sort((a, b) => b.totalQs - a.totalQs || b.sortKey - a.sortKey);
-  } else {
-    // Newest to Oldest
-    filtered = filtered.slice().sort((a, b) => b.sortKey - a.sortKey || b.totalQs - a.totalQs);
-  }
-
-  const totalQuestionsInFiltered = filtered.reduce((acc, e) => acc + e.totalQs, 0);
-  const avgQsPerExam = filtered.length ? Math.round(totalQuestionsInFiltered / filtered.length) : 0;
-  const newestExam = filtered.length ? allExams.filter(e => seaState.filter === "ALL" || e.filterCat === seaState.filter)[0] : null;
-  const oldestList = allExams.filter(e => seaState.filter === "ALL" || e.filterCat === seaState.filter);
-  const oldestExam = oldestList.length ? oldestList[oldestList.length - 1] : null;
+  const sortedNewest = allExams.slice().sort((a, b) => b.sortKey - a.sortKey);
+  const newestExam = sortedNewest[0];
+  const oldestExam = sortedNewest[sortedNewest.length - 1];
+  const customOverridesCount = Object.values(seaState.cardAnalysisMode || {}).filter(m => m && m !== "none").length;
 
   return `
-    <div class="sea-controls-bar">
-      <div class="sea-filter-pills">
-        <span style="font-size:12px; font-weight:700; color:var(--text-muted); margin-right:4px;">Filter Type:</span>
-        <button class="sea-filter-btn ${seaState.filter === 'ALL' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('ALL')">
-          ALL <span class="sea-pill-cnt">${counts.ALL}</span>
-        </button>
-        <button class="sea-filter-btn ${seaState.filter === 'Real' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('Real')">
-          Real <span class="sea-pill-cnt">${counts.Real}</span>
-        </button>
-        <button class="sea-filter-btn ${seaState.filter === 'Trial' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('Trial')">
-          Trial <span class="sea-pill-cnt">${counts.Trial}</span>
-        </button>
-        <button class="sea-filter-btn ${seaState.filter === 'Simulation' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('Simulation')" title="Includes Simulation, Mock & Demo Exams">
-          Simulation / Mock / Demo <span class="sea-pill-cnt">${counts.Simulation}</span>
-        </button>
-      </div>
-
-      <div class="sea-right-tools">
-        <input type="text" class="sea-search-input" id="seaSearchBox" placeholder="🔍 Search exam (e.g. 7/2026, 10/2020)..." value="${seaState.search.replace(/"/g, '&quot;')}" oninput="onSeaSearchInput(this.value)" />
-        <select class="sea-search-input" style="min-width:175px; font-weight:600; cursor:pointer;" onchange="setSeaSort(this.value)">
-          <option value="newest" ${seaState.sortBy === 'newest' ? 'selected' : ''}>⬇ Sort: Newest to Oldest</option>
-          <option value="oldest" ${seaState.sortBy === 'oldest' ? 'selected' : ''}>⬆ Sort: Oldest to Newest</option>
-          <option value="most_qs" ${seaState.sortBy === 'most_qs' ? 'selected' : ''}>📊 Sort: Most Questions First</option>
-        </select>
-        <button class="btn-outline" style="padding:6px 12px; font-size:12px;" onclick="toggleAllSeaCards(false)">Expand All</button>
-        <button class="btn-outline" style="padding:6px 12px; font-size:12px;" onclick="toggleAllSeaCards(true)">Collapse All</button>
-      </div>
-    </div>
-
-    <div class="sea-summary-strip">
+    <div class="sea-summary-strip" style="margin-bottom:14px;">
       <div class="sea-sum-box">
-        <div class="sea-sum-lbl">Showing Exams (${seaState.filter === 'Simulation' ? 'Simulation / Mock / Demo' : seaState.filter})</div>
+        <div class="sea-sum-lbl">Total EMLE Exams</div>
+        <div class="sea-sum-val">${allExams.length} Exams</div>
+      </div>
+      <div class="sea-sum-box">
+        <div class="sea-sum-lbl">Currently Showing</div>
         <div class="sea-sum-val" style="color:var(--teal);">${filtered.length} Exams</div>
       </div>
       <div class="sea-sum-box">
-        <div class="sea-sum-lbl">Total Exam Questions</div>
-        <div class="sea-sum-val">${totalQuestionsInFiltered.toLocaleString()} Qs <span style="font-size:12px; font-weight:600; color:var(--text-muted);">(~${avgQsPerExam} Q/exam)</span></div>
-      </div>
-      <div class="sea-sum-box">
-        <div class="sea-sum-lbl">Newest Exam in Filter</div>
+        <div class="sea-sum-lbl">Latest Exam</div>
         <div class="sea-sum-val" style="font-size:15px;">${newestExam ? `${newestExam.fullTitle} (${newestExam.totalQs} Qs)` : '—'}</div>
       </div>
       <div class="sea-sum-box">
-        <div class="sea-sum-lbl">Oldest Exam in Filter</div>
+        <div class="sea-sum-lbl">Oldest Exam</div>
         <div class="sea-sum-val" style="font-size:15px;">${oldestExam ? `${oldestExam.fullTitle} (${oldestExam.totalQs} Qs)` : '—'}</div>
       </div>
     </div>
 
+    <!-- Controls Bar: Filter by Exam Type + Search + Sort -->
+    <div class="analysis-card" style="margin-bottom:14px; padding:14px 16px;">
+      <div class="sea-controls-bar" style="margin-bottom:12px;">
+        <div class="sea-filter-group">
+          <button class="sea-filter-btn ${seaState.filter === 'ALL' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('ALL')">
+            All Exams <span class="sea-pill-cnt">${counts.ALL}</span>
+          </button>
+          <button class="sea-filter-btn ${seaState.filter === 'Real' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('Real')">
+            Real (فعلي) <span class="sea-pill-cnt">${counts.Real}</span>
+          </button>
+          <button class="sea-filter-btn ${seaState.filter === 'Trial' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('Trial')">
+            Trial (تجريبي) <span class="sea-pill-cnt">${counts.Trial}</span>
+          </button>
+          <button class="sea-filter-btn ${seaState.filter === 'Simulation' ? 'active-sea-filter' : ''}" onclick="setSeaFilter('Simulation')" title="Simulation + Mock + Demo">
+            Simulation (محاكاة) <span class="sea-pill-cnt">${counts.Simulation}</span>
+          </button>
+        </div>
+
+        <div class="sea-right-tools">
+          <input
+            type="text"
+            id="seaSearchBox"
+            class="sea-search-input"
+            placeholder="🔍 Search exam (e.g. 2025, 7/2026, Real)..."
+            value="${escapeAttr(seaState.search)}"
+            oninput="onSeaSearchInput(this.value)"
+          />
+          <select class="sea-search-input" style="min-width:165px;" onchange="setSeaSort(this.value)">
+            <option value="newest" ${seaState.sortBy === 'newest' ? 'selected' : ''}>Sort: Newest &rarr; Oldest</option>
+            <option value="oldest" ${seaState.sortBy === 'oldest' ? 'selected' : ''}>Sort: Oldest &rarr; Newest</option>
+            <option value="most_qs" ${seaState.sortBy === 'most_qs' ? 'selected' : ''}>Sort: Most Questions</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Optional Analysis Toggle Bar (Hidden by default, Single Row) -->
+      <div class="sea-analysis-bar" dir="rtl" style="margin-bottom:0;">
+        <div class="sea-analysis-btns">
+          <button class="sea-amode-btn ${seaState.analysisMode === 'none' && customOverridesCount === 0 ? 'active-amode' : ''}" onclick="setSeaAnalysisMode('none')">
+            🙈 إخفاء كل التحليلات
+          </button>
+          <button class="sea-amode-btn ${seaState.analysisMode === 'chapters' ? 'active-amode' : ''}" onclick="setSeaAnalysisMode('chapters')">
+            📊 شوف كل امتحان جه فيه كام سؤال من كل شابتر
+          </button>
+          <button class="sea-amode-btn ${seaState.analysisMode === 'repeats' ? 'active-amode' : ''}" onclick="setSeaAnalysisMode('repeats')">
+            🔁 شوف كل امتحان اتكرر منه كم سؤال من الامتحانات السابقة له
+          </button>
+          <button class="sea-amode-btn ${seaState.analysisMode === 'compare' ? 'active-amode' : ''}" onclick="setSeaAnalysisMode('compare')">
+            ⚖️ قارن بين نسب تكرار الامتحانات الفعلية والتجريبية والمحاكاة لنفس الدور
+          </button>
+        </div>
+      </div>
+
+      <div class="sea-dr-note-bar" dir="rtl">
+        <div class="sea-dr-note-text">
+          <strong>ℹ️ ملحوظة:</strong> المنصة هنا بتتعامل مع الامتحان الأول والثاني (والثالث إن وجد) على إنهم امتحان واحد، لذلك ممكن أحياناً تلاقي بعض الامتحانات فيها 200 أو 300 سؤال. لو عاوز تشوف كل امتحان بالتفصيل <strong>أول / ثاني / ثالث</strong> اتكرر منه كام سؤال، فتقدر تشوفها من هنا من إحصائية د. أحمد عامر:
+        </div>
+        <button class="sea-dr-stat-btn" onclick="openDrAhmedStatsModal()">
+          📊 إحصائية د. أحمد عامر
+        </button>
+      </div>
+    </div>
+
+    ${seaState.analysisMode === 'compare' ? buildCyclesComparisonHTML(allExams) : `
     <div class="sea-exams-list">
       ${filtered.length === 0 ? `
-        <div style="padding:28px; text-align:center; color:var(--text-muted); font-size:14px;">
+        <div class="analysis-card" style="padding:28px; text-align:center; color:var(--text-muted); font-size:14px;">
           No exams match your current filter/search.
         </div>
       ` : filtered.map((ex, idx) => {
-        const isCollapsed = !!seaState.collapsedCards[ex.tag];
-        const maxDivCount = ex.divisionsBreakdown.length ? Math.max(...ex.divisionsBreakdown.map(d => d.count), 1) : 1;
+        const effectiveMode = seaState.cardAnalysisMode[ex.tag] || seaState.analysisMode || "none";
+        let solvedInExam = 0;
+        let playableInExam = 0;
+        ex.qObjs.forEach(q => {
+          if (!q.is_locked) playableInExam++;
+          const st = state.qStatus[q.number];
+          if (st && st.status) solvedInExam++;
+        });
 
-        return `
-          <div class="sea-exam-card">
-            <div class="sea-exam-header" onclick="toggleSeaExamCard('${ex.tag}', event)">
-              <div class="sea-exam-title-wrap">
-                <span class="sea-rank-num">#${idx + 1}</span>
-                <span class="sea-exam-name">${ex.fullTitle}</span>
-                <span class="sea-type-badge ${ex.badgeClass}">${ex.typeLabel}</span>
-                <span style="font-size:12px; color:var(--text-muted); font-family:monospace;">(${ex.tag})</span>
-              </div>
-              <div class="sea-exam-actions">
-                <span class="sea-chap-count-lbl" style="color:var(--teal); font-weight:700;">5 Core Subjects</span>
-                <span class="sea-total-q-pill">${ex.totalQs} Questions</span>
-                <button class="btn-teal" style="padding:5px 12px; font-size:12px;" onclick="practiceExamByTag('${ex.tag}', null, event)" title="Practice all ${ex.totalQs} questions from ${ex.fullTitle}">
-                  🚀 Practice Exam (${ex.totalQs} Qs)
-                </button>
-                <span style="font-size:12px; color:var(--text-muted); font-weight:700; min-width:18px; text-align:center;">
-                  ${isCollapsed ? '&#9654;' : '&#9660;'}
-                </span>
-              </div>
-            </div>
-
-            ${isCollapsed ? '' : `
+        let bodyHTML = "";
+        if (effectiveMode === "chapters") {
+          const maxChapCount = ex.chaptersBreakdown.length ? Math.max(...ex.chaptersBreakdown.map(c => c.count), 1) : 1;
+          bodyHTML = `
             <div class="sea-exam-body">
-              <!-- 5 Core Subjects Stacked Percentage Bar -->
-              <div class="sea-stacked-bar" title="Subject distribution across ${ex.totalQs} questions" style="height:10px; border-radius:6px; overflow:hidden; display:flex; margin-bottom:14px; background:#e2e8f0;">
-                ${ex.divisionsBreakdown.filter(d => d.count > 0).map(d => `
-                  <div style="width:${d.pct}%; background:${d.color}; height:100%;" title="${d.title}: ${d.count} Qs (${d.pctStr}%)"></div>
+              <div class="sea-body-hint" dir="rtl">
+                <span>📊 تقسيمة الامتحان حسب الشباتر — <strong>${ex.totalQs} سؤال</strong> موزعة على <strong>${ex.chaptersBreakdown.length} شابتر</strong> (اضغط على أي شابتر لحل أسئلته من هذا الامتحان):</span>
+              </div>
+              <div class="sea-stacked-bar" title="Chapter distribution across ${ex.totalQs} questions">
+                ${ex.chaptersBreakdown.map(c => `
+                  <div style="width:${c.pct}%; background:${c.color}; height:100%;" title="${c.title}: ${c.count} Qs (${c.pctStr}%)"></div>
                 `).join("")}
               </div>
-
-              <!-- Clean 5 Core Subjects Grid -->
-              <div class="sea-chap-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px 16px;">
-                ${ex.divisionsBreakdown.map((d, dIdx) => {
-                  const barW = Math.round((d.count / maxDivCount) * 100);
+              <div class="sea-chap-grid">
+                ${ex.chaptersBreakdown.map((c, cIdx) => {
+                  const barW = Math.round((c.count / maxChapCount) * 100);
                   return `
-                    <div class="sea-chap-row" style="display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle, #f1f5f9); font-size:13px;">
-                      <div class="sea-chap-name" style="font-weight:700; color:var(--text); min-width:150px;">
-                        ${dIdx + 1}. ${d.title}
+                    <div class="sea-chap-row" style="cursor:pointer;" onclick="practiceExamByTag('${ex.tag}', '${c.id}', 'tutor', event)" title="اضغط لحل ${c.count} سؤال ${c.title} من امتحان ${ex.fullTitle}">
+                      <div class="sea-chap-name" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sea-chap-dot" style="background:${c.color};"></span>
+                        <span>${cIdx + 1}. ${c.title}</span>
                       </div>
-                      <div class="cbr-track" title="${d.count} of ${ex.totalQs} questions (${d.pctStr}%)" style="flex:1; height:7px; background:#e2e8f0; border-radius:4px; overflow:hidden; margin:0 12px;">
-                        <div class="cbr-fill" style="width:${barW}%; background:${d.color}; height:100%; border-radius:4px;"></div>
+                      <div class="cbr-track" title="${c.count} of ${ex.totalQs} questions (${c.pctStr}%)">
+                        <div class="cbr-fill" style="width:${barW}%; background:${c.color};"></div>
                       </div>
-                      <div class="sea-chap-stat" style="cursor:pointer; font-weight:700; white-space:nowrap;" onclick="practiceExamByTag('${ex.tag}', '${d.id}', event)" title="Click to practice ${d.count} ${d.title} questions from ${ex.fullTitle}">
-                        ${d.count} Qs <span class="sea-chap-pct" style="color:${d.color}; font-weight:800;">(${d.pctStr}%)</span>
+                      <div class="sea-chap-stat">
+                        ${c.count} Qs <span class="sea-chap-pct" style="color:${c.color};">(${c.pctStr}%)</span>
                       </div>
                     </div>
                   `;
                 }).join("")}
               </div>
             </div>
-            `}
+          `;
+        } else if (effectiveMode === "repeats") {
+          const rs = ex.priorRepeatStats;
+          const maxOverlap = rs.priorExamSources.length ? Math.max(...rs.priorExamSources.map(s => s.count), 1) : 1;
+          bodyHTML = `
+            <div class="sea-exam-body" dir="rtl">
+              <div class="sea-type2-kpis">
+                <div class="sea-t2-kpi kpi-repeat">
+                  <div class="sea-t2-lbl">🔁 متكرر من الامتحانات السابقة له فقط</div>
+                  <div class="sea-t2-val" style="color:var(--teal);">${rs.repeatedCount} سؤال <span style="font-size:13px; font-weight:700;">(${rs.repeatedPctStr}%)</span></div>
+                  ${rs.repeatedCount > 0 ? `
+                    <button class="sea-t2-btn" onclick="practiceExamRepeatSubset('${ex.tag}', 'repeated', null, event)">
+                      🚀 حل المتكرر فقط (${rs.repeatedCount})
+                    </button>
+                  ` : `<span style="font-size:11.5px; color:var(--text-muted);">لا توجد أسئلة مكررة أقدم منه</span>`}
+                </div>
+                <div class="sea-t2-kpi kpi-new">
+                  <div class="sea-t2-lbl">✨ أسئلة جديدة (أول ظهور بهذا الامتحان)</div>
+                  <div class="sea-t2-val" style="color:#b45309;">${rs.newCount} سؤال <span style="font-size:13px; font-weight:700;">(${rs.newPctStr}%)</span></div>
+                  ${rs.newCount > 0 ? `
+                    <button class="sea-t2-btn" style="border-color:#d97706; color:#b45309;" onclick="practiceExamRepeatSubset('${ex.tag}', 'new', null, event)">
+                      ✨ حل الجديدة فقط (${rs.newCount})
+                    </button>
+                  ` : ''}
+                </div>
+                <div class="sea-t2-kpi">
+                  <div class="sea-t2-lbl">📚 الامتحانات الأقدم التي اتكرر منها أسئلة</div>
+                  <div class="sea-t2-val">${rs.priorExamSources.length} <span style="font-size:13px; font-weight:600; color:var(--text-muted);">من أصل ${rs.priorExamsCount} امتحان سابق له</span></div>
+                  <div style="font-size:11px; color:var(--text-muted); line-height:1.35;">يُحسب فقط التكرار من امتحانات بتاريخ أقدم من هذا الامتحان</div>
+                </div>
+              </div>
+
+              ${rs.priorExamsCount === 0 ? `
+                <div style="padding:10px 12px; border-radius:6px; background:var(--surface-subtle); font-size:12.5px; color:var(--text-secondary);">
+                  هذا أقدم امتحان متاح في القاعدة، لذا جميع أسئلته (${ex.totalQs} سؤال) تُعتبر أول ظهور ولا توجد امتحانات أقدم منه للمقارنة.
+                </div>
+              ` : rs.priorExamSources.length === 0 ? `
+                <div style="padding:10px 12px; border-radius:6px; background:var(--surface-subtle); font-size:12.5px; color:var(--text-secondary);">
+                  لم يتكرر في هذا الامتحان أي سؤال من الامتحانات الأقدم منه (${rs.priorExamsCount} امتحان سابق).
+                </div>
+              ` : (() => {
+                const isSourcesExpanded = !!seaState.expandedRepeatSources[ex.tag];
+                return `
+                  <div class="sea-sources-collapse-wrap">
+                    <button class="sea-sources-toggle-btn ${isSourcesExpanded ? 'expanded' : ''}" onclick="toggleRepeatSourcesCollapse('${ex.tag}', event)">
+                      <span>${isSourcesExpanded ? '🔼 إخفاء تفصيل الامتحانات الأقدم' : '📋 إظهار تفصيل الامتحانات الأقدم (كل امتحان أقدم اتكرر منه كام سؤال)'}</span>
+                      <span class="sea-pill-cnt">${rs.priorExamSources.length} امتحان</span>
+                    </button>
+                  </div>
+                  ${isSourcesExpanded ? `
+                    <div class="sea-body-hint" style="margin-top:10px;">
+                      <span>تفصيل كل امتحان أقدم منه اتكرر منه كام سؤال (اضغط على أي امتحان سابق لحل الأسئلة المشتركة معه):</span>
+                    </div>
+                    <div class="sea-type2-sources-grid" dir="ltr">
+                      ${rs.priorExamSources.map((src, sIdx) => {
+                        const barW = Math.round((src.count / maxOverlap) * 100);
+                        return `
+                          <div class="sea-repeat-row" onclick="practiceExamRepeatSubset('${ex.tag}', 'source', '${src.tag}', event)" title="Click to solve the ${src.count} shared questions with ${src.fullTitle}">
+                            <div class="sea-chap-name" style="display:flex; align-items:center; gap:6px;">
+                              <span style="color:var(--text-muted); font-size:11px; font-weight:700;">${sIdx + 1}.</span>
+                              <span>${src.fullTitle}</span>
+                            </div>
+                            <div class="cbr-track" title="${src.count} repeated questions from ${src.fullTitle}">
+                              <div class="cbr-fill" style="width:${barW}%; background:var(--teal);"></div>
+                            </div>
+                            <div class="sea-chap-stat">
+                              ${src.count} Qs <span class="sea-chap-pct">(${src.pctStr}%)</span>
+                            </div>
+                          </div>
+                        `;
+                      }).join("")}
+                    </div>
+                    <div style="margin-top:8px; font-size:11.5px; color:var(--text-muted);">
+                      ملاحظة: قد يظهر السؤال الواحد في أكثر من امتحان سابق، لذلك عدد "الأسئلة المتكررة الفريدة" (${rs.repeatedCount} سؤال) يحسب كل سؤال مكرر مرة واحدة فقط إذا سبق ظهوره في أي امتحان أقدم.
+                    </div>
+                  ` : ''}
+                `;
+              })()}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="sea-exam-card">
+            <div class="sea-exam-header" style="cursor:default;">
+              <div class="sea-exam-title-wrap">
+                <span class="sea-rank-num">#${idx + 1}</span>
+                <span class="sea-exam-name">${ex.fullTitle}</span>
+                <span class="sea-type-badge ${ex.badgeClass}">${ex.typeLabel}</span>
+                <span style="font-size:12px; color:var(--text-muted); font-family:monospace;">(${ex.tag})</span>
+                ${solvedInExam > 0 ? `<span class="sea-solved-pill">&check; ${solvedInExam}/${ex.totalQs} solved</span>` : ''}
+              </div>
+              <div class="sea-exam-actions">
+                <span class="sea-total-q-pill">${ex.totalQs} Qs</span>
+                <div class="sea-card-mini-toggles" title="إظهار أو إخفاء التحليل لهذا الامتحان">
+                  <button class="sea-mini-btn ${effectiveMode === 'chapters' ? 'active-mini' : ''}" onclick="toggleCardSeaAnalysis('${ex.tag}', 'chapters', event)">
+                    📊 التقسيمة
+                  </button>
+                  <button class="sea-mini-btn ${effectiveMode === 'repeats' ? 'active-mini' : ''}" onclick="toggleCardSeaAnalysis('${ex.tag}', 'repeats', event)">
+                    🔁 التكرارات
+                  </button>
+                </div>
+                <button class="btn-teal" style="padding:5px 12px; font-size:12px;" onclick="practiceExamByTag('${ex.tag}', null, 'tutor', event)" title="حل الامتحان بالكامل بنظام الشرح والتصحيح الفوري">
+                  🚀 حل الامتحان (${playableInExam < ex.totalQs && playableInExam > 0 ? `${playableInExam} متاح / ${ex.totalQs}` : `${ex.totalQs} Qs`})
+                </button>
+              </div>
+            </div>
+            ${bodyHTML}
+          </div>
+        `;
+      }).join("")}
+    </div>
+    `}
+  `;
+}
+
+function buildCycleColumnSlotsHTML(examsList, emptyMsg) {
+  if (!examsList || examsList.length === 0) {
+    return `<div style="font-size:12px; color:var(--text-muted); padding:8px 4px; text-align:center;">${emptyMsg}</div>`;
+  }
+  return examsList.map(ex => {
+    const rs = ex.priorRepeatStats;
+    return `
+      <div class="sea-cmp-slot">
+        <div class="sea-cmp-slot-top">
+          <span>${ex.typeLabel} (<span style="font-family:monospace;">${ex.tag}</span>)</span>
+          <span style="color:var(--teal);">${ex.totalQs} Qs</span>
+        </div>
+        <div class="sea-cmp-bar-track" title="متكرر: ${rs.repeatedPctStr}% | جديد: ${rs.newPctStr}%">
+          <div class="sea-cmp-bar-rep" style="width:${rs.repeatedPctStr}%;"></div>
+        </div>
+        <div class="sea-cmp-slot-metrics">
+          <span style="color:var(--teal);">🔁 ${rs.repeatedPctStr}% <span style="font-weight:500; color:var(--text-muted);">(${rs.repeatedCount})</span></span>
+          <span style="color:#b45309;">✨ ${rs.newPctStr}% <span style="font-weight:500; color:var(--text-muted);">(${rs.newCount})</span></span>
+        </div>
+        <div class="sea-cmp-slot-btns">
+          <button class="sea-mini-btn" style="border:1px solid var(--border);" onclick="practiceExamByTag('${ex.tag}', null, 'tutor', event)">🚀 حل</button>
+          ${rs.repeatedCount > 0 ? `<button class="sea-mini-btn" style="border:1px solid #99f6e4; color:var(--teal);" onclick="practiceExamRepeatSubset('${ex.tag}', 'repeated', null, event)">🔁 المتكرر (${rs.repeatedCount})</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function buildCyclesComparisonHTML(allExams) {
+  const allCycles = computeExamComparisonCycles(allExams, seaState.mergeConsecutiveMonths);
+  const qStr = (seaState.search || "").trim().toLowerCase();
+
+  let filteredCycles = allCycles.filter(c => {
+    if (seaState.compareOnlyComplete && c.typesPresentCount < 2) return false;
+    if (qStr) {
+      const hay = (c.label + " " + c.spanText + " " + c.exams.map(e => `${e.tag} ${e.fullTitle} ${e.typeLabel} ${e.year}`).join(" ")).toLowerCase();
+      if (!hay.includes(qStr)) return false;
+    }
+    return true;
+  });
+
+  if (seaState.sortBy === "oldest") {
+    filteredCycles.sort((a, b) => a.startYm - b.startYm);
+  } else if (seaState.sortBy === "most_qs") {
+    filteredCycles.sort((a, b) => b.totalCycleQs - a.totalCycleQs || b.endYm - a.endYm);
+  } else {
+    filteredCycles.sort((a, b) => b.endYm - a.endYm);
+  }
+
+  const calcWeightedAvg = (examsArr) => {
+    let rep = 0, tot = 0;
+    examsArr.forEach(e => { rep += e.priorRepeatStats.repeatedCount; tot += e.totalQs; });
+    return { count: examsArr.length, rep, tot, pctStr: tot > 0 ? ((rep / tot) * 100).toFixed(1) : "0.0" };
+  };
+  const visibleExams = [];
+  filteredCycles.forEach(c => c.exams.forEach(e => visibleExams.push(e)));
+  const avgTrial = calcWeightedAvg(visibleExams.filter(e => e.typeCategory === "Trial"));
+  const avgSim = calcWeightedAvg(visibleExams.filter(e => e.typeCategory === "Simulation"));
+  const avgReal = calcWeightedAvg(visibleExams.filter(e => e.typeCategory === "Real"));
+
+  const cycleAvgTag = (arr) => {
+    if (!arr.length) return null;
+    let r = 0, t = 0;
+    arr.forEach(e => { r += e.priorRepeatStats.repeatedCount; t += e.totalQs; });
+    return t > 0 ? ((r / t) * 100).toFixed(1) : "0.0";
+  };
+
+  return `
+    <div class="sea-cmp-toolbar" dir="rtl">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+        <button class="sea-cmp-toggle-pill ${seaState.mergeConsecutiveMonths ? 'active-cmp-pill' : ''}" onclick="toggleSeaMergeConsecutive()">
+          <span>${seaState.mergeConsecutiveMonths ? '✅' : '⬜'}</span>
+          <span>دمج الشهور المتتالية في نفس الدورة (مثل Nov–Dec 2025 و May–Jun 2023)</span>
+        </button>
+        <button class="sea-cmp-toggle-pill ${seaState.compareOnlyComplete ? 'active-cmp-pill' : ''}" onclick="toggleSeaCompareCompleteOnly()">
+          <span>${seaState.compareOnlyComplete ? '✅' : '⬜'}</span>
+          <span>الدورات التي بها أكثر من نوع فقط</span>
+        </button>
+      </div>
+      <div style="font-size:12px; font-weight:700; color:var(--text-muted);">
+        عرض ${filteredCycles.length} ${seaState.mergeConsecutiveMonths ? 'دورة امتحانية' : 'شهر'}
+      </div>
+    </div>
+
+    <div class="sea-cmp-avg-strip" dir="rtl">
+      <div class="sea-cmp-avg-box col-real">
+        <div class="sea-sum-lbl">🏛️ متوسط التكرار في الفعلي (Real)</div>
+        <div class="sea-sum-val" style="color:#0369a1;">${avgReal.pctStr}% <span style="font-size:12px; font-weight:600; color:var(--text-muted);">(${avgReal.count} امتحان &bull; ${avgReal.rep}/${avgReal.tot} Qs)</span></div>
+      </div>
+      <div class="sea-cmp-avg-box col-trial">
+        <div class="sea-sum-lbl">🧪 متوسط التكرار في التجريبي (Trial)</div>
+        <div class="sea-sum-val" style="color:#15803d;">${avgTrial.pctStr}% <span style="font-size:12px; font-weight:600; color:var(--text-muted);">(${avgTrial.count} امتحان &bull; ${avgTrial.rep}/${avgTrial.tot} Qs)</span></div>
+      </div>
+      <div class="sea-cmp-avg-box col-sim">
+        <div class="sea-sum-lbl">🎯 متوسط التكرار في المحاكاة (Demo / Mock / Sim)</div>
+        <div class="sea-sum-val" style="color:#6d28d9;">${avgSim.pctStr}% <span style="font-size:12px; font-weight:600; color:var(--text-muted);">(${avgSim.count} امتحان &bull; ${avgSim.rep}/${avgSim.tot} Qs)</span></div>
+      </div>
+    </div>
+
+    <div class="sea-exams-list">
+      ${filteredCycles.length === 0 ? `
+        <div class="analysis-card" style="padding:28px; text-align:center; color:var(--text-muted); font-size:14px;">
+          لا توجد دورات مطابقة لبحثك الحالي.
+        </div>
+      ` : filteredCycles.map((c, idx) => {
+        const tPct = cycleAvgTag(c.trialExams);
+        const sPct = cycleAvgTag(c.simExams);
+        const rPct = cycleAvgTag(c.realExams);
+        return `
+          <div class="sea-cmp-card">
+            <div class="sea-cmp-header">
+              <div class="sea-exam-title-wrap">
+                <span class="sea-rank-num">#${idx + 1}</span>
+                <span class="sea-exam-name">${c.label}</span>
+                ${c.isMergedConsecutive ? `<span class="sea-type-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a;">شهرين متتاليين (${c.spanText})</span>` : ''}
+                <span style="font-size:12px; color:var(--text-muted); font-weight:600;">${c.exams.length} exams &bull; ${c.totalCycleQs} Qs</span>
+              </div>
+              <div class="sea-cmp-quick-pills" dir="rtl">
+                ${rPct !== null ? `<span class="sea-cmp-qpill q-real">🏛️ فعلي: ${rPct}%</span>` : ''}
+                ${tPct !== null ? `<span class="sea-cmp-qpill q-trial">🧪 تجريبي: ${tPct}%</span>` : ''}
+                ${sPct !== null ? `<span class="sea-cmp-qpill q-sim">🎯 محاكاة: ${sPct}%</span>` : ''}
+              </div>
+            </div>
+
+            <div class="sea-cmp-cols" dir="rtl">
+              <div class="sea-cmp-col col-real">
+                <div class="sea-cmp-col-title">
+                  <span>🏛️ الفعلي (Real)</span>
+                  <span style="font-size:11px; color:var(--text-muted);">${c.realExams.length}</span>
+                </div>
+                ${buildCycleColumnSlotsHTML(c.realExams, "لا يوجد امتحان فعلي")}
+              </div>
+              <div class="sea-cmp-col col-trial">
+                <div class="sea-cmp-col-title">
+                  <span>🧪 التجريبي (Trial)</span>
+                  <span style="font-size:11px; color:var(--text-muted);">${c.trialExams.length}</span>
+                </div>
+                ${buildCycleColumnSlotsHTML(c.trialExams, "لا يوجد امتحان تجريبي")}
+              </div>
+              <div class="sea-cmp-col col-sim">
+                <div class="sea-cmp-col-title">
+                  <span>🎯 المحاكاة (Demo / Mock / Sim)</span>
+                  <span style="font-size:11px; color:var(--text-muted);">${c.simExams.length}</span>
+                </div>
+                ${buildCycleColumnSlotsHTML(c.simExams, "لا يوجد امتحان محاكاة")}
+              </div>
+            </div>
+
+            ${c.sameCycleOverlaps.length > 0 ? `
+              <div class="sea-cmp-overlap-bar" dir="rtl">
+                <span>📌 أسئلة الامتحان الفعلي المتكررة مباشرة من تجريبي/محاكاة نفس الدورة:</span>
+                ${c.sameCycleOverlaps.map(ov => `
+                  <button class="sea-mini-btn" style="border:1px solid var(--teal); background:var(--surface); color:var(--teal);" onclick="practiceExamRepeatSubset('${ov.realTag}', 'source', '${ov.prepTag}', event)" title="اضغط لحل الأسئلة المشتركة بين ${ov.realTag} و ${ov.prepTag}">
+                    ${ov.realTag} ← ${ov.prepTag}: ${ov.count} سؤال (${ov.pctStr}%)
+                  </button>
+                `).join("")}
+              </div>
+            ` : ''}
           </div>
         `;
       }).join("")}
@@ -5804,15 +6901,15 @@ function buildSeparateExamInnerHTML() {
   `;
 }
 
-function renderSeparateExamSectionOnly() {
-  const wrap = document.getElementById("separateExamAnalysisContent");
+function renderExamsPageOnly() {
+  const wrap = document.getElementById("examsPageContainer");
   if (!wrap) return;
   const activeEl = document.activeElement;
   const wasFocused = activeEl && activeEl.id === "seaSearchBox";
   const selStart = wasFocused ? activeEl.selectionStart : null;
   const selEnd = wasFocused ? activeEl.selectionEnd : null;
 
-  wrap.innerHTML = buildSeparateExamInnerHTML();
+  wrap.innerHTML = buildExamsPageInnerHTML();
 
   if (wasFocused) {
     const newBox = document.getElementById("seaSearchBox");
@@ -5825,11 +6922,14 @@ function renderSeparateExamSectionOnly() {
   }
 }
 
+function renderExamsPage() {
+  renderExamsPageOnly();
+}
+
 function renderAnalyticsPage() {
   const container = document.getElementById("analyticsPageContainer");
   if (!container) return;
 
-  const totalUnique = DATA.questions.length;
   const totalWeighted = DATA.topics.reduce((acc, t) => acc + (t.weighted_freq || t.q_count || 0), 0);
   const hyTopics = DATA.topics.filter(t => t.yield_tier === "high");
   const myTopics = DATA.topics.filter(t => t.yield_tier === "medium");
@@ -5844,7 +6944,6 @@ function renderAnalyticsPage() {
   const lyPct = ((lyWeight / totalWeighted) * 100).toFixed(1);
   const target90Pct = (((hyWeight + myWeight) / totalWeighted) * 100).toFixed(1);
 
-  // Compute Chapter ranking by Weighted Exam Appearances
   const chapList = [];
   DATA.tree.forEach(div => {
     (div.chapters || []).forEach(ch => {
@@ -5864,39 +6963,26 @@ function renderAnalyticsPage() {
   chapList.sort((a, b) => b.weighted - a.weighted);
   const maxChapW = chapList.length ? chapList[0].weighted : 1;
 
-  // All High-Yield Topics across the entire EMLE sorted highest to lowest
   const topTopics = DATA.topics.filter(t => t.yield_tier === "high").slice().sort((a, b) => (b.weighted_freq || 0) - (a.weighted_freq || 0));
   const maxTopW = topTopics.length ? (topTopics[0].weighted_freq || 1) : 1;
-
   const allExamsCount = computeSeparateExamsData().length;
-  const showOverview = (seaState.subTab === "all" || seaState.subTab === "overview");
-  const showSeparate = (seaState.subTab === "all" || seaState.subTab === "separate");
 
-  const separateExamCardHTML = `
-    <div class="analysis-card" id="separateExamAnalysisCard" style="margin-bottom:16px; border:1.5px solid var(--teal);">
-      <div class="ac-header" style="flex-wrap:wrap; gap:8px;">
-        <div>
-          <span class="ac-title" style="font-size:16px; color:var(--teal);">📋 Separate Exam Analysis (${allExamsCount} Exams)</span>
-          <div class="ac-subtitle" style="margin-top:2px;">
-            Total questions per exam &amp; exact subject distribution (question count + %) sorted from <strong>Newest to Oldest</strong>
-          </div>
-        </div>
-        <span class="sea-total-q-pill">10/2020 &rarr; 7/2026</span>
+  container.innerHTML = `
+    <div class="analysis-card" style="margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; border:1.5px solid #99f6e4; background:var(--teal-light);">
+      <div dir="rtl" style="font-size:13.5px; font-weight:700; color:var(--text);">
+        🎓 هل تبحث عن تحليل كل امتحان منفصل أو حل الامتحانات السابقة كاملة؟ تم نقلها إلى قسم <strong>Exams</strong> المخصص.
       </div>
-      <div id="separateExamAnalysisContent">
-        ${buildSeparateExamInnerHTML()}
-      </div>
+      <button class="btn-teal" onclick="navigateTo('exams')" style="font-size:12.5px; padding:7px 14px;">
+        🎓 Open Past Exams (${allExamsCount} Exams) &rarr;
+      </button>
     </div>
-  `;
 
-  const overviewHTML = `
     <div class="analysis-card" style="margin-bottom:16px;">
       <div class="ac-header">
         <span class="ac-title">1. Cumulative Pareto Curve &amp; Exam Yield Distribution (6,970 Total Appearances)</span>
         <span class="ac-subtitle">94 of 135 Topics (69.6% of topics) account for <strong>${target90Pct}%</strong> of all repeated exam questions</span>
       </div>
 
-      <!-- Segmented Visual Bar of Exam Weight -->
       <div style="margin:14px 0 8px 0;">
         <div style="display:flex; height:26px; border-radius:8px; overflow:hidden; font-size:12px; font-weight:700; color:#fff;">
           <div style="width:${hyPct}%; background:#e11d48; display:flex; align-items:center; justify-content:center;" title="High Yield: ${hyWeight} appearances">🔥 High Yield: ${hyPct}% (${hyWeight.toLocaleString()}&times;)</div>
@@ -5930,7 +7016,6 @@ function renderAnalyticsPage() {
     </div>
 
     <div class="chart-grid-2">
-      <!-- Chart 2: All 18 Chapters Ranked by Weighted Exam Appearances -->
       <div class="analysis-card">
         <div class="ac-header">
           <span class="ac-title">2. Chapter Weight Ranking (With Repeats vs. Unique)</span>
@@ -5953,7 +7038,6 @@ function renderAnalyticsPage() {
         </div>
       </div>
 
-      <!-- Chart 3: All High-Yield EMLE Topics Leaderboard -->
       <div class="analysis-card">
         <div class="ac-header">
           <span class="ac-title">3. All 🔥 High-Yield Topics in EMLE (${topTopics.length} Topics)</span>
@@ -5976,28 +7060,6 @@ function renderAnalyticsPage() {
         </div>
       </div>
     </div>
-  `;
-
-  container.innerHTML = `
-    <div class="analytics-subtabs">
-      <div class="ast-btn-group">
-        <button class="ast-tab-btn ${seaState.subTab === 'all' ? 'active-ast' : ''}" onclick="setAnalyticsSubTab('all')">
-          🌐 All Analytics (Overview + Separate Exams)
-        </button>
-        <button class="ast-tab-btn ${seaState.subTab === 'separate' ? 'active-ast' : ''}" onclick="setAnalyticsSubTab('separate')">
-          📋 Separate Exam Analysis (${allExamsCount} Exams)
-        </button>
-        <button class="ast-tab-btn ${seaState.subTab === 'overview' ? 'active-ast' : ''}" onclick="setAnalyticsSubTab('overview')">
-          📊 Overall Pareto &amp; Chapter Yield
-        </button>
-      </div>
-      <div style="font-size:12px; color:var(--text-muted); font-weight:600;">
-        Sorted: Newest &rarr; Oldest &bull; Filterable by Real / Trial / Simulation / ALL
-      </div>
-    </div>
-    ${seaState.subTab === "separate" ? separateExamCardHTML : ""}
-    ${showOverview ? overviewHTML : ""}
-    ${seaState.subTab === "all" ? separateExamCardHTML : ""}
   `;
 }
 
@@ -6321,8 +7383,6 @@ function launchStudyPlanDayQuiz(dayIdx) {
   const qSet = new Set(dayObj.qNums);
   const pool = DATA.questions.filter(q => qSet.has(q.number));
   state.customQs = pool;
-  state.examMode = false;
-  state.examSubmitted = false;
   startQuiz("custom_exam");
   showToast(`🚀 بدأت أسئلة اليوم ${dayObj.dayNum} (${pool.length} سؤال)`);
 }
@@ -6848,7 +7908,6 @@ function startQuiz(filter) {
     showToast("No questions in this category yet.");
     return;
   }
-  if (filter !== "custom_exam") { state.examMode = false; state.examSubmitted = false; }
   state.quizFilter = filter;
   state.quizIndex = 0;
   state.dotsExpanded = false;
@@ -6870,6 +7929,14 @@ function toggleExpandExamTags() {
   renderQuizPage(false);
 }
 
+function syncTopbarHeight() {
+  const bar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
+  if (!bar) return;
+  const rect = bar.getBoundingClientRect();
+  const h = Math.max(46, Math.ceil(rect.height || bar.offsetHeight || 54));
+  document.documentElement.style.setProperty("--topbar-h", h + "px");
+}
+
 function toggleSplitNotes() {
   state.splitNotesOpen = !state.splitNotesOpen;
   const layout = document.getElementById("quizSplitLayout");
@@ -6886,6 +7953,13 @@ function toggleSplitNotes() {
     document.body.classList.add("sidebar-collapsed");
   }
   renderSplitNotesPane();
+  syncTopbarHeight();
+  if (state.splitNotesOpen && window.innerWidth <= 960) {
+    requestAnimationFrame(() => {
+      const pane = document.getElementById("splitNotesPane");
+      if (pane) pane.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 }
 
 function renderSplitNotesPane() {
@@ -6976,16 +8050,8 @@ function renderQuizPage(resetQTimer) {
       }
     }
     const isElim = !!(state.eliminatedOpts[q.number] && state.eliminatedOpts[q.number][idx]);
-    const showGraded = isAnswered && (!state.examMode || state.examSubmitted);
-    let finalRowCls = isElim ? "is-eliminated " : "";
-    let finalBadgeRight = "";
-    if (showGraded) {
-      finalRowCls += rowCls;
-      finalBadgeRight = badgeRight;
-    } else if (isAnswered && state.examMode && !state.examSubmitted && idx === st.selected) {
-      finalRowCls += " active-state";
-      finalBadgeRight = `<span style="font-size:12px; font-weight:700; color:var(--teal);">Selected</span>`;
-    }
+    const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
+    const finalBadgeRight = badgeRight;
     return `
       <div class="opt-row ${finalRowCls}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
         <div class="opt-left">
@@ -7038,7 +8104,6 @@ function renderQuizPage(resetQTimer) {
             🚩 ${isFlagged ? 'Flagged' : 'Flag'}
           </button>
           ${isAnswered ? `<button class="subtle-link-btn" onclick="retryQuestion(${q.number})">Retry</button>` : ''}
-          ${(state.examMode && !state.examSubmitted) ? `<button class="btn-teal" style="padding:5px 10px; font-size:12px;" onclick="submitExamBlock()">🏁 Submit &amp; Grade Exam</button>` : ''}
         </div>
       </div>
 
@@ -7048,7 +8113,7 @@ function renderQuizPage(resetQTimer) {
 
       <div class="opt-list">${optsHTML}</div>
 
-      ${(isAnswered && (!state.examMode || state.examSubmitted)) ? `
+      ${isAnswered ? `
         <div class="explanation-box">
           <div style="font-weight:700; color:var(--text); margin-bottom:6px;">
             Verified Answer: ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}
@@ -7083,6 +8148,13 @@ function renderQuizPage(resetQTimer) {
 
 
 function getNextTopicActionButtonsHTML(currentQ) {
+  if (state.quizFilter === "custom_exam" && state.customExamReturnView === "exams") {
+    return `
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-outline" onclick="navigateTo('exams')">&larr; Back to Past Exams</button>
+      </div>
+    `;
+  }
   if (!currentQ) return `<button class="btn-teal" onclick="navigateTo('quizzes')">Finish QBank &rarr;</button>`;
   const curIdx = DATA.topics.findIndex(t => t.id === currentQ.topic_id);
   const nextTopic = (curIdx >= 0 && curIdx + 1 < DATA.topics.length) ? DATA.topics[curIdx + 1] : null;
@@ -7147,7 +8219,7 @@ function triggerFlag(qnum) {
 
 function revealQuizAnswer(qnum) {
   const cur = state.qStatus[qnum] || { selected: null, status: null, hintUsed: false, flagged: false };
-  if (typeof cur.selected === "number" && (!state.examMode || state.examSubmitted)) return;
+  if (typeof cur.selected === "number") return;
 
   state.qStatus[qnum] = {
     selected: -1,
@@ -7243,14 +8315,35 @@ function isFirebaseConfigured() {
          firebaseConfig.projectId !== "YOUR_PROJECT_ID";
 }
 
+function formatFirebaseAuthError(err) {
+  const code = (err && err.code) || "";
+  const rawMsg = (err && err.message) || "Failed to sign in with Google.";
+  if (code === "auth/operation-not-allowed") {
+    return "⚠️ تسجيل الدخول بجوجل غير مفعّل حالياً في إعدادات Firebase (auth/operation-not-allowed). يرجى التواصل مع إدارة المنصة لتفعيل Google Sign-in في Firebase Console.";
+  }
+  if (code === "auth/unauthorized-domain") {
+    return "⚠️ هذا الرابط (" + (window.location.hostname || "") + ") غير مضاف في قائمة الدومينات المصرح بها في Firebase Console (auth/unauthorized-domain).";
+  }
+  if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+    return "⚠️ المتصفح منع فتح نافذة تسجيل الدخول أو تم إغلاقها. يفضل فتح الرابط من متصفح Chrome أو Safari مباشرة (اضغط على ⋯ أو أيقونة المتصفح واختر Open in Browser) ثم حاول مرة أخرى.";
+  }
+  if (code === "auth/network-request-failed") {
+    return "⚠️ تعذر الاتصال بالإنترنت، يرجى التحقق من الشبكة والمحاولة مرة أخرى.";
+  }
+  return rawMsg;
+}
+
 function initFirebase() {
   if (!isFirebaseConfigured()) {
     console.warn("Firebase config is pending. Running in LocalStorage mode.");
     updateSyncIndicator("local");
-    return;
+    return false;
   }
   try {
     if (typeof firebase !== "undefined") {
+      if (fbAuth && firebase.apps && firebase.apps.length) {
+        return true;
+      }
       if (!firebase.apps.length) {
         fbApp = firebase.initializeApp(firebaseConfig);
       } else {
@@ -7259,18 +8352,35 @@ function initFirebase() {
       fbAuth = firebase.auth();
       fbDb = firebase.firestore();
 
-      fbDb.enablePersistence({ synchronizeTabs: true }).catch(err => {
-        console.log("Firestore offline persistence notice:", err.code);
-      });
+      try {
+        fbDb.enablePersistence({ synchronizeTabs: true }).catch(err => {
+          console.log("Firestore offline persistence notice:", err.code);
+        });
+      } catch (e) {}
+
+      try {
+        fbAuth.getRedirectResult().then(res => {
+          if (res && res.user) {
+            closeAuthModal();
+            const wOverlay = document.getElementById("welcomeAuthOverlay");
+            if (wOverlay) wOverlay.classList.remove("show");
+            showToast("Welcome " + (res.user.displayName || "") + "! Signed in & Cloud Synced.");
+          }
+        }).catch(err => {
+          console.error("Redirect sign-in notice:", err);
+        });
+      } catch (e) {}
 
       fbAuth.onAuthStateChanged(user => {
         onUserAuthStateChanged(user);
       });
+      return true;
     }
   } catch (err) {
     console.error("Firebase init failed:", err);
     updateSyncIndicator("error");
   }
+  return false;
 }
 
 const GUEST_CONTINUE_KEY = "emle_nutshell_guest_continue_v1";
@@ -7289,22 +8399,6 @@ function continueWithoutSignIn() {
   showToast("تم الدخول كزائر — يتم حفظ التقدم على هذا المتصفح فقط.");
 }
 
-function closeWelcomeAndOpenEmailAuth() {
-  const wName = (document.getElementById("welcomeStudentName")?.value || "").trim();
-  const wUniv = (document.getElementById("welcomeStudentUniv")?.value || "").trim();
-  if (wName) {
-    const mName = document.getElementById("authStudentNameInput");
-    if (mName) mName.value = wName;
-  }
-  if (wUniv) {
-    const mUniv = document.getElementById("authStudentUnivInput");
-    if (mUniv) mUniv.value = wUniv;
-  }
-  const overlay = document.getElementById("welcomeAuthOverlay");
-  if (overlay) overlay.classList.remove("show");
-  openAuthModal();
-}
-
 async function onUserAuthStateChanged(user) {
   currentUser = user;
   updateAuthTopBar();
@@ -7314,9 +8408,6 @@ async function onUserAuthStateChanged(user) {
     updateSyncIndicator("syncing");
     await syncProgressFromCloud(user);
     updateAuthTopBar();
-    if (!state.studentProfile || !state.studentProfile.name || !state.studentProfile.university) {
-      openCompleteProfileView();
-    }
   } else {
     updateSyncIndicator("local");
     showWelcomeGateIfNeeded();
@@ -7373,59 +8464,11 @@ function updateAuthTopBar() {
   const label = document.getElementById("authTopLabel");
   if (!label) return;
   if (currentUser) {
-    const pName = (state.studentProfile && state.studentProfile.name) ? state.studentProfile.name.trim() : "";
-    const pUniv = (state.studentProfile && state.studentProfile.university) ? state.studentProfile.university.trim() : "";
-    const name = pName || currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "Student");
-    label.textContent = pUniv ? `${name} (${pUniv})` : name;
+    const name = currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "Student");
+    label.textContent = name;
   } else {
     label.textContent = "Sign In";
   }
-}
-
-function openCompleteProfileView() {
-  const modal = document.getElementById("authModal");
-  const profileView = document.getElementById("authProfileView");
-  const loginView = document.getElementById("authLoginView");
-  const completeView = document.getElementById("authCompleteProfileView");
-  if (profileView) profileView.style.display = "none";
-  if (loginView) loginView.style.display = "none";
-  if (completeView) completeView.style.display = "block";
-
-  const nameIn = document.getElementById("completeProfileNameInput");
-  const univIn = document.getElementById("completeProfileUnivInput");
-  if (nameIn) nameIn.value = (state.studentProfile && state.studentProfile.name) || (currentUser && currentUser.displayName) || "";
-  if (univIn) univIn.value = (state.studentProfile && state.studentProfile.university) || "";
-  if (modal) modal.classList.add("show");
-}
-
-async function saveCompletedStudentProfile() {
-  const nameIn = document.getElementById("completeProfileNameInput");
-  const univIn = document.getElementById("completeProfileUnivInput");
-  const errBox = document.getElementById("completeProfileErrorMsg");
-  const nameVal = (nameIn ? nameIn.value : "").trim();
-  const univVal = (univIn ? univIn.value : "").trim();
-
-  if (!nameVal || !univVal) {
-    if (errBox) {
-      errBox.textContent = "يُرجى إدخال الاسم بالكامل والجامعة لحفظ البيانات.";
-      errBox.style.display = "block";
-    }
-    return;
-  }
-  if (errBox) errBox.style.display = "none";
-
-  state.studentProfile = { name: nameVal, university: univVal };
-  saveState();
-
-  if (currentUser) {
-    try {
-      await currentUser.updateProfile({ displayName: nameVal });
-    } catch (e) {}
-    await syncProgressToCloud(true);
-  }
-  updateAuthTopBar();
-  closeAuthModal();
-  showToast(`🎓 تم حفظ بيانات الطالب: ${nameVal} — ${univVal}`);
 }
 
 async function syncProgressFromCloud(user) {
@@ -7444,15 +8487,6 @@ async function syncProgressFromCloud(user) {
       }
       if (data.eliminatedOpts) {
         state.eliminatedOpts = Object.assign({}, state.eliminatedOpts, data.eliminatedOpts || {});
-      }
-      if (data.studentProfile) {
-        if (!state.studentProfile) state.studentProfile = { name: "", university: "" };
-        if (data.studentProfile.name && !state.studentProfile.name) state.studentProfile.name = data.studentProfile.name;
-        if (data.studentProfile.university && !state.studentProfile.university) state.studentProfile.university = data.studentProfile.university;
-      }
-      if (data.university && (!state.studentProfile || !state.studentProfile.university)) {
-        if (!state.studentProfile) state.studentProfile = { name: "", university: "" };
-        state.studentProfile.university = data.university;
       }
 
       try {
@@ -7494,11 +8528,9 @@ async function syncProgressToCloud(isImmediate = false) {
       qStatus: state.qStatus || {},
       streak: state.streak || {},
       eliminatedOpts: state.eliminatedOpts || {},
-      studentProfile: state.studentProfile || { name: "", university: "" },
-      university: (state.studentProfile && state.studentProfile.university) || "",
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       userEmail: currentUser.email || "",
-      displayName: (state.studentProfile && state.studentProfile.name) || currentUser.displayName || "",
+      displayName: currentUser.displayName || "",
       userAgent: navigator.userAgent.substring(0, 100)
     };
 
@@ -7525,20 +8557,13 @@ function openAuthModal() {
     configWarn.style.display = "none";
   }
 
-  const completeView = document.getElementById("authCompleteProfileView");
-  if (completeView) completeView.style.display = "none";
-
   if (currentUser) {
     profileView.style.display = "block";
     loginView.style.display = "none";
 
-    const pName = (state.studentProfile && state.studentProfile.name) ? state.studentProfile.name.trim() : "";
-    const pUniv = (state.studentProfile && state.studentProfile.university) ? state.studentProfile.university.trim() : "";
-    const name = pName || currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "Student");
+    const name = currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "Student");
     const email = currentUser.email || "Google Account";
     document.getElementById("userDisplayName").textContent = name;
-    const univEl = document.getElementById("userUnivDisplay");
-    if (univEl) univEl.textContent = pUniv ? `🏛️ ${pUniv}` : "🏛️ لم يتم تحديد الجامعة بعد";
     document.getElementById("userEmailDisplay").textContent = email;
 
     const initial = name.charAt(0).toUpperCase();
@@ -7567,42 +8592,39 @@ function closeAuthModal() {
   if (modal) modal.classList.remove("show");
 }
 
-async function signInWithGoogle(source) {
-  const wName = (document.getElementById("welcomeStudentName")?.value || "").trim();
-  const wUniv = (document.getElementById("welcomeStudentUniv")?.value || "").trim();
-  const mName = (document.getElementById("authStudentNameInput")?.value || "").trim();
-  const mUniv = (document.getElementById("authStudentUnivInput")?.value || "").trim();
-
-  const enteredName = (source === "welcome" ? wName : mName) || wName || mName;
-  const enteredUniv = (source === "welcome" ? wUniv : mUniv) || wUniv || mUniv;
-
-  if (enteredName || enteredUniv) {
-    state.studentProfile = {
-      name: enteredName || (state.studentProfile && state.studentProfile.name) || "",
-      university: enteredUniv || (state.studentProfile && state.studentProfile.university) || ""
-    };
-    saveState();
-  }
-
+async function signInWithGoogle() {
   if (!isFirebaseConfigured()) {
     showToast("Please enter your firebaseConfig in the file to connect Google Authentication.");
     return;
   }
+  if (typeof firebase === "undefined") {
+    const msg = "⚠️ تعذر تحميل مكتبة Google Sign-In. يرجى التأكد من اتصالك بالإنترنت أو فتح الرابط في متصفح Chrome أو Safari.";
+    const errBox = document.getElementById("authErrorMsg");
+    if (errBox) { errBox.textContent = msg; errBox.style.display = "block"; }
+    return;
+  }
+  if (!firebase.apps || !firebase.apps.length) {
+    initFirebase();
+  }
   const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
   try {
     const res = await firebase.auth().signInWithPopup(provider);
-    if ((!state.studentProfile || !state.studentProfile.name) && res.user && res.user.displayName) {
-      if (!state.studentProfile) state.studentProfile = { name: "", university: "" };
-      state.studentProfile.name = res.user.displayName;
-    }
-    saveState();
     closeAuthModal();
     const wOverlay = document.getElementById("welcomeAuthOverlay");
     if (wOverlay) wOverlay.classList.remove("show");
-    showToast("Welcome " + ((state.studentProfile && state.studentProfile.name) || res.user.displayName || "") + "! Signed in & Cloud Synced.");
+    showToast("Welcome " + ((res && res.user && res.user.displayName) || "") + "! Signed in & Cloud Synced.");
   } catch (err) {
     console.error("Google sign in error:", err);
-    const msg = err.message || "Failed to sign in with Google.";
+    if (err && (err.code === "auth/popup-blocked" || err.code === "auth/operation-not-supported-in-this-environment")) {
+      try {
+        await firebase.auth().signInWithRedirect(provider);
+        return;
+      } catch (redErr) {
+        err = redErr;
+      }
+    }
+    const msg = formatFirebaseAuthError(err);
     const errBox = document.getElementById("authErrorMsg");
     if (errBox) {
       errBox.textContent = msg;
@@ -7613,75 +8635,6 @@ async function signInWithGoogle(source) {
       wErrBox.textContent = msg;
       wErrBox.style.display = "block";
     }
-  }
-}
-
-async function handleEmailAuth(e) {
-  e.preventDefault();
-  if (!isFirebaseConfigured()) {
-    showToast("Please enter your firebaseConfig credentials in the file.");
-    return;
-  }
-  const email = document.getElementById("authEmailInput").value.trim();
-  const pass = document.getElementById("authPassInput").value;
-  const errBox = document.getElementById("authErrorMsg");
-  errBox.style.display = "none";
-
-  try {
-    await firebase.auth().signInWithEmailAndPassword(email, pass);
-    closeAuthModal();
-    showToast("Signed in successfully!");
-  } catch (err) {
-    console.error("Email login error:", err);
-    errBox.textContent = (err.code === "auth/user-not-found" || err.code === "auth/invalid-credential" || err.code === "auth/wrong-password")
-      ? "Incorrect email or password."
-      : (err.message || "Failed to sign in.");
-    errBox.style.display = "block";
-  }
-}
-
-async function handleEmailSignUp() {
-  const sName = (document.getElementById("authStudentNameInput")?.value || "").trim();
-  const sUniv = (document.getElementById("authStudentUnivInput")?.value || "").trim();
-  const errBox = document.getElementById("authErrorMsg");
-  errBox.style.display = "none";
-
-  if (!sName || !sUniv) {
-    errBox.textContent = "يُرجى إدخال الاسم بالكامل والجامعة عند إنشاء حساب جديد.";
-    errBox.style.display = "block";
-    return;
-  }
-  state.studentProfile = { name: sName, university: sUniv };
-  saveState();
-
-  if (!isFirebaseConfigured()) {
-    showToast("Please enter your firebaseConfig credentials in the file.");
-    return;
-  }
-  const email = document.getElementById("authEmailInput").value.trim();
-  const pass = document.getElementById("authPassInput").value;
-
-  if (!email || !pass) {
-    errBox.textContent = "Please enter an email and password first.";
-    errBox.style.display = "block";
-    return;
-  }
-  if (pass.length < 6) {
-    errBox.textContent = "Password must be at least 6 characters.";
-    errBox.style.display = "block";
-    return;
-  }
-
-  try {
-    await firebase.auth().createUserWithEmailAndPassword(email, pass);
-    closeAuthModal();
-    showToast("Account created and signed in successfully!");
-  } catch (err) {
-    console.error("Sign up error:", err);
-    errBox.textContent = (err.code === "auth/email-already-in-use")
-      ? "This email is already in use. Please sign in."
-      : (err.message || "Could not create account.");
-    errBox.style.display = "block";
   }
 }
 
@@ -7747,25 +8700,184 @@ function _secVaultDecrypt(cipherBytes) {
   return out;
 }
 
+
+function _pureJsGunzip(buf) {
+  let pos = 0;
+  if (buf[0] === 0x1f && buf[1] === 0x8b) {
+    const flg = buf[3];
+    pos = 10;
+    if (flg & 4) { const xlen = buf[pos] | (buf[pos + 1] << 8); pos += 2 + xlen; }
+    if (flg & 8) { while (buf[pos++] !== 0) {} }
+    if (flg & 16) { while (buf[pos++] !== 0) {} }
+    if (flg & 2) pos += 2;
+  }
+  const end = (buf[0] === 0x1f && buf[1] === 0x8b) ? buf.length - 8 : buf.length;
+  let bitPos = pos * 8;
+  const readBits = (n) => {
+    let val = 0;
+    for (let i = 0; i < n; i++) {
+      val |= ((buf[bitPos >> 3] >> (bitPos & 7)) & 1) << i;
+      bitPos++;
+    }
+    return val;
+  };
+  const buildTree = (lengths) => {
+    let maxBits = 0;
+    for (let i = 0; i < lengths.length; i++) if (lengths[i] > maxBits) maxBits = lengths[i];
+    const blCount = new Uint16Array(maxBits + 1);
+    for (let i = 0; i < lengths.length; i++) if (lengths[i]) blCount[lengths[i]]++;
+    const nextCode = new Uint16Array(maxBits + 1);
+    let code = 0;
+    for (let bits = 1; bits <= maxBits; bits++) {
+      code = (code + blCount[bits - 1]) << 1;
+      nextCode[bits] = code;
+    }
+    const map = {};
+    for (let n = 0; n < lengths.length; n++) {
+      const len = lengths[n];
+      if (len !== 0) {
+        map[(len << 16) | nextCode[len]] = n;
+        nextCode[len]++;
+      }
+    }
+    return { map, maxBits };
+  };
+  const decodeSym = (tree) => {
+    let code = 0;
+    for (let len = 1; len <= tree.maxBits; len++) {
+      code = (code << 1) | ((buf[bitPos >> 3] >> (bitPos & 7)) & 1);
+      bitPos++;
+      const sym = tree.map[(len << 16) | code];
+      if (sym !== undefined) return sym;
+    }
+    throw new Error("Invalid Huffman code");
+  };
+  const fixedLit = (() => {
+    const l = new Uint8Array(288);
+    for (let i = 0; i <= 143; i++) l[i] = 8;
+    for (let i = 144; i <= 255; i++) l[i] = 9;
+    for (let i = 256; i <= 279; i++) l[i] = 7;
+    for (let i = 280; i <= 287; i++) l[i] = 8;
+    return buildTree(l);
+  })();
+  const fixedDist = buildTree(new Uint8Array(32).fill(5));
+  const lenBase = [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258];
+  const lenExtra = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+  const distBase = [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577];
+  const distExtra = [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+  const clOrder = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+
+  let out = new Uint8Array(buf.length * 4);
+  let outPos = 0;
+  const ensureCap = (add) => {
+    if (outPos + add <= out.length) return;
+    const next = new Uint8Array(Math.max(out.length * 2, outPos + add + 65536));
+    next.set(out.subarray(0, outPos));
+    out = next;
+  };
+  let bfinal = 0;
+  while (!bfinal && (bitPos >> 3) < end) {
+    bfinal = readBits(1);
+    const btype = readBits(2);
+    if (btype === 0) {
+      bitPos = (bitPos + 7) & ~7;
+      const p = bitPos >> 3;
+      const len = buf[p] | (buf[p + 1] << 8);
+      bitPos += 32;
+      ensureCap(len);
+      out.set(buf.subarray(p + 4, p + 4 + len), outPos);
+      outPos += len;
+      bitPos += len * 8;
+    } else if (btype === 1 || btype === 2) {
+      let litTree = fixedLit, distTree = fixedDist;
+      if (btype === 2) {
+        const hlit = readBits(5) + 257;
+        const hdist = readBits(5) + 1;
+        const hclen = readBits(4) + 4;
+        const clLens = new Uint8Array(19);
+        for (let i = 0; i < hclen; i++) clLens[clOrder[i]] = readBits(3);
+        const clTree = buildTree(clLens);
+        const lens = new Uint8Array(hlit + hdist);
+        let idx = 0;
+        while (idx < hlit + hdist) {
+          const sym = decodeSym(clTree);
+          if (sym < 16) lens[idx++] = sym;
+          else {
+            let rep = 0, val = 0;
+            if (sym === 16) { val = lens[idx - 1]; rep = 3 + readBits(2); }
+            else if (sym === 17) { val = 0; rep = 3 + readBits(3); }
+            else { val = 0; rep = 11 + readBits(7); }
+            while (rep--) lens[idx++] = val;
+          }
+        }
+        litTree = buildTree(lens.subarray(0, hlit));
+        distTree = buildTree(lens.subarray(hlit));
+      }
+      while (true) {
+        const sym = decodeSym(litTree);
+        if (sym === 256) break;
+        if (sym < 256) { ensureCap(1); out[outPos++] = sym; }
+        else {
+          const lIdx = sym - 257;
+          const length = lenBase[lIdx] + readBits(lenExtra[lIdx]);
+          const dIdx = decodeSym(distTree);
+          const dist = distBase[dIdx] + readBits(distExtra[dIdx]);
+          ensureCap(length);
+          for (let i = 0; i < length; i++) { out[outPos] = out[outPos - dist]; outPos++; }
+        }
+      }
+    } else {
+      throw new Error("Invalid DEFLATE block type");
+    }
+  }
+  return out.subarray(0, outPos);
+}
+
+async function _gunzipBytesSafe(bytes) {
+  if (typeof DecompressionStream !== "undefined") {
+    try {
+      const ds = new DecompressionStream("gzip");
+      const readerPromise = new Response(ds.readable).arrayBuffer();
+      const writer = ds.writable.getWriter();
+      const CHUNK = 65536;
+      for (let off = 0; off < bytes.length; off += CHUNK) {
+        await writer.write(bytes.subarray(off, off + CHUNK));
+      }
+      await writer.close();
+      const buf = await readerPromise;
+      return new TextDecoder("utf-8").decode(buf);
+    } catch (e) {
+      console.warn("DecompressionStream fallback triggered:", e);
+    }
+  }
+  const plain = _pureJsGunzip(bytes);
+  return new TextDecoder("utf-8").decode(plain);
+}
+
 async function bootCompressedPortal() {
-  const b64 = DATA_SEC_ENC;
-  const binStr = atob(b64);
-  const rawBytes = new Uint8Array(binStr.length);
-  for (let i = 0; i < binStr.length; i++) rawBytes[i] = binStr.charCodeAt(i);
-  const bytes = _secVaultDecrypt(rawBytes);
-  const ds = new DecompressionStream("gzip");
-  const writer = ds.writable.getWriter();
-  writer.write(bytes);
-  writer.close();
-  const text = await new Response(ds.readable).text();
-  DATA = JSON.parse(text);
   loadState();
   initFirebase();
   renderPomo();
+  try {
+    const b64 = DATA_SEC_ENC;
+    const binStr = atob(b64);
+    const rawBytes = new Uint8Array(binStr.length);
+    for (let i = 0; i < binStr.length; i++) rawBytes[i] = binStr.charCodeAt(i);
+    const bytes = _secVaultDecrypt(rawBytes);
+    const text = await _gunzipBytesSafe(bytes);
+    DATA = JSON.parse(text);
+  } catch (err) {
+    console.error("Portal data boot error:", err);
+  }
   navigateTo("home");
-  // Welcome gate disabled on launch
 }
+window.addEventListener("resize", syncTopbarHeight);
 window.addEventListener("DOMContentLoaded", () => {
+  syncTopbarHeight();
+  const mainTopbar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
+  if (mainTopbar && typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(syncTopbarHeight).observe(mainTopbar);
+  }
   bootCompressedPortal();
 });
 </script>
