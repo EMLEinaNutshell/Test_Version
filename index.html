@@ -2906,6 +2906,25 @@
     border-color: var(--wrong-border);
     color: var(--wrong);
   }
+  .opt-peer-pct.admin-below-min {
+    border-style: dashed;
+    border-color: var(--hint-border);
+    background: var(--hint-bg);
+    color: var(--hint);
+  }
+  .opt-peer-admin-note {
+    display: none;
+    margin-top: 6px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+  .opt-peer-admin-note.visible {
+    display: block;
+  }
+  .opt-peer-admin-note.below-min {
+    color: var(--hint);
+  }
   .opt-char {
     width: 24px;
     height: 24px;
@@ -3531,16 +3550,21 @@
   }
 </style>
 <script>
-const COPY_ACCESS_ALLOWLIST = ["ahmedsakr0013@gmail.com"];
+const ADMIN_EMAIL_ALLOWLIST = ["ahmedsakr0013@gmail.com"];
+const COPY_ACCESS_ALLOWLIST = ADMIN_EMAIL_ALLOWLIST;
 
-function hasAdminCopyAccess() {
+function isAdminAccount() {
   try {
     if (typeof currentUser === "undefined" || !currentUser || !currentUser.email) return false;
     if (currentUser.emailVerified === false) return false;
-    return COPY_ACCESS_ALLOWLIST.includes(String(currentUser.email).trim().toLowerCase());
+    return ADMIN_EMAIL_ALLOWLIST.includes(String(currentUser.email).trim().toLowerCase());
   } catch (e) {
     return false;
   }
+}
+
+function hasAdminCopyAccess() {
+  return isAdminAccount();
 }
 
 function syncAdminCopyAccess() {
@@ -8130,7 +8154,7 @@ function renderQuizPage(resetQTimer) {
 
   const showPeerStats = isAnswered && !!currentUser && !!fbDb;
   const cachedPeerStats = showPeerStats ? getCachedQuestionPeerStats(q.number) : null;
-  const peerPcts = cachedPeerStats ? computePeerOptionPercentages(cachedPeerStats, q.options.length) : null;
+  const peerDetails = cachedPeerStats ? computePeerOptionDetails(cachedPeerStats, q.options.length) : null;
 
   const optsHTML = q.options.map((optText, idx) => {
     const letter = String.fromCharCode(65 + idx);
@@ -8151,10 +8175,16 @@ function renderQuizPage(resetQTimer) {
     const isElim = !!(state.eliminatedOpts[q.number] && state.eliminatedOpts[q.number][idx]);
     const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
     const finalBadgeRight = badgeRight;
-    const pctVal = (peerPcts && typeof peerPcts[idx] === "number") ? peerPcts[idx] : null;
+    const pctVal = (peerDetails && typeof peerDetails.pcts[idx] === "number") ? peerDetails.pcts[idx] : null;
+    const countVal = (peerDetails && peerDetails.counts && typeof peerDetails.counts[idx] === "number") ? peerDetails.counts[idx] : 0;
     const peerFillWidth = pctVal !== null ? pctVal : 0;
-    const peerPctText = pctVal !== null ? (pctVal + "%") : "";
-    const peerPctCls = pctVal !== null ? "opt-peer-pct visible" : "opt-peer-pct";
+    const peerPctText = pctVal !== null ? formatPeerOptionLabel(pctVal, countVal, peerDetails.showCounts) : "";
+    const peerPctCls = pctVal !== null
+      ? ("opt-peer-pct visible" + (peerDetails.isBelowMin ? " admin-below-min" : ""))
+      : "opt-peer-pct";
+    const peerPctTitle = (pctVal !== null && peerDetails.showCounts)
+      ? getPeerOptionTitle(countVal, peerDetails.total, peerDetails.isBelowMin)
+      : "";
     return `
       <div class="opt-row ${finalRowCls}" data-opt-idx="${idx}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
         ${showPeerStats ? `<div class="opt-peer-bar"><div class="opt-peer-fill" data-peer-fill="${idx}" style="width:${peerFillWidth}%"></div></div>` : ""}
@@ -8164,7 +8194,7 @@ function renderQuizPage(resetQTimer) {
         </div>
         <div class="opt-right-wrap">
           ${finalBadgeRight}
-          ${showPeerStats ? `<span class="${peerPctCls}" data-peer-pct="${idx}">${peerPctText}</span>` : ""}
+          ${showPeerStats ? `<span class="${peerPctCls}" data-peer-pct="${idx}"${peerPctTitle ? ` title="${peerPctTitle}"` : ""}>${peerPctText}</span>` : ""}
           <button class="opt-elim-btn" onclick="event.stopPropagation(); toggleEliminateOpt(${q.number}, ${idx});" title="Cross out / Eliminate this choice (or Right-Click)">✕</button>
         </div>
       </div>
@@ -8217,6 +8247,9 @@ function renderQuizPage(resetQTimer) {
       ${isHintShown ? `<div class="hint-callout"><strong>Clinical Hint:</strong> ${annotateMedicalHTML(q.hint)}</div>` : ''}
 
       <div class="opt-list">${optsHTML}</div>
+      ${showPeerStats && hasAdminPeerStatsAccess()
+        ? `<div class="opt-peer-admin-note ${peerDetails && peerDetails.showCounts ? ('visible' + (peerDetails.isBelowMin ? ' below-min' : '')) : ''}" id="peerAdminNote-${q.number}">${peerDetails && peerDetails.showCounts ? formatPeerAdminNote(peerDetails.total, peerDetails.isBelowMin) : ''}</div>`
+        : ''}
 
       ${isAnswered ? `
         <div class="explanation-box">
@@ -8355,17 +8388,62 @@ function getCachedQuestionPeerStats(qnum) {
   return entry.data;
 }
 
+function hasAdminPeerStatsAccess() {
+  if (typeof isAdminAccount === "function") return isAdminAccount();
+  return typeof hasAdminCopyAccess === "function" && hasAdminCopyAccess();
+}
+
+function clearPeerStatsCache() {
+  Object.keys(_qPeerStatsCache).forEach(k => delete _qPeerStatsCache[k]);
+}
+
+function formatPeerOptionLabel(pctVal, countVal, showCounts) {
+  const pct = (typeof pctVal === "number" ? pctVal : 0) + "%";
+  if (!showCounts) return pct;
+  return pct + " (" + (Number(countVal) || 0) + ")";
+}
+
+function getPeerOptionTitle(countVal, totalVotes, isBelowMin) {
+  const c = Number(countVal) || 0;
+  const t = Number(totalVotes) || 0;
+  if (isBelowMin) {
+    return "Admin view (<" + MIN_PEER_STATS_VOTES + " votes, hidden from students): " + c + " of " + t + " votes";
+  }
+  return c + " of " + t + " votes";
+}
+
+function formatPeerAdminNote(totalVotes, isBelowMin) {
+  const t = Number(totalVotes) || 0;
+  const unit = t === 1 ? "vote" : "votes";
+  if (isBelowMin) {
+    return "👁️ Admin: " + t + " " + unit + " — مخفي عن الطلاب حتى يصل إلى " + MIN_PEER_STATS_VOTES + " أصوات";
+  }
+  return "👁️ Admin: " + t + " total " + unit;
+}
+
 /**
- * Computes integer percentages per option summing to 100%, or null if below threshold.
+ * Computes integer percentages summing to 100% and optional admin vote counts.
+ * Regular students receive null when total votes < MIN_PEER_STATS_VOTES; admin receives details for all totals.
  */
-function computePeerOptionPercentages(rawCounts, optCount) {
+function computePeerOptionDetails(rawCounts, optCount) {
   if (!rawCounts || !optCount || optCount <= 0) return null;
   const counts = [];
   for (let i = 0; i < optCount; i++) {
     counts.push(Math.max(0, Math.floor(Number(rawCounts["c" + i]) || 0)));
   }
   const total = counts.reduce((sum, v) => sum + v, 0);
-  if (total < MIN_PEER_STATS_VOTES) return null;
+  const adminView = hasAdminPeerStatsAccess();
+  if (!adminView && total < MIN_PEER_STATS_VOTES) return null;
+
+  if (total === 0) {
+    return {
+      pcts: counts.map(() => 0),
+      counts,
+      total: 0,
+      isBelowMin: true,
+      showCounts: adminView
+    };
+  }
 
   const exact = counts.map(c => (c / total) * 100);
   const floors = exact.map(v => Math.floor(v));
@@ -8376,7 +8454,18 @@ function computePeerOptionPercentages(rawCounts, optCount) {
   for (let i = 0; i < ranked.length && remainder > 0; i++, remainder--) {
     floors[ranked[i].idx] += 1;
   }
-  return floors;
+  return {
+    pcts: floors,
+    counts,
+    total,
+    isBelowMin: total < MIN_PEER_STATS_VOTES,
+    showCounts: adminView
+  };
+}
+
+function computePeerOptionPercentages(rawCounts, optCount) {
+  const details = computePeerOptionDetails(rawCounts, optCount);
+  return details ? details.pcts : null;
 }
 
 function recordQuestionPeerVote(qnum, optIdx) {
@@ -8429,34 +8518,67 @@ async function fetchQuestionPeerStats(qnum) {
   return req;
 }
 
-function applyPeerStatsToDOM(qnum, pcts) {
+function applyPeerStatsToDOM(qnum, detailsOrPcts) {
   const card = document.querySelector('#quizCardRenderArea .quiz-card[data-qnum="' + qnum + '"]');
   if (!card) return;
   const pctNodes = card.querySelectorAll("[data-peer-pct]");
   const fillNodes = card.querySelectorAll("[data-peer-fill]");
-  if (!pcts) {
-    pctNodes.forEach(el => { el.textContent = ""; el.classList.remove("visible"); });
+  const adminNoteEl = (typeof document.getElementById === "function")
+    ? document.getElementById("peerAdminNote-" + qnum)
+    : null;
+  const details = Array.isArray(detailsOrPcts)
+    ? { pcts: detailsOrPcts, counts: null, total: 0, isBelowMin: false, showCounts: false }
+    : detailsOrPcts;
+
+  if (!details || !details.pcts) {
+    pctNodes.forEach(el => {
+      el.textContent = "";
+      el.classList.remove("visible");
+      el.classList.remove("admin-below-min");
+      if (typeof el.removeAttribute === "function") el.removeAttribute("title");
+    });
     fillNodes.forEach(el => { el.style.width = "0%"; });
+    if (adminNoteEl) {
+      adminNoteEl.textContent = "";
+      adminNoteEl.className = "opt-peer-admin-note";
+    }
     return;
   }
+
   pctNodes.forEach(el => {
     const idx = Number(el.getAttribute("data-peer-pct"));
-    const val = typeof pcts[idx] === "number" ? pcts[idx] : 0;
-    el.textContent = val + "%";
+    const val = typeof details.pcts[idx] === "number" ? details.pcts[idx] : 0;
+    const countVal = (details.counts && typeof details.counts[idx] === "number") ? details.counts[idx] : 0;
+    el.textContent = formatPeerOptionLabel(val, countVal, details.showCounts);
     el.classList.add("visible");
+    if (details.isBelowMin) el.classList.add("admin-below-min");
+    else el.classList.remove("admin-below-min");
+    if (typeof el.setAttribute === "function" && typeof el.removeAttribute === "function") {
+      if (details.showCounts) el.setAttribute("title", getPeerOptionTitle(countVal, details.total, details.isBelowMin));
+      else el.removeAttribute("title");
+    }
   });
   fillNodes.forEach(el => {
     const idx = Number(el.getAttribute("data-peer-fill"));
-    const val = typeof pcts[idx] === "number" ? pcts[idx] : 0;
+    const val = typeof details.pcts[idx] === "number" ? details.pcts[idx] : 0;
     el.style.width = val + "%";
   });
+  if (adminNoteEl) {
+    if (details.showCounts) {
+      adminNoteEl.textContent = formatPeerAdminNote(details.total, details.isBelowMin);
+      adminNoteEl.className = "opt-peer-admin-note visible" + (details.isBelowMin ? " below-min" : "");
+    } else {
+      adminNoteEl.textContent = "";
+      adminNoteEl.className = "opt-peer-admin-note";
+    }
+  }
 }
 
 async function loadAndRenderPeerStatsForQuestion(qnum, optCount) {
   const raw = await fetchQuestionPeerStats(qnum);
   if (!raw || !currentUser) return;
-  const pcts = computePeerOptionPercentages(raw, optCount);
-  applyPeerStatsToDOM(qnum, pcts);
+  const details = computePeerOptionDetails(raw, optCount);
+  applyPeerStatsToDOM(qnum, details);
 }
 
 function selectQuizOption(qnum, optIdx) {
@@ -8631,6 +8753,7 @@ function continueWithoutSignIn() {
 
 async function onUserAuthStateChanged(user) {
   currentUser = user;
+  if (typeof clearPeerStatsCache === "function") clearPeerStatsCache();
   syncAdminCopyAccess();
   updateAuthTopBar();
   const overlay = document.getElementById("welcomeAuthOverlay");
