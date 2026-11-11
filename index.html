@@ -2841,9 +2841,12 @@
     gap: 8px;
   }
   .opt-row {
+    position: relative;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
     padding: 11px 14px;
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -2858,7 +2861,51 @@
     background: var(--surface-subtle);
     border-color: var(--teal);
   }
-  .opt-left { display: flex; align-items: center; gap: 12px; }
+  .opt-left { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+  .opt-right-wrap { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .opt-peer-bar {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 5px;
+  }
+  .opt-peer-fill {
+    height: 100%;
+    width: 0%;
+    background: rgba(10, 108, 116, 0.07);
+    transition: width 0.35s ease;
+  }
+  .opt-row.is-correct .opt-peer-fill { background: rgba(21, 128, 61, 0.12); }
+  .opt-row.is-wrong .opt-peer-fill { background: rgba(185, 28, 28, 0.10); }
+  .opt-peer-pct {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-subtle);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: none;
+  }
+  .opt-peer-pct.visible {
+    display: inline-flex;
+    align-items: center;
+  }
+  .opt-row.is-correct .opt-peer-pct {
+    background: rgba(21, 128, 61, 0.14);
+    border-color: var(--correct-border);
+    color: var(--correct);
+  }
+  .opt-row.is-wrong .opt-peer-pct {
+    background: rgba(185, 28, 28, 0.10);
+    border-color: var(--wrong-border);
+    color: var(--wrong);
+  }
   .opt-char {
     width: 24px;
     height: 24px;
@@ -4365,6 +4412,7 @@ let state = {
   showChapReorder: false,
   streak: { current: 1, best: 1, lastDate: "", days: {}, todayQs: 0, goal: 30 },
   eliminatedOpts: {},
+  peerVotedQs: {},
   customQs: [],
   quizIndex: 0,
   splitNotesOpen: false,
@@ -4383,6 +4431,7 @@ function loadState() {
       state.qStatus = parsed.qStatus || {};
       if (parsed.streak) state.streak = Object.assign(state.streak, parsed.streak);
       if (parsed.eliminatedOpts) state.eliminatedOpts = parsed.eliminatedOpts;
+      if (parsed.peerVotedQs) state.peerVotedQs = parsed.peerVotedQs;
       if (parsed.studyPlanScope) state.studyPlanScope = parsed.studyPlanScope;
       if (Array.isArray(parsed.chapterOrder)) state.chapterOrder = parsed.chapterOrder;
     }
@@ -4400,6 +4449,7 @@ function saveState() {
       qStatus: state.qStatus,
       streak: state.streak,
       eliminatedOpts: state.eliminatedOpts,
+      peerVotedQs: state.peerVotedQs,
       studyPlanScope: state.studyPlanScope,
       chapterOrder: state.chapterOrder
     }));
@@ -8078,6 +8128,10 @@ function renderQuizPage(resetQTimer) {
     }, 20);
   }
 
+  const showPeerStats = isAnswered && !!currentUser && !!fbDb;
+  const cachedPeerStats = showPeerStats ? getCachedQuestionPeerStats(q.number) : null;
+  const peerPcts = cachedPeerStats ? computePeerOptionPercentages(cachedPeerStats, q.options.length) : null;
+
   const optsHTML = q.options.map((optText, idx) => {
     const letter = String.fromCharCode(65 + idx);
     let rowCls = "";
@@ -8097,14 +8151,20 @@ function renderQuizPage(resetQTimer) {
     const isElim = !!(state.eliminatedOpts[q.number] && state.eliminatedOpts[q.number][idx]);
     const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
     const finalBadgeRight = badgeRight;
+    const pctVal = (peerPcts && typeof peerPcts[idx] === "number") ? peerPcts[idx] : null;
+    const peerFillWidth = pctVal !== null ? pctVal : 0;
+    const peerPctText = pctVal !== null ? (pctVal + "%") : "";
+    const peerPctCls = pctVal !== null ? "opt-peer-pct visible" : "opt-peer-pct";
     return `
-      <div class="opt-row ${finalRowCls}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
+      <div class="opt-row ${finalRowCls}" data-opt-idx="${idx}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
+        ${showPeerStats ? `<div class="opt-peer-bar"><div class="opt-peer-fill" data-peer-fill="${idx}" style="width:${peerFillWidth}%"></div></div>` : ""}
         <div class="opt-left">
           <span class="opt-char">${letter}</span>
           <span>${annotateMedicalHTML(optText)}</span>
         </div>
-        <div style="display:flex; align-items:center; gap:6px;">
+        <div class="opt-right-wrap">
           ${finalBadgeRight}
+          ${showPeerStats ? `<span class="${peerPctCls}" data-peer-pct="${idx}">${peerPctText}</span>` : ""}
           <button class="opt-elim-btn" onclick="event.stopPropagation(); toggleEliminateOpt(${q.number}, ${idx});" title="Cross out / Eliminate this choice (or Right-Click)">✕</button>
         </div>
       </div>
@@ -8125,7 +8185,7 @@ function renderQuizPage(resetQTimer) {
     : "";
 
   cardArea.innerHTML = `
-    <div class="quiz-card">
+    <div class="quiz-card" data-qnum="${q.number}">
       <div class="qc-header">
         <div class="qc-meta-left">
           <div class="qc-single-row ${state.examTagsExpanded ? 'tags-expanded' : ''}">
@@ -8189,6 +8249,9 @@ function renderQuizPage(resetQTimer) {
   `;
 
   renderSplitNotesPane();
+  if (showPeerStats && !cachedPeerStats) {
+    loadAndRenderPeerStatsForQuestion(q.number, q.options.length);
+  }
 }
 
 
@@ -8279,6 +8342,123 @@ function revealQuizAnswer(qnum) {
   renderQuizPage(false);
 }
 
+const MIN_PEER_STATS_VOTES = 5;
+const PEER_STATS_CACHE_TTL_MS = 60000;
+const _qPeerStatsCache = {};
+const _qPeerStatsInFlight = {};
+const _qPeerVotePromises = {};
+
+function getCachedQuestionPeerStats(qnum) {
+  const entry = _qPeerStatsCache[qnum];
+  if (!entry) return null;
+  if (Date.now() - entry.fetchedAt > PEER_STATS_CACHE_TTL_MS) return null;
+  return entry.data;
+}
+
+/**
+ * Computes integer percentages per option summing to 100%, or null if below threshold.
+ */
+function computePeerOptionPercentages(rawCounts, optCount) {
+  if (!rawCounts || !optCount || optCount <= 0) return null;
+  const counts = [];
+  for (let i = 0; i < optCount; i++) {
+    counts.push(Math.max(0, Math.floor(Number(rawCounts["c" + i]) || 0)));
+  }
+  const total = counts.reduce((sum, v) => sum + v, 0);
+  if (total < MIN_PEER_STATS_VOTES) return null;
+
+  const exact = counts.map(c => (c / total) * 100);
+  const floors = exact.map(v => Math.floor(v));
+  let remainder = 100 - floors.reduce((sum, v) => sum + v, 0);
+  const ranked = exact
+    .map((v, idx) => ({ idx, rem: v - floors[idx], count: counts[idx] }))
+    .sort((a, b) => (b.rem - a.rem) || (b.count - a.count) || (a.idx - b.idx));
+  for (let i = 0; i < ranked.length && remainder > 0; i++, remainder--) {
+    floors[ranked[i].idx] += 1;
+  }
+  return floors;
+}
+
+function recordQuestionPeerVote(qnum, optIdx) {
+  if (!currentUser || !fbDb) return Promise.resolve(false);
+  if (typeof optIdx !== "number" || optIdx < 0 || optIdx > 4) return Promise.resolve(false);
+  if (state.peerVotedQs && typeof state.peerVotedQs[qnum] === "number") return Promise.resolve(false);
+  if (_qPeerVotePromises[qnum]) return _qPeerVotePromises[qnum];
+
+  delete _qPeerStatsCache[qnum];
+  const key = "c" + optIdx;
+  const p = fbDb.collection("qStats").doc(String(qnum)).set({
+    [key]: firebase.firestore.FieldValue.increment(1),
+    total: firebase.firestore.FieldValue.increment(1)
+  }, { merge: true }).then(() => {
+    state.peerVotedQs = state.peerVotedQs || {};
+    state.peerVotedQs[qnum] = optIdx;
+    delete _qPeerStatsCache[qnum];
+    saveState();
+    return true;
+  }).catch(err => {
+    console.warn("Peer stats vote notice:", err && err.code ? err.code : err);
+    return false;
+  }).finally(() => {
+    delete _qPeerVotePromises[qnum];
+  });
+  _qPeerVotePromises[qnum] = p;
+  return p;
+}
+
+async function fetchQuestionPeerStats(qnum) {
+  if (!currentUser || !fbDb) return null;
+  if (_qPeerVotePromises[qnum]) {
+    try { await _qPeerVotePromises[qnum]; } catch (e) {}
+  }
+  const cached = getCachedQuestionPeerStats(qnum);
+  if (cached) return cached;
+  if (_qPeerStatsInFlight[qnum]) return _qPeerStatsInFlight[qnum];
+
+  const req = fbDb.collection("qStats").doc(String(qnum)).get().then(snap => {
+    const data = snap.exists ? (snap.data() || {}) : {};
+    _qPeerStatsCache[qnum] = { data, fetchedAt: Date.now() };
+    return data;
+  }).catch(err => {
+    console.warn("Peer stats read notice:", err && err.code ? err.code : err);
+    return null;
+  }).finally(() => {
+    delete _qPeerStatsInFlight[qnum];
+  });
+  _qPeerStatsInFlight[qnum] = req;
+  return req;
+}
+
+function applyPeerStatsToDOM(qnum, pcts) {
+  const card = document.querySelector('#quizCardRenderArea .quiz-card[data-qnum="' + qnum + '"]');
+  if (!card) return;
+  const pctNodes = card.querySelectorAll("[data-peer-pct]");
+  const fillNodes = card.querySelectorAll("[data-peer-fill]");
+  if (!pcts) {
+    pctNodes.forEach(el => { el.textContent = ""; el.classList.remove("visible"); });
+    fillNodes.forEach(el => { el.style.width = "0%"; });
+    return;
+  }
+  pctNodes.forEach(el => {
+    const idx = Number(el.getAttribute("data-peer-pct"));
+    const val = typeof pcts[idx] === "number" ? pcts[idx] : 0;
+    el.textContent = val + "%";
+    el.classList.add("visible");
+  });
+  fillNodes.forEach(el => {
+    const idx = Number(el.getAttribute("data-peer-fill"));
+    const val = typeof pcts[idx] === "number" ? pcts[idx] : 0;
+    el.style.width = val + "%";
+  });
+}
+
+async function loadAndRenderPeerStatsForQuestion(qnum, optCount) {
+  const raw = await fetchQuestionPeerStats(qnum);
+  if (!raw || !currentUser) return;
+  const pcts = computePeerOptionPercentages(raw, optCount);
+  applyPeerStatsToDOM(qnum, pcts);
+}
+
 function selectQuizOption(qnum, optIdx) {
   if (typeof hasAdminCopyAccess === "function" && hasAdminCopyAccess()) {
     const sel = window.getSelection ? window.getSelection() : null;
@@ -8300,6 +8480,7 @@ function selectQuizOption(qnum, optIdx) {
     flagged: !!cur.flagged,
     revealed: false
   };
+  recordQuestionPeerVote(qnum, optIdx);
   saveState();
   checkAutoStopTimerOnAnswer();
   renderQuizPage(false);
@@ -8461,6 +8642,9 @@ async function onUserAuthStateChanged(user) {
   } else {
     updateSyncIndicator("local");
     showWelcomeGateIfNeeded();
+    if (state.currentView === "quiz" && typeof renderQuizPage === "function") {
+      renderQuizPage(false);
+    }
   }
 }
 
@@ -8538,13 +8722,17 @@ async function syncProgressFromCloud(user) {
       if (data.eliminatedOpts) {
         state.eliminatedOpts = Object.assign({}, state.eliminatedOpts, data.eliminatedOpts || {});
       }
+      if (data.peerVotedQs) {
+        state.peerVotedQs = Object.assign({}, state.peerVotedQs, data.peerVotedQs || {});
+      }
 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           topicsRead: state.topicsRead,
           qStatus: state.qStatus,
           streak: state.streak,
-          eliminatedOpts: state.eliminatedOpts
+          eliminatedOpts: state.eliminatedOpts,
+          peerVotedQs: state.peerVotedQs
         }));
       } catch (e) {}
 
@@ -8558,6 +8746,9 @@ async function syncProgressFromCloud(user) {
       showToast("Cloud progress loaded successfully!");
     } else {
       await syncProgressToCloud(true);
+      if (state.currentView === "quiz" && typeof renderQuizPage === "function") {
+        renderQuizPage(false);
+      }
       showToast("Account linked & local progress uploaded to cloud!");
     }
   } catch (err) {
@@ -8578,6 +8769,7 @@ async function syncProgressToCloud(isImmediate = false) {
       qStatus: state.qStatus || {},
       streak: state.streak || {},
       eliminatedOpts: state.eliminatedOpts || {},
+      peerVotedQs: state.peerVotedQs || {},
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       userEmail: currentUser.email || "",
       displayName: currentUser.displayName || "",
