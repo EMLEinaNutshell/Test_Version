@@ -3462,15 +3462,57 @@
     -webkit-user-select: auto !important;
     user-select: auto !important;
   }
+  body.admin-copy-unlocked,
+  body.admin-copy-unlocked .workspace,
+  body.admin-copy-unlocked .main-container,
+  body.admin-copy-unlocked .article-card,
+  body.admin-copy-unlocked .q-card,
+  body.admin-copy-unlocked .notes-markdown-view,
+  body.admin-copy-unlocked .topic-article-body,
+  body.admin-copy-unlocked .quiz-card,
+  body.admin-copy-unlocked .modal-card,
+  body.admin-copy-unlocked .quiz-card *:not(button),
+  body.admin-copy-unlocked .topic-article-body *:not(button),
+  body.admin-copy-unlocked .article-card *:not(button),
+  body.admin-copy-unlocked .notes-markdown-view *:not(button),
+  body.admin-copy-unlocked .modal-card *:not(button) {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+  }
 </style>
 <script>
+const COPY_ACCESS_ALLOWLIST = ["ahmedsakr0013@gmail.com"];
+
+function hasAdminCopyAccess() {
+  try {
+    if (typeof currentUser === "undefined" || !currentUser || !currentUser.email) return false;
+    if (currentUser.emailVerified === false) return false;
+    return COPY_ACCESS_ALLOWLIST.includes(String(currentUser.email).trim().toLowerCase());
+  } catch (e) {
+    return false;
+  }
+}
+
+function syncAdminCopyAccess() {
+  try {
+    if (document.body) {
+      document.body.classList.toggle("admin-copy-unlocked", hasAdminCopyAccess());
+    }
+  } catch (e) {}
+}
+
 (function initSecurityGuards() {
   document.addEventListener('contextmenu', function(e) {
+    if (hasAdminCopyAccess()) return true;
     e.preventDefault();
     return false;
   }, { capture: true });
 
   document.addEventListener('copy', function(e) {
+    if (hasAdminCopyAccess()) return true;
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.classList.contains('qhb-number-pill') || e.target.classList.contains('npc-phone-pill'))) {
       return true;
     }
@@ -3479,17 +3521,20 @@
   }, { capture: true });
 
   document.addEventListener('cut', function(e) {
+    if (hasAdminCopyAccess()) return true;
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return true;
     e.preventDefault();
     return false;
   }, { capture: true });
 
   document.addEventListener('dragstart', function(e) {
+    if (hasAdminCopyAccess()) return true;
     e.preventDefault();
     return false;
   }, { capture: true });
 
   document.addEventListener('keydown', function(e) {
+    if (hasAdminCopyAccess()) return true;
     if (e.key === 'F12' || e.keyCode === 123) {
       e.preventDefault(); e.stopPropagation(); return false;
     }
@@ -8053,7 +8098,7 @@ function renderQuizPage(resetQTimer) {
     const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
     const finalBadgeRight = badgeRight;
     return `
-      <div class="opt-row ${finalRowCls}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
+      <div class="opt-row ${finalRowCls}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
         <div class="opt-left">
           <span class="opt-char">${letter}</span>
           <span>${annotateMedicalHTML(optText)}</span>
@@ -8235,6 +8280,10 @@ function revealQuizAnswer(qnum) {
 }
 
 function selectQuizOption(qnum, optIdx) {
+  if (typeof hasAdminCopyAccess === "function" && hasAdminCopyAccess()) {
+    const sel = window.getSelection ? window.getSelection() : null;
+    if (sel && sel.toString().trim().length > 0) return;
+  }
   const q = DATA.questions.find(x => x.number === qnum);
   if (!q) return;
   const cur = state.qStatus[qnum] || { selected: null, status: null, hintUsed: false, flagged: false };
@@ -8401,6 +8450,7 @@ function continueWithoutSignIn() {
 
 async function onUserAuthStateChanged(user) {
   currentUser = user;
+  syncAdminCopyAccess();
   updateAuthTopBar();
   const overlay = document.getElementById("welcomeAuthOverlay");
   if (user) {
