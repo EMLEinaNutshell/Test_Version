@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -4328,6 +4328,147 @@
     user-select: text !important;
     -webkit-touch-callout: default !important;
   }
+
+  /* ================= PLATFORM UPDATE ANNOUNCEMENT MODAL ================= */
+  .update-announcement-box {
+    max-width: 620px;
+    width: 94%;
+    max-height: 88vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: 24px 26px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    position: relative;
+    animation: uamSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes uamSlideUp {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .uam-header {
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    text-align: right;
+  }
+  .uam-badge-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .uam-badge {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+  }
+  .uam-date {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+  .uam-title {
+    margin: 6px 0 6px 0;
+    font-size: 18.5px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .uam-subtitle {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .uam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    text-align: right;
+  }
+  .uam-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: all 0.15s ease;
+  }
+  .uam-item:hover {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    transform: translateY(-1px);
+  }
+  .uam-item-icon {
+    font-size: 24px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .uam-item-content {
+    flex: 1;
+  }
+  .uam-item-content h4 {
+    margin: 0 0 3px 0;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .uam-item-content p {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .uam-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .uam-confirm-btn {
+    width: 100%;
+    padding: 13px 22px;
+    font-size: 15px;
+    font-weight: 800;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(10, 108, 116, 0.28);
+    transition: all 0.2s ease;
+  }
+  .uam-confirm-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(10, 108, 116, 0.35);
+  }
+  .uam-hint {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.4;
+  }
+  body.dark-mode .uam-badge {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+  body.dark-mode .update-announcement-box {
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+  }
 </style>
 <script>
 const ADMIN_EMAIL_ALLOWLIST = ["ahmedsakr0013@gmail.com"];
@@ -4538,7 +4679,7 @@ function syncAdminCopyAccess() {
         </div>
 
         <div class="dub-main-text">
-          تمت مراجعة جميع أسئلة المنصة مع ملف د. أحمد عامر التفاعلي (آخر نسخة) ومع تعديلات التليجرام الأخيرة، جميع الأسئلة الآن إجابتها مطابقة <strong>100%</strong> بإذن الله لإجابات د. أحمد عامر.
+          تمت مراجعة جميع أسئلة المنصة مع ملف د. أحمد عامر التفاعلي (آخر نسخة) ومع تعديلات التليجرام الأخيرة، جميع الأسئلة الآن إجابتها مطابقة <strong>100%</strong> بإذن الله لإجابات د. أحمد عامر. <a href="javascript:void(0)" onclick="openUpdateAnnouncementModal()" style="color: #059669; font-weight: 800; text-decoration: underline; margin-right: 6px;">[استعراض ملخص التحديثات الجديدة 🚀]</a>
         </div>
 
         <div class="dub-links-card">
@@ -5253,6 +5394,69 @@ function syncAdminCopyAccess() {
         <h3 style="margin:0; font-size:16.5px; color:var(--text);" id="scmTitle">⚙️ خيارات بدء السيشن</h3>
         <div style="font-size:12.5px; color:var(--teal); font-weight:700; margin-top:4px;" id="scmSubtitle"></div>
       </div>
+
+<!-- ================= PLATFORM UPDATE ANNOUNCEMENT MODAL (FIRST TIME SEEN) ================= -->
+<div class="modal-backdrop" id="updateAnnouncementModal" onclick="if(event.target===this) dismissUpdateAnnouncement()">
+  <div class="modal-box update-announcement-box" dir="rtl">
+    <div class="uam-header">
+      <div class="uam-badge-group">
+        <span class="uam-badge">🎉 تحديث جديد للمنصة</span>
+        <span class="uam-date">13 نوفمبر 2026</span>
+      </div>
+      <h2 class="uam-title">تحديثات وتحسينات جديدة لمنصة EMLE in a Nutshell 🚀</h2>
+      <p class="uam-subtitle">تم تطبيق حزمة من التحسينات والميزات الجديدة بناءً على مقترحاتكم لضمان تجربة مذاكرة ومراجعة استثنائية:</p>
+    </div>
+
+    <div class="uam-list">
+      <div class="uam-item">
+        <div class="uam-item-icon">🌙</div>
+        <div class="uam-item-content">
+          <h4>الوضع الليلي (Dark Mode)</h4>
+          <p>يمكنك الآن التبديل بسهولة إلى الوضع الداكن من الزر بأعلى الصفحة لتجربة مذاكرة ليلية مريحة لعينيك.</p>
+        </div>
+      </div>
+
+      <div class="uam-item">
+        <div class="uam-item-icon">📱</div>
+        <div class="uam-item-content">
+          <h4>حماية زر الرجوع على الموبايل (Mobile Back Guard)</h4>
+          <p>لن تخرج المنصة فجأة عند الضغط على زر Back في هاتفك؛ بل سيُغلق النوافذ المنبثقة أولاً أو يعود بك للشاشة السابقة بسلاسة.</p>
+        </div>
+      </div>
+
+      <div class="uam-item">
+        <div class="uam-item-icon">🔄</div>
+        <div class="uam-item-content">
+          <h4>خيار إعادة المحاولة (Retry) لجميع أسئلة أي سيشن</h4>
+          <p>عند بدء أي Custom Exam أو مراجعة الأسئلة الخاطئة، يمكنك الآن الاختيار بين تصفير الأسئلة وحلها من جديد، أو الإبقاء على حلولك السابقة لمراجعتها.</p>
+        </div>
+      </div>
+
+      <div class="uam-item">
+        <div class="uam-item-icon">📊</div>
+        <div class="uam-item-content">
+          <h4>سجل المحاولات التفصيلي لكل سؤال</h4>
+          <p>عداد ذكي فوق كل سؤال يوضح عدد محاولاتك، وبالضغط عليه تظهر قائمة منسدلة بجميع إجاباتك السابقة وتواريخها وهل كانت صحيحة أم خاطئة.</p>
+        </div>
+      </div>
+
+      <div class="uam-item">
+        <div class="uam-item-icon">✅</div>
+        <div class="uam-item-content">
+          <h4>مطابقة تامة 100% لإجابات د. أحمد عامر</h4>
+          <p>تمت مراجعة جميع أسئلة المنصة بالكامل مع أحدث تفريغات د. أحمد عامر، مع رابط مباشر بالبانر لمراجعة الـ 161 سؤال التي طرأ عليها تعديل.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="uam-footer">
+      <button type="button" class="btn-teal uam-confirm-btn" onclick="dismissUpdateAnnouncement()">
+        <span>فهمت ذلك ✓</span>
+      </button>
+      <div class="uam-hint">لن يظهر هذا الإشعار مجدداً إلا عند إضافة تحديثات جديدة. نتمنى لكم التوفيق دائماً! 🩺✨</div>
+    </div>
+  </div>
+</div>
       <button class="subtle-link-btn" onclick="closeSessionChoiceModal()">&times; إغلاق</button>
     </div>
 
@@ -10766,6 +10970,35 @@ async function _gunzipBytesSafe(bytes) {
   return new TextDecoder("utf-8").decode(plain);
 }
 
+
+// ================= UPDATE ANNOUNCEMENT MODAL LOGIC =================
+const CURRENT_PLATFORM_UPDATE_ID = "emle_update_2026_11_13_v1";
+
+function checkUpdateAnnouncement() {
+  try {
+    const seen = localStorage.getItem("emle_last_seen_update");
+    if (seen !== CURRENT_PLATFORM_UPDATE_ID) {
+      setTimeout(() => {
+        const modal = document.getElementById("updateAnnouncementModal");
+        if (modal) modal.classList.add("show");
+      }, 750);
+    }
+  } catch (e) {}
+}
+
+function dismissUpdateAnnouncement() {
+  try {
+    localStorage.setItem("emle_last_seen_update", CURRENT_PLATFORM_UPDATE_ID);
+  } catch (e) {}
+  const modal = document.getElementById("updateAnnouncementModal");
+  if (modal) modal.classList.remove("show");
+}
+
+function openUpdateAnnouncementModal() {
+  const modal = document.getElementById("updateAnnouncementModal");
+  if (modal) modal.classList.add("show");
+}
+
 async function bootCompressedPortal() {
   loadState();
   initFirebase();
@@ -10783,6 +11016,7 @@ async function bootCompressedPortal() {
   }
   initBrowserHistoryGuard();
   navigateTo("home", null, { isInitialBoot: true });
+  checkUpdateAnnouncement();
 }
 window.addEventListener("resize", syncTopbarHeight);
 window.addEventListener("DOMContentLoaded", () => {
