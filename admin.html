@@ -617,6 +617,7 @@
     <button class="tab-btn" data-tab="users" onclick="switchTab('users')">👥 الحسابات والطلاب</button>
     <button class="tab-btn" data-tab="qstats" onclick="switchTab('qstats')">🧠 تحليل الأسئلة (qStats)</button>
     <button class="tab-btn" data-tab="chapters" onclick="switchTab('chapters')">📚 تفاعل الشابترات</button>
+    <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">🚨 تقارير وبلاغات الأسئلة (<span id="reportsBadgeCount">0</span>)</button>
   </div>
 
   <section class="tab-panel active" id="tab-overview">
@@ -784,6 +785,43 @@
             </tr>
           </thead>
           <tbody id="chaptersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="tab-reports">
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">🚨 تقارير وبلاغات الطلاب حول الأسئلة</h2>
+          <div class="panel-sub">البلاغات الواردة من الطلاب على الأسئلة لمراجعتها وتصحيحها في المنصة</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <select class="select" id="reportStatusFilter" onchange="renderReportsTable()">
+            <option value="all">كل التقارير</option>
+            <option value="pending" selected>قيد المراجعة فقط</option>
+            <option value="resolved">تمت المعالجة</option>
+          </select>
+          <button class="btn btn-sm" onclick="loadDashboardData()">🔄 تحديث</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>التاريخ</th>
+              <th>رقم السؤال</th>
+              <th>نوع المشكلة</th>
+              <th>تفاصيل الملاحظة</th>
+              <th>الطالب</th>
+              <th>الحالة</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTableBody">
+            <tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">لا توجد تقارير محملة حالياً</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -1757,6 +1795,8 @@ function exportUsersCsv() {
   URL.revokeObjectURL(url);
 }
 
+let rawReportsDocs = [];
+
 async function loadDashboardData() {
   if (!isVerifiedAdmin(currentAdminUser) || !fbDb) return;
   const refreshBtn = document.getElementById("refreshBtn");
@@ -1765,10 +1805,11 @@ async function loadDashboardData() {
   if (warnBox) { warnBox.classList.remove("show"); warnBox.textContent = ""; }
 
   try {
-    const [indexes, usersSnap, qStatsSnap] = await Promise.all([
+    const [indexes, usersSnap, qStatsSnap, reportsSnap] = await Promise.all([
       tryBootCatalog(),
       fbDb.collection("users").get(),
-      fbDb.collection("qStats").get()
+      fbDb.collection("qStats").get(),
+      fbDb.collection("reports").get().catch(e => { console.warn("Reports fetch fallback:", e); return { docs: [], size: 0 }; })
     ]);
 
     const catEl = document.getElementById("catalogStatusText");
@@ -1782,6 +1823,10 @@ async function loadDashboardData() {
     processedUsers = usersSnap.docs.map(doc => computeUserRecord(doc.id, doc.data(), nowMs));
     const qDocs = qStatsSnap.docs.map(doc => ({ id: doc.id, data: doc.data() }));
 
+    rawReportsDocs = reportsSnap.docs ? reportsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })) : [];
+    // Sort reports newest first
+    rawReportsDocs.sort((a, b) => (b.createdAtClient || 0) - (a.createdAtClient || 0));
+
     globalAnalytics = computeGlobalAnalytics(processedUsers, qDocs, indexes, nowMs);
     qStatsRows = globalAnalytics.parsedQRows;
 
@@ -1790,9 +1835,10 @@ async function loadDashboardData() {
     renderUsersTable();
     renderQStatsTable();
     renderChaptersTab(globalAnalytics);
+    renderReportsTable();
 
     document.getElementById("lastFetchText").textContent =
-      `آخر تحديث: ${formatExactDateTime(nowMs)} (${usersSnap.size} طالب • ${qStatsSnap.size} سجل qStats)`;
+      `آخر تحديث: ${formatExactDateTime(nowMs)} (${usersSnap.size} طالب • ${qStatsSnap.size} سجل qStats • ${rawReportsDocs.length} بلاغ)`;
   } catch (err) {
     console.error("Admin dashboard fetch error:", err);
     if (warnBox) {
@@ -1843,6 +1889,101 @@ function initAdminPortal() {
       switchWrap.style.display = "none";
     }
   });
+}
+
+function renderReportsTable() {
+  const tbody = document.getElementById("reportsTableBody");
+  const filter = document.getElementById("reportStatusFilter") ? document.getElementById("reportStatusFilter").value : "all";
+  if (!tbody) return;
+
+  let docs = rawReportsDocs.slice();
+  if (filter !== "all") {
+    docs = docs.filter(d => (d.status || "pending") === filter);
+  }
+
+  const pendingCount = rawReportsDocs.filter(d => (d.status || "pending") === "pending").length;
+  const badge = document.getElementById("reportsBadgeCount");
+  if (badge) badge.textContent = pendingCount;
+
+  if (docs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">لا توجد بلاغات تطابق الفلتر الحالي 🎉</td></tr>`;
+    return;
+  }
+
+  const catMap = {
+    wrong_answer: "خطأ في الإجابة",
+    stem_typo: "خطأ في الصياغة",
+    explanation: "ملاحظة في الشرح",
+    options: "خلل في الخيارات",
+    other: "أخرى"
+  };
+
+  tbody.innerHTML = docs.map(r => {
+    const isPending = (r.status || "pending") === "pending";
+    const statusBadge = isPending
+      ? `<span class="badge" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca;">قيد المراجعة</span>`
+      : `<span class="badge" style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;">تمت المعالجة ✓</span>`;
+
+    const catLabel = catMap[r.category] || r.category || "بلاغ";
+    const dateStr = r.createdAtClient ? formatExactDateTime(r.createdAtClient) : (r.createdAt ? formatExactDateTime(r.createdAt.toMillis ? r.createdAt.toMillis() : Date.now()) : "غير محدد");
+
+    return `
+      <tr>
+        <td style="white-space:nowrap; font-size:12px;">${dateStr}</td>
+        <td>
+          <span style="font-weight:700; color:var(--primary); font-size:14px;">Q#${r.qNumber || "?"}</span>
+          ${r.qStem ? `<div style="font-size:11.5px; color:var(--text-muted); max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(r.qStem)}">${escapeHtml(r.qStem)}</div>` : ''}
+        </td>
+        <td><span class="badge" style="background:var(--surface-subtle);">${escapeHtml(catLabel)}</span></td>
+        <td style="max-width:320px; word-break:break-word; font-size:13px; line-height:1.5;">${escapeHtml(r.details || '')}</td>
+        <td>
+          <div style="font-size:12.5px; font-weight:600;">${escapeHtml(r.reporterName || 'طالب')}</div>
+          <div class="ltr" style="font-size:11px; color:var(--text-muted);">${escapeHtml(r.reporterEmail || '')}</div>
+        </td>
+        <td>${statusBadge}</td>
+        <td style="white-space:nowrap;">
+          ${isPending
+            ? `<button class="btn btn-sm" onclick="markReportResolved('${r.id}')" style="background:#10b981; color:#fff; border:none; margin-left:4px;" title="تحديد كـ تم التعديل">✓ حل</button>`
+            : `<button class="btn btn-sm" onclick="markReportPending('${r.id}')" style="margin-left:4px;" title="إعادة فتح البلاغ">↩ إعادة فتح</button>`
+          }
+          <button class="btn btn-sm" onclick="deleteReportDoc('${r.id}')" style="color:#b91c1c;" title="حذف البلاغ">🗑️</button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+async function markReportResolved(id) {
+  try {
+    await fbDb.collection("reports").doc(id).update({ status: "resolved", resolvedAt: Date.now() });
+    const item = rawReportsDocs.find(d => d.id === id);
+    if (item) item.status = "resolved";
+    renderReportsTable();
+  } catch (e) {
+    alert("تعذر تحديث البلاغ: " + e.message);
+  }
+}
+
+async function markReportPending(id) {
+  try {
+    await fbDb.collection("reports").doc(id).update({ status: "pending" });
+    const item = rawReportsDocs.find(d => d.id === id);
+    if (item) item.status = "pending";
+    renderReportsTable();
+  } catch (e) {
+    alert("تعذر تحديث البلاغ: " + e.message);
+  }
+}
+
+async function deleteReportDoc(id) {
+  if (!confirm("هل ترغب في حذف هذا البلاغ نهائياً؟")) return;
+  try {
+    await fbDb.collection("reports").doc(id).delete();
+    rawReportsDocs = rawReportsDocs.filter(d => d.id !== id);
+    renderReportsTable();
+  } catch (e) {
+    alert("تعذر حذف البلاغ: " + e.message);
+  }
 }
 
 if (typeof document !== "undefined" && typeof window !== "undefined") {
