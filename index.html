@@ -5214,24 +5214,50 @@
     border: 1px solid var(--correct-border);
   }
   .res-q-stem {
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 13.5px;
+    line-height: 1.65;
     color: var(--text);
-    margin-bottom: 10px;
-    font-weight: 600;
+    margin-bottom: 12px;
+    font-weight: 500;
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: isolate;
+  }
+  .res-q-stem[dir="rtl"] {
+    direction: rtl !important;
+    text-align: right !important;
   }
   .res-correct-choice-box {
     background: var(--correct-bg);
     border-right: 3px solid var(--correct);
-    border-radius: 0 6px 6px 0;
-    padding: 7px 12px;
-    font-size: 12.5px;
-    color: var(--correct);
+    border-radius: 6px;
+    padding: 8px 12px;
     margin-bottom: 10px;
     line-height: 1.5;
   }
   body.dark-mode .res-correct-choice-box {
     background: rgba(21, 128, 61, 0.15);
+  }
+  .res-choice-header {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--correct);
+    margin-bottom: 3px;
+    direction: rtl;
+    text-align: right;
+  }
+  .res-choice-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: isolate;
+  }
+  .res-choice-text[dir="rtl"] {
+    direction: rtl !important;
+    text-align: right !important;
   }
   .res-pearl-callout {
     background: linear-gradient(135deg, rgba(10, 108, 116, 0.08) 0%, rgba(245, 158, 11, 0.09) 100%);
@@ -5252,6 +5278,8 @@
     align-items: center;
     gap: 6px;
     margin-bottom: 5px;
+    direction: rtl;
+    text-align: right;
   }
   body.dark-mode .res-pearl-callout-header {
     color: #2dd4bf;
@@ -5260,6 +5288,40 @@
     font-size: 13px;
     line-height: 1.65;
     color: var(--text);
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: plaintext;
+  }
+  .res-pearl-callout-text[dir="rtl"] {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+  .res-pearl-callout-text[dir="ltr"] {
+    direction: ltr !important;
+    text-align: left !important;
+  }
+
+  /* Global Auto Direction: Any English paragraph flows LTR, Arabic flows RTL */
+  .article-body p,
+  .article-body li,
+  .article-body td,
+  .article-body th,
+  .snp-body p,
+  .snp-body li,
+  .snp-body td,
+  .snp-body th,
+  .notes-markdown-view p,
+  .notes-markdown-view li,
+  .notes-markdown-view td,
+  .notes-markdown-view th,
+  .qc-stem,
+  .hint-callout,
+  .explanation-box p,
+  .explanation-box li,
+  .comm-text,
+  .reply-item .comm-text {
+    unicode-bidi: plaintext;
+    text-align: start;
   }
 
   .res-modal-footer {
@@ -12069,6 +12131,17 @@ function shuffleCurrentSession() {
 }
 
 /* 2. END-OF-SESSION RESULTS & MISTAKE PEARLS MODAL */
+function detectTextDirection(text) {
+  if (!text) return "ltr";
+  const str = String(text).replace(/<[^>]+>/g, "").trim();
+  if (!str) return "ltr";
+  const arabicMatches = str.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g);
+  const arabicCount = arabicMatches ? arabicMatches.length : 0;
+  const englishMatches = str.match(/[a-zA-Z]/g);
+  const englishCount = englishMatches ? englishMatches.length : 0;
+  return arabicCount > englishCount ? "rtl" : "ltr";
+}
+
 function finishAndShowSessionResults() {
   const qs = getQuestionsForFilter(state.quizFilter);
   if (!qs || !qs.length) return;
@@ -12195,12 +12268,15 @@ function finishAndShowSessionResults() {
               <span class="res-ans-pill res-ans-correct">✅ الصواب: (${correctAnsChar})</span>
             </div>
 
-            <div class="res-q-stem">
+            <div class="res-q-stem" dir="${detectTextDirection(q.stem)}" style="direction:${detectTextDirection(q.stem)}; text-align:${detectTextDirection(q.stem) === 'rtl' ? 'right' : 'left'};">
               ${annotateMedicalHTML(q.stem)}
             </div>
 
             <div class="res-correct-choice-box">
-              <strong>✓ الاختيار الصحيح (${correctAnsChar}):</strong> ${annotateMedicalHTML(correctText)}
+              <div class="res-choice-header">✓ الاختيار الصحيح (${correctAnsChar}):</div>
+              <div class="res-choice-text" dir="${detectTextDirection(correctText)}" style="direction:${detectTextDirection(correctText)}; text-align:${detectTextDirection(correctText) === 'rtl' ? 'right' : 'left'};">
+                ${annotateMedicalHTML(correctText)}
+              </div>
             </div>
 
             ${pearlText ? `
@@ -12208,7 +12284,7 @@ function finishAndShowSessionResults() {
                 <div class="res-pearl-callout-header">
                   <span>💡 مفتاح الحل الذهبي (Exam Pearl):</span>
                 </div>
-                <div class="res-pearl-callout-text">
+                <div class="res-pearl-callout-text" dir="${detectTextDirection(pearlText)}" style="direction:${detectTextDirection(pearlText)}; text-align:${detectTextDirection(pearlText) === 'rtl' ? 'right' : 'left'};">
                   ${annotateMedicalHTML(pearlText)}
                 </div>
               </div>
