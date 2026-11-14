@@ -729,6 +729,100 @@
     flex-shrink: 0;
   }
 
+  
+  /* TOPBAR FIXED HIGHLIGHTER TOOL */
+  .topbar-hl-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .topbar-hl-tool.pen-active {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    box-shadow: 0 0 0 2px rgba(10, 108, 116, 0.15);
+  }
+  body.dark-mode .topbar-hl-tool {
+    background: #1e1e2e;
+    border-color: #2e2e42;
+  }
+  body.dark-mode .topbar-hl-tool.pen-active {
+    background: #162a30;
+    border-color: var(--teal);
+  }
+  .topbar-hl-toggle-btn {
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: inherit;
+    border-radius: 12px;
+    transition: color 0.12s;
+  }
+  .topbar-hl-toggle-btn:hover {
+    color: var(--teal);
+  }
+  .hl-pen-icon {
+    font-size: 14px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+  }
+  .hl-pen-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+    display: inline-block;
+    transition: all 0.15s ease;
+  }
+  .topbar-hl-tool.pen-active .hl-pen-status {
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35);
+  }
+  .topbar-hl-palette {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding-left: 4px;
+    border-left: 1px solid var(--border);
+  }
+  body.dark-mode .topbar-hl-palette {
+    border-left-color: #2e2e42;
+  }
+  .tb-color-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    padding: 0;
+  }
+  .tb-color-dot:hover {
+    transform: scale(1.22);
+  }
+  .tb-color-dot.active {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--teal) !important;
+  }
+  .tb-color-dot.dot-yellow { background: #facc15; }
+  .tb-color-dot.dot-green  { background: #4ade80; }
+  .tb-color-dot.dot-pink   { background: #f472b6; }
+  .tb-color-dot.dot-cyan   { background: #38bdf8; }
+
   .topbar-right {
     display: flex;
     align-items: center;
@@ -4305,6 +4399,12 @@
     -webkit-touch-callout: none !important;
   }
   /* Enable text selection inside study content for smooth highlighting while copy protection remains active */
+  .article-body,
+  .article-body *:not(button),
+  .article-card,
+  .article-card *:not(button),
+  .snp-body,
+  .snp-body *:not(button),
   .topic-article-body,
   .topic-article-body *:not(button),
   .notes-markdown-view,
@@ -4491,6 +4591,692 @@
   body.dark-mode .update-announcement-box {
     box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
   }
+
+  /* =========================================================================
+     8 FEATURES MODERN UI SYSTEM (COMMUNITY, RESULTS, PEARLS, REVISION, HIGHLIGHT)
+     ========================================================================= */
+
+  /* 1. FLAGGED QUESTION DOT IN NAVIGATION */
+  .q-dot.dot-flagged {
+    border: 1.5px solid var(--flag) !important;
+    box-shadow: 0 0 0 1px var(--flag-border) !important;
+    position: relative !important;
+  }
+  .q-dot .dot-flag-badge {
+    position: absolute;
+    top: -6px;
+    right: -5px;
+    font-size: 10px;
+    line-height: 1;
+    pointer-events: none;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+  }
+
+  /* 2. ADMIN AMER QUESTION NUMBER PILL */
+  .admin-amer-pill {
+    background: #4f46e5;
+    color: #ffffff !important;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+    border: 1px solid #4338ca;
+    box-shadow: 0 1px 3px rgba(79, 70, 229, 0.25);
+    vertical-align: middle;
+  }
+  body.dark-mode .admin-amer-pill {
+    background: #6366f1;
+    border-color: #4f46e5;
+    color: #ffffff !important;
+  }
+
+  /* 3. SMOOTH HIGHLIGHTER SYSTEM */
+  .emle-hl {
+    border-radius: 3px;
+    padding: 1px 2px;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+  .emle-hl:hover { filter: brightness(0.92); }
+  .emle-hl-yellow { background-color: #fef08a !important; color: inherit !important; }
+  .emle-hl-green  { background-color: #bbf7d0 !important; color: inherit !important; }
+  .emle-hl-pink   { background-color: #fbcfe8 !important; color: inherit !important; }
+  .emle-hl-cyan   { background-color: #bae6fd !important; color: inherit !important; }
+
+  body.dark-mode .emle-hl-yellow { background-color: rgba(234, 179, 8, 0.4) !important; color: inherit !important; }
+  body.dark-mode .emle-hl-green  { background-color: rgba(34, 197, 94, 0.4) !important; color: inherit !important; }
+  body.dark-mode .emle-hl-pink   { background-color: rgba(236, 72, 153, 0.4) !important; color: inherit !important; }
+  body.dark-mode .emle-hl-cyan   { background-color: rgba(14, 165, 233, 0.4) !important; color: inherit !important; }
+
+  .emle-hl-toolbar {
+    position: absolute;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 5px 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    transform: translate(-50%, -100%);
+    margin-top: -8px;
+    animation: hlFadeIn 0.18s ease-out;
+  }
+  .emle-hl-toolbar.visible { display: flex; }
+  @keyframes hlFadeIn {
+    from { opacity: 0; transform: translate(-50%, -90%); }
+    to { opacity: 1; transform: translate(-50%, -100%); }
+  }
+  .hl-color-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.12s ease;
+  }
+  .hl-color-btn:hover { transform: scale(1.18); }
+  .hl-color-yellow { background: #facc15; }
+  .hl-color-green  { background: #4ade80; }
+  .hl-color-pink   { background: #f472b6; }
+  .hl-color-cyan   { background: #38bdf8; }
+  .hl-erase-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    color: var(--text-muted);
+    border-radius: 4px;
+    transition: color 0.12s;
+  }
+  .hl-erase-btn:hover { color: var(--wrong); }
+
+  /* 4. ADMIN REVISION NOTES BOX */
+  .admin-revision-box {
+    margin-top: 18px;
+    background: #f8fafc;
+    border: 1.5px dashed #6366f1;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+  }
+  body.dark-mode .admin-revision-box {
+    background: #1e1e2e;
+    border-color: #818cf8;
+  }
+  .arb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .arb-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #4f46e5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body.dark-mode .arb-title { color: #a5b4fc; }
+  .arb-target-badge {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  body.dark-mode .arb-target-badge { background: #312e81; color: #c7d2fe; }
+  .arb-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .arb-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 9px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.12s;
+  }
+  .arb-btn:hover {
+    background: var(--teal-light);
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .arb-btn-copy {
+    background: #4f46e5;
+    color: #ffffff !important;
+    border-color: #4338ca;
+  }
+  .arb-btn-copy:hover {
+    background: #4338ca;
+    color: #ffffff !important;
+  }
+  .arb-textarea {
+    width: 100%;
+    min-height: 65px;
+    resize: vertical;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    box-sizing: border-box;
+    line-height: 1.5;
+  }
+  .arb-textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  }
+  .arb-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* 5. COMMUNITY DISCUSSION */
+  .q-community-section {
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .comm-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 14px;
+    background: var(--surface-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+  .comm-header-bar:hover {
+    background: var(--teal-light);
+    border-color: var(--teal-border);
+  }
+  body.dark-mode .comm-header-bar {
+    background: #1e1e2e;
+    border-color: #2e2e42;
+  }
+  .comm-header-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .comm-count-badge {
+    background: var(--teal);
+    color: #ffffff;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .comm-body {
+    display: none;
+    margin-top: 12px;
+    animation: hlFadeIn 0.2s ease-out;
+  }
+  .comm-body.open { display: block; }
+  .comm-form-box {
+    background: var(--surface-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  body.dark-mode .comm-form-box {
+    background: #181825;
+    border-color: #2e2e42;
+  }
+  .comm-textarea {
+    width: 100%;
+    min-height: 65px;
+    resize: vertical;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--text);
+    background: var(--surface);
+    box-sizing: border-box;
+    line-height: 1.5;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .comm-textarea:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px var(--teal-light);
+  }
+  .comm-form-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .comm-img-preview {
+    max-width: 90px;
+    max-height: 80px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    display: none;
+  }
+  .comm-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  body.dark-mode .comm-item {
+    background: #1e1e2e;
+    border-color: #2e2e42;
+  }
+  .comm-item.is-reply {
+    margin-right: 24px;
+    background: var(--surface-subtle);
+    border-right: 3px solid var(--teal);
+  }
+  body.dark-mode .comm-item.is-reply {
+    background: #181825;
+  }
+  .comm-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+  .comm-author { font-weight: 700; color: var(--text); }
+  .comm-text {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+    word-break: break-word;
+  }
+  .comm-img-attached {
+    margin-top: 8px;
+    max-width: 240px;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    object-fit: contain;
+    background: #000;
+  }
+  .comm-item-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .comm-act-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.12s;
+  }
+  .comm-act-btn:hover { color: var(--teal); }
+
+  /* 6. ADVANCED SESSION RESULTS & EXAM PEARLS SYSTEM */
+  .res-modal-box {
+    max-width: 720px !important;
+    width: 95% !important;
+    max-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3) !important;
+  }
+  .res-modal-header {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .res-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 22px;
+    overscroll-behavior: contain;
+  }
+  /* Modern sleek scrollbars */
+  .res-modal-body::-webkit-scrollbar,
+  .res-mistakes-wrap::-webkit-scrollbar {
+    width: 7px;
+  }
+  .res-modal-body::-webkit-scrollbar-track,
+  .res-mistakes-wrap::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.03);
+    border-radius: 8px;
+  }
+  .res-modal-body::-webkit-scrollbar-thumb,
+  .res-mistakes-wrap::-webkit-scrollbar-thumb {
+    background: var(--teal);
+    border-radius: 8px;
+  }
+  .res-modal-body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--teal) rgba(0,0,0,0.03);
+  }
+  .res-mistakes-wrap {
+    scrollbar-width: thin;
+    scrollbar-color: var(--teal) rgba(0,0,0,0.03);
+  }
+
+  .res-score-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, var(--surface-subtle) 0%, var(--teal-light) 100%);
+    border-radius: 14px;
+    border: 1.5px solid var(--teal-border);
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  body.dark-mode .res-score-box {
+    background: linear-gradient(135deg, #1e1e2e 0%, #112228 100%);
+    border-color: #1e3a40;
+  }
+  .res-circle {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: conic-gradient(var(--circle-color, var(--teal)) calc(var(--pct, 0) * 1%), var(--border) 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
+  }
+  .res-circle-inner {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .res-circle-pct {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--circle-color, var(--teal));
+    line-height: 1;
+  }
+  .res-score-details {
+    flex: 1;
+    min-width: 220px;
+  }
+  .res-grade-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+  }
+  .res-summary-msg {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .res-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .res-stat-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+    transition: transform 0.12s;
+  }
+  .res-stat-card:hover { transform: translateY(-2px); }
+  .res-stat-card.correct-card { border-color: var(--correct-border); background: var(--correct-bg); }
+  .res-stat-card.wrong-card { border-color: var(--wrong-border); background: var(--wrong-bg); }
+  .res-stat-card.hint-card { border-color: var(--hint-border); background: var(--hint-bg); }
+  .res-stat-val { font-size: 22px; font-weight: 800; line-height: 1.1; }
+  .res-stat-lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* Mistakes and Pearls list */
+  .res-pearls-section {
+    margin-top: 10px;
+  }
+  .res-pearls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .res-pearls-title {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .res-pearls-badge {
+    background: var(--wrong);
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .res-mistakes-wrap {
+    max-height: 440px;
+    overflow-y: auto;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    background: var(--surface-subtle);
+    margin-bottom: 16px;
+    overscroll-behavior: contain;
+  }
+  body.dark-mode .res-mistakes-wrap {
+    background: #14141e;
+    border-color: #2b2b3b;
+  }
+  .res-pearl-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-right: 5px solid var(--wrong);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .res-pearl-card:last-child { margin-bottom: 0; }
+  .res-pearl-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  body.dark-mode .res-pearl-card {
+    background: #1e1e2e;
+    border-color: #2e2e42;
+    border-right-color: var(--wrong);
+  }
+  .res-card-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .res-card-qnum-pill {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .res-jump-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--teal);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .res-jump-btn:hover {
+    background: var(--teal-light);
+    border-color: var(--teal);
+  }
+  .res-ans-compare {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    font-size: 12.5px;
+  }
+  .res-ans-pill {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .res-ans-wrong {
+    background: var(--wrong-bg);
+    color: var(--wrong);
+    border: 1px solid var(--wrong-border);
+  }
+  .res-ans-correct {
+    background: var(--correct-bg);
+    color: var(--correct);
+    border: 1px solid var(--correct-border);
+  }
+  .res-q-stem {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .res-correct-choice-box {
+    background: var(--correct-bg);
+    border-right: 3px solid var(--correct);
+    border-radius: 0 6px 6px 0;
+    padding: 7px 12px;
+    font-size: 12.5px;
+    color: var(--correct);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  body.dark-mode .res-correct-choice-box {
+    background: rgba(21, 128, 61, 0.15);
+  }
+  .res-pearl-callout {
+    background: linear-gradient(135deg, rgba(10, 108, 116, 0.08) 0%, rgba(245, 158, 11, 0.09) 100%);
+    border: 1.5px solid #0d9488;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+  }
+  body.dark-mode .res-pearl-callout {
+    background: linear-gradient(135deg, rgba(13, 148, 136, 0.16) 0%, rgba(245, 158, 11, 0.12) 100%);
+    border-color: #14b8a6;
+  }
+  .res-pearl-callout-header {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #0f766e;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+  body.dark-mode .res-pearl-callout-header {
+    color: #2dd4bf;
+  }
+  .res-pearl-callout-text {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .res-modal-footer {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  /* 7. REPORT MODAL */
+  .report-box { max-width: 500px; width: 94%; }
+
 </style>
 <script>
 const ADMIN_EMAIL_ALLOWLIST = ["ahmedsakr0013@gmail.com"];
@@ -4611,6 +5397,21 @@ function syncAdminCopyAccess() {
       <span class="pomo-timer" id="pomoTime">25:00</span>
       <button class="pomo-icon-btn" id="pomoPlayBtn" onclick="togglePomoRun()" title="Start / Pause">▶</button>
       <button class="pomo-icon-btn pomo-reset-btn" onclick="resetPomo()" title="Reset">↺</button>
+    </div>
+
+        <!-- Fixed Topbar Highlighter Tool -->
+    <div class="topbar-hl-tool" id="topbarHlTool">
+      <button class="topbar-hl-toggle-btn" id="btnToggleHlPen" onclick="toggleHighlightPen()" title="تفعيل / إيقاف قلم التظليل المباشر (Highlight Pen)">
+        <span class="hl-pen-icon">🖍️</span>
+        <span class="hl-pen-status" id="hlPenStatusDot" title="قلم التظليل"></span>
+        <span class="hl-pen-label btn-label-desktop">Highlight</span>
+      </button>
+      <div class="topbar-hl-palette" id="topbarHlPalette">
+        <button class="tb-color-dot dot-yellow active" onclick="setActiveHighlightColor('yellow', this)" title="أصفر 🟡"></button>
+        <button class="tb-color-dot dot-green" onclick="setActiveHighlightColor('green', this)" title="أخضر 🟢"></button>
+        <button class="tb-color-dot dot-pink" onclick="setActiveHighlightColor('pink', this)" title="وردي 🟣"></button>
+        <button class="tb-color-dot dot-cyan" onclick="setActiveHighlightColor('cyan', this)" title="سماوي 🔵"></button>
+      </div>
     </div>
 
     <button class="subtle-link-btn" id="darkModeBtn" onclick="toggleDarkMode()" title="تفعيل / إيقاف الوضع الليلي (Dark Mode)">
@@ -5530,64 +6331,81 @@ function syncAdminCopyAccess() {
   <button type="button" class="hl-erase-btn" onclick="clearCurrentSelectionHighlight()" title="إزالة التظليل">✕</button>
 </div>
 
-<!-- ================= SESSION RESULTS & MISTAKE PEARLS MODAL ================= -->
+<!-- ================= END OF SESSION RESULTS & EXAM PEARLS MODAL ================= -->
 <div class="modal-backdrop" id="sessionResultsModal" onclick="if(event.target===this) closeSessionResultsModal()">
-  <div class="modal-box" style="max-width:580px; width:94%;" dir="rtl">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+  <div class="modal-box res-modal-box" dir="rtl">
+    <!-- Fixed Header -->
+    <div class="res-modal-header">
       <div>
-        <h3 style="margin:0; font-size:17px; color:var(--text);" id="resModalSessionTitle">📊 تقرير نتيجة السيشن</h3>
+        <h3 style="margin:0; font-size:17px; font-weight:800; color:var(--text);" id="resModalSessionTitle">📊 تقرير نتيجة السيشن</h3>
         <div style="font-size:12px; color:var(--text-muted); margin-top:3px;" id="resModalTimeSpent"></div>
       </div>
-      <button class="subtle-link-btn" onclick="closeSessionResultsModal()">&times; إغلاق</button>
+      <button class="subtle-link-btn" onclick="closeSessionResultsModal()" style="font-size:18px; padding:4px 8px;" title="إغلاق">&times;</button>
     </div>
 
-    <!-- Score & Percentage -->
-    <div class="res-score-box">
-      <div class="res-circle" id="resCircleEl">
-        <div class="res-circle-inner">
-          <span class="res-circle-pct" id="resScorePct">0%</span>
-          <span style="font-size:10px; color:var(--text-muted); font-weight:700;">الدرجة</span>
+    <!-- Scrollable Body -->
+    <div class="res-modal-body">
+      <!-- Score Hero Box -->
+      <div class="res-score-box">
+        <div class="res-circle" id="resCircleEl">
+          <div class="res-circle-inner">
+            <span class="res-circle-pct" id="resScorePct">0%</span>
+            <span style="font-size:10px; color:var(--text-muted); font-weight:700;">الدرجة</span>
+          </div>
+        </div>
+        <div class="res-score-details">
+          <div class="res-grade-pill" id="resGradeBadge">ممتاز 🌟</div>
+          <div class="res-summary-msg" id="resSummaryMessage"></div>
         </div>
       </div>
-      <div>
-        <div style="font-size:16px; font-weight:800; color:var(--text); margin-bottom:4px;" id="resGradeBadge">ممتاز 🌟</div>
-        <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;" id="resSummaryMessage"></div>
+
+      <!-- Stats Grid -->
+      <div class="res-stats-grid">
+        <div class="res-stat-card correct-card">
+          <div class="res-stat-val" style="color:var(--correct);" id="resCountCorrect">0</div>
+          <div class="res-stat-lbl">إجابة صحيحة ✓</div>
+        </div>
+        <div class="res-stat-card wrong-card">
+          <div class="res-stat-val" style="color:var(--wrong);" id="resCountWrong">0</div>
+          <div class="res-stat-lbl">إجابة خاطئة ✗</div>
+        </div>
+        <div class="res-stat-card hint-card">
+          <div class="res-stat-val" style="color:var(--hint);" id="resCountHint">0</div>
+          <div class="res-stat-lbl">بمساعدة Hint 💡</div>
+        </div>
+      </div>
+
+      <!-- Mistakes & Pearls Section -->
+      <div class="res-pearls-section">
+        <div class="res-pearls-header">
+          <div class="res-pearls-title">
+            <span>💡 مفاتيح الحل الذهبية للأسئلة الخاطئة (Exam Pearls)</span>
+            <span class="res-pearls-badge" id="resMistakesCountLabel">0 أخطاء</span>
+          </div>
+          <span style="font-size:12px; color:var(--text-muted);">مرّر للأسفل لمراجعة جميع مفاتيح الحل 📜</span>
+        </div>
+
+        <div class="res-mistakes-wrap" id="resMistakesContainer">
+          <!-- Populated by JS -->
+        </div>
       </div>
     </div>
 
-    <!-- Counts grid -->
-    <div class="res-stats-grid">
-      <div class="res-stat-card">
-        <div class="res-stat-val" style="color:var(--correct);" id="resCountCorrect">0</div>
-        <div class="res-stat-lbl">إجابة صحيحة ✓</div>
+    <!-- Fixed Footer -->
+    <div class="res-modal-footer">
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-teal" id="resBtnRetryMistakes" onclick="retryMistakesOnlyFromResults()" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%); font-weight:700; box-shadow:0 3px 10px rgba(10,108,116,0.25);">
+          🔄 إعادة حل الأسئلة الخاطئة فقط
+        </button>
+        <button class="btn-outline" onclick="retryEntireSessionFromResults()">
+          🔄 إعادة حل السيشن كاملة
+        </button>
       </div>
-      <div class="res-stat-card">
-        <div class="res-stat-val" style="color:var(--wrong);" id="resCountWrong">0</div>
-        <div class="res-stat-lbl">إجابة خاطئة ✗</div>
-      </div>
-      <div class="res-stat-card">
-        <div class="res-stat-val" style="color:var(--hint);" id="resCountHint">0</div>
-        <div class="res-stat-lbl">بمساعدة Hint 💡</div>
-      </div>
-    </div>
-
-    <!-- Mistakes & Pearls Section -->
-    <div id="resMistakesSection">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <h4 style="margin:0; font-size:13.5px; color:var(--wrong);">🔑 مفاتيح حل ومراجعة الأسئلة الخاطئة:</h4>
-        <span style="font-size:11.5px; color:var(--text-muted);" id="resMistakesCountLabel"></span>
-      </div>
-      <div class="res-mistakes-wrap" id="resMistakesContainer"></div>
-    </div>
-
-    <!-- Actions -->
-    <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:12px;">
-      <button class="btn-outline" onclick="closeSessionResultsModal()">متابعة الاستعراض</button>
-      <button class="btn-outline" id="resBtnRetryMistakes" onclick="retryMistakesOnlyFromResults()" style="color:var(--wrong); border-color:var(--wrong-border);">🔄 إعادة حل الأخطاء فقط</button>
-      <button class="btn-teal" onclick="retryEntireSessionFromResults()">🔄 إعادة السيشن كاملة</button>
+      <button class="btn-outline" onclick="closeSessionResultsModal()">إغلاق</button>
     </div>
   </div>
 </div>
+
 
 <!-- ================= REPORT QUESTION MODAL ================= -->
 <div class="modal-backdrop" id="reportQuestionModal" onclick="if(event.target===this) closeReportQuestionModal()">
@@ -9384,7 +10202,12 @@ function renderTopicPage(topicId) {
   const chapTopics = DATA.topics.filter(x => x.chapter_id === t.chapter_id);
   const chTitle = getChapterTitle(t.chapter_id);
 
-  const annotatedNotes = annotateMedicalHTML(t.vip_html);
+  state.currentTopicId = topicId;
+  let annotatedNotes = annotateMedicalHTML(t.vip_html);
+  try {
+    const savedHl = localStorage.getItem("emle_notes_hl_" + t.id);
+    if (savedHl) annotatedNotes = savedHl;
+  } catch(e) {}
 
   const container = document.getElementById("topicArticleContainer");
   container.innerHTML = `
@@ -9696,6 +10519,13 @@ function renderSplitNotesPane() {
   const t = DATA.topics.find(x => x.id === q.topic_id);
   if (!t) return;
 
+  state.currentQuizTopicId = t.id;
+  let snpNotesBody = annotateMedicalHTML(t.vip_html);
+  try {
+    const savedHl = localStorage.getItem("emle_notes_hl_" + t.id);
+    if (savedHl) snpNotesBody = savedHl;
+  } catch(e) {}
+
   pane.innerHTML = `
     <div class="snp-header">
       <div>
@@ -9705,9 +10535,15 @@ function renderSplitNotesPane() {
       <button class="subtle-link-btn" onclick="toggleSplitNotes()" title="Close Split View">&times; Close</button>
     </div>
     <div class="snp-body">
-      ${annotateMedicalHTML(t.vip_html)}
+      ${snpNotesBody}
     </div>
   `;
+  pane.querySelectorAll(".emle-hl").forEach(mark => {
+    mark.onclick = function(ev) {
+      ev.stopPropagation();
+      removeHighlightSpan(this);
+    };
+  });
 }
 
 function isPostFeb2024Question(q) {
@@ -11244,7 +12080,7 @@ function finishAndShowSessionResults() {
   let unanswered = 0;
   const mistakeQuestions = [];
 
-  qs.forEach(q => {
+  qs.forEach((q, idx) => {
     const st = state.qStatus[q.number];
     if (!st || typeof st.selected !== "number") {
       unanswered++;
@@ -11254,7 +12090,7 @@ function finishAndShowSessionResults() {
       hint++;
     } else {
       wrong++;
-      mistakeQuestions.push({ q: q, st: st });
+      mistakeQuestions.push({ q: q, st: st, sessionIdx: idx });
     }
   });
 
@@ -11276,29 +12112,35 @@ function finishAndShowSessionResults() {
 
   const sessionName = getQuizSessionDisplayName(state.quizFilter);
   if (titleEl) titleEl.textContent = `📊 تقرير نتيجة: ${sessionName}`;
-  if (timeEl) timeEl.textContent = `إجمالي أسئلة السيشن: ${total} سؤال • تم إنهاء الحل`;
+  if (timeEl) timeEl.textContent = `إجمالي أسئلة السيشن: ${total} سؤال • إجابات صحيحة: ${correct} • أخطاء: ${wrong}`;
 
-  if (circleEl) {
-    circleEl.style.setProperty("--pct", pct);
-  }
-  if (scorePctEl) scorePctEl.textContent = `${pct}%`;
-
+  let circleColor = "var(--correct)";
   let grade = "ممتاز 🌟";
   let gradeColor = "var(--correct)";
   let msg = `أداء استثنائي! أجبت على ${correct} من أصل ${total} سؤال بشكل صحيح بنسبة ${pct}%. استمر على هذا المستوى المميز!`;
+
   if (pct < 60) {
+    circleColor = "var(--wrong)";
     grade = "يحتاج مزيداً من المراجعة 📚";
     gradeColor = "var(--wrong)";
-    msg = `حصلت على ${pct}%. راجع مفاتيح الحل والأخطاء أدناه جيداً قبل خوض المحاولة التالية لترسيخ المعلومات.`;
+    msg = `حصلت على ${pct}%. راجع مفاتيح الحل الذهبية (Exam Pearls) أدناه جيداً لتثبيت الأفكار التي أخطأت بها قبل خوض المحاولة التالية.`;
   } else if (pct < 75) {
+    circleColor = "#b45309";
     grade = "جيد 👍";
     gradeColor = "#b45309";
     msg = `أداء جيد بنسبة ${pct}%. بتركيز إضافي على الأسئلة الخاطئة ونقاط الـ Exam Pearls ستصل لدرجة الامتياز بسهولة!`;
   } else if (pct < 85) {
+    circleColor = "var(--teal)";
     grade = "جيد جداً ✨";
     gradeColor = "var(--teal)";
-    msg = `نتيجة رائعة جداً بنسبة ${pct}%! مراجعة سريعة للأخطاء القليلة أدناه كافية لإتقان كامل التوبيك.`;
+    msg = `نتيجة رائعة جداً بنسبة ${pct}%! مراجعة سريعة للأخطاء القليلة أدناه كافية لإتقان كامل التوبيك بنسبة 100%.`;
   }
+
+  if (circleEl) {
+    circleEl.style.setProperty("--pct", pct);
+    circleEl.style.setProperty("--circle-color", circleColor);
+  }
+  if (scorePctEl) scorePctEl.textContent = `${pct}%`;
 
   if (gradeBadgeEl) {
     gradeBadgeEl.textContent = grade;
@@ -11311,16 +12153,16 @@ function finishAndShowSessionResults() {
   if (countHintEl) countHintEl.textContent = hint;
 
   if (mistakesCountEl) {
-    mistakesCountEl.textContent = `${mistakeQuestions.length} سؤال خاطئ بحاجة للتركيز`;
+    mistakesCountEl.textContent = `${mistakeQuestions.length} سؤال خاطئ`;
   }
 
   if (mistakesContainer) {
     if (mistakeQuestions.length === 0) {
       mistakesContainer.innerHTML = `
-        <div style="text-align:center; padding:24px; color:var(--correct);">
-          <div style="font-size:28px; margin-bottom:6px;">🎉</div>
-          <div style="font-weight:700;">ما شاء الله! لا توجد أي أخطاء في هذه السيشن</div>
-          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">إجاباتك كلها صحيحة 100%</div>
+        <div style="text-align:center; padding:32px 20px; color:var(--correct);">
+          <div style="font-size:36px; margin-bottom:8px;">🎉</div>
+          <div style="font-size:16px; font-weight:800; margin-bottom:4px;">ما شاء الله! لا توجد أي أخطاء في هذه السيشن</div>
+          <div style="font-size:13px; color:var(--text-muted);">إجاباتك كلها صحيحة 100%، معلوماتك السريرية ممتازة وراسخة.</div>
         </div>
       `;
       if (btnRetryMistakes) btnRetryMistakes.style.display = "none";
@@ -11329,27 +12171,46 @@ function finishAndShowSessionResults() {
       mistakesContainer.innerHTML = mistakeQuestions.map(item => {
         const q = item.q;
         const st = item.st;
+        const sessionIdx = item.sessionIdx;
         const yourAnsChar = typeof st.selected === "number" ? String.fromCharCode(65 + st.selected) : "لم يُجب";
         const correctAnsChar = String.fromCharCode(65 + q.verified_answer);
-        const correctText = q.options && q.options[q.verified_answer] ? q.options[q.verified_answer] : "";
+        const correctText = (q.options && q.options[q.verified_answer]) ? q.options[q.verified_answer] : "";
         const pearlText = (q.explanation && q.explanation.pearl) ? q.explanation.pearl : "";
-        const origAmerBadge = isAdminAccount() ? ` <span class="admin-amer-pill">د. عامر #${q.number}</span>` : "";
+        const origAmerBadge = isAdminAccount() ? ` <span class="admin-amer-pill" title="رقم د. عامر">📖 د. عامر #${q.number}</span>` : "";
 
         return `
           <div class="res-pearl-card">
-            <div class="res-pearl-qtitle">
-              <span>سؤال رقم Q#${q.number}${origAmerBadge}</span>
-              <span style="color:var(--wrong); font-size:11.5px;">إجابتك: (${yourAnsChar}) &larr; الصواب: (${correctAnsChar})</span>
+            <div class="res-card-top-row">
+              <div class="res-card-qnum-pill">
+                <span>سؤال رقم Q#${q.number}</span>
+                ${origAmerBadge}
+              </div>
+              <button class="res-jump-btn" onclick="closeSessionResultsModal(); jumpQuizIdx(${sessionIdx});" title="الانتقال لعرض السؤال بالكامل في السيشن">
+                🔍 عرض السؤال كاملاً
+              </button>
             </div>
-            <div style="font-size:12.5px; color:var(--text); margin-bottom:4px; font-weight:600;">
-              ${annotateMedicalHTML(q.stem.substring(0, 140))}${q.stem.length > 140 ? '...' : ''}
+
+            <div class="res-ans-compare">
+              <span class="res-ans-pill res-ans-wrong">❌ إجابتك: (${yourAnsChar})</span>
+              <span class="res-ans-pill res-ans-correct">✅ الصواب: (${correctAnsChar})</span>
             </div>
-            <div style="font-size:11.5px; color:var(--correct); margin-bottom:4px;">
-              <strong>الإجابة الصحيحة:</strong> (${correctAnsChar}) ${annotateMedicalHTML(correctText)}
+
+            <div class="res-q-stem">
+              ${annotateMedicalHTML(q.stem)}
             </div>
+
+            <div class="res-correct-choice-box">
+              <strong>✓ الاختيار الصحيح (${correctAnsChar}):</strong> ${annotateMedicalHTML(correctText)}
+            </div>
+
             ${pearlText ? `
-              <div class="res-pearl-body">
-                <strong>💡 مفتاح الحل (Exam Pearl):</strong> ${annotateMedicalHTML(pearlText)}
+              <div class="res-pearl-callout">
+                <div class="res-pearl-callout-header">
+                  <span>💡 مفتاح الحل الذهبي (Exam Pearl):</span>
+                </div>
+                <div class="res-pearl-callout-text">
+                  ${annotateMedicalHTML(pearlText)}
+                </div>
               </div>
             ` : ''}
           </div>
@@ -11374,16 +12235,26 @@ function retryMistakesOnlyFromResults() {
     return st && typeof st.selected === "number" && st.status === "wrong";
   });
   if (mistakes.length === 0) {
-    showToast("لا توجد أخطاء لإعادة حلها!");
+    showToast("لا توجد أسئلة خاطئة لإعادة حلها.");
     return;
   }
-  executeStartQuizSession("wrong", mistakes, "retry_all");
+  mistakes.forEach(q => archiveQuestionAttemptBeforeRetry(q.number));
+  saveState();
+  state.activeQuizQs = mistakes.slice();
+  state.quizIndex = 0;
+  renderQuizPage(true);
+  showToast(`🎯 تم فتح الأسئلة الخاطئة فقط (${mistakes.length} سؤال) لإعادة حلها!`);
 }
 
 function retryEntireSessionFromResults() {
   closeSessionResultsModal();
   const qs = getQuestionsForFilter(state.quizFilter);
-  executeStartQuizSession(state.quizFilter, qs, "retry_all");
+  if (!qs || !qs.length) return;
+  qs.forEach(q => archiveQuestionAttemptBeforeRetry(q.number));
+  saveState();
+  state.quizIndex = 0;
+  renderQuizPage(true);
+  showToast(`🔄 تم إعادة تصفير أسئلة السيشن (${qs.length} سؤال) للبدء من جديد!`);
 }
 
 /* 3. REPORT QUESTION SYSTEM */
@@ -11466,27 +12337,83 @@ async function submitQuestionReport() {
   showToast("✅ تم إرسال بلاغك للمشرف بنجاح! شكراً لمساعدتك في تدقيق المحتوى.");
 }
 
-/* 4. SMOOTH HIGHLIGHTER SYSTEM */
+/* 4. SMOOTH HIGHLIGHTER SYSTEM (AUTO-PEN & TOPBAR CONTROLLER) */
 let _currentHighlightRange = null;
+
+if (typeof state !== "undefined") {
+  state.hlPenActive = localStorage.getItem("emle_hl_pen_active") !== "false";
+  state.hlActiveColor = localStorage.getItem("emle_hl_color") || "yellow";
+}
+
+function syncHighlighterTopbarUI() {
+  const tool = document.getElementById("topbarHlTool");
+  const statusDot = document.getElementById("hlPenStatusDot");
+  if (!tool) return;
+
+  const isActive = (state && state.hlPenActive !== false);
+  const activeColor = (state && state.hlActiveColor) || "yellow";
+
+  tool.classList.toggle("pen-active", isActive);
+  if (statusDot) {
+    statusDot.style.background = isActive ? "#22c55e" : "#94a3b8";
+    statusDot.title = isActive ? `قلم التظليل مفعّل (اللون الحالي: ${getHlColorArabicName(activeColor)})` : "قلم التظليل معطّل (اضغط لتفعيله)";
+  }
+
+  const dots = document.querySelectorAll("#topbarHlPalette .tb-color-dot");
+  dots.forEach(d => {
+    d.classList.toggle("active", d.classList.contains("dot-" + activeColor));
+  });
+}
+
+function getHlColorArabicName(c) {
+  if (c === "yellow") return "الأصفر 🟡";
+  if (c === "green") return "الأخضر 🟢";
+  if (c === "pink") return "الوردي 🟣";
+  if (c === "cyan") return "السماوي 🔵";
+  return c;
+}
+
+function toggleHighlightPen() {
+  state.hlPenActive = !state.hlPenActive;
+  localStorage.setItem("emle_hl_pen_active", state.hlPenActive);
+  syncHighlighterTopbarUI();
+  if (state.hlPenActive) {
+    showToast(`🖍️ تم تفعيل قلم التظليل المباشر (${getHlColorArabicName(state.hlActiveColor)}) — حدد أي نص في النوتس أو الأسئلة وسيتم تظليله فوراً!`);
+  } else {
+    showToast("تم إيقاف قلم التظليل التلقائي.");
+  }
+}
+
+function setActiveHighlightColor(colorName, dotEl) {
+  state.hlActiveColor = colorName;
+  state.hlPenActive = true;
+  localStorage.setItem("emle_hl_color", colorName);
+  localStorage.setItem("emle_hl_pen_active", "true");
+  syncHighlighterTopbarUI();
+  showToast(`🎨 تم اختيار اللون ${getHlColorArabicName(colorName)} وتفعيل قلم التظليل المباشر.`);
+}
 
 function initHighlighterSystem() {
   const toolbar = document.getElementById("emleHighlighterToolbar");
-  if (!toolbar) return;
+
+  syncHighlighterTopbarUI();
 
   function handleSelectionChange(e) {
-    if (toolbar.contains(e.target)) return;
+    if (toolbar && toolbar.contains(e.target)) return;
+    const topbarTool = document.getElementById("topbarHlTool");
+    if (topbarTool && topbarTool.contains(e.target)) return;
 
     setTimeout(() => {
       const sel = window.getSelection();
       if (!sel || sel.isCollapsed || !sel.rangeCount) {
-        toolbar.classList.remove("visible");
+        if (toolbar) toolbar.classList.remove("visible");
         _currentHighlightRange = null;
         return;
       }
 
       const text = sel.toString().trim();
       if (text.length < 2) {
-        toolbar.classList.remove("visible");
+        if (toolbar) toolbar.classList.remove("visible");
         _currentHighlightRange = null;
         return;
       }
@@ -11496,16 +12423,23 @@ function initHighlighterSystem() {
       const el = container.nodeType === 1 ? container : container.parentElement;
       if (!el) return;
 
-      const isInsideReading = el.closest(".article-body, .notes-markdown-view, .vip-notes-view, .qc-stem, .opt-text, .hint-callout, .explanation-box, .dual-policy-card, .topic-article-body");
-      if (!isInsideReading) {
-        toolbar.classList.remove("visible");
+      const readingContainer = el.closest(".article-body, .article-card, .snp-body, .notes-markdown-view, .vip-notes-view, .qc-stem, .opt-text, .hint-callout, .explanation-box, .dual-policy-card, .topic-article-body");
+      if (!readingContainer) {
+        if (toolbar) toolbar.classList.remove("visible");
         _currentHighlightRange = null;
         return;
       }
 
+      // If Auto-Highlight Pen mode is ON, highlight IMMEDIATELY without extra clicks!
+      if (state && state.hlPenActive !== false) {
+        applySelectionHighlight("emle-hl-" + (state.hlActiveColor || "yellow"), range, readingContainer);
+        return;
+      }
+
+      // Fallback: show floating toolbar if pen mode is OFF
       _currentHighlightRange = range.cloneRange();
       const rect = range.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
+      if (toolbar && rect.width > 0 && rect.height > 0) {
         toolbar.style.top = (window.scrollY + rect.top) + "px";
         toolbar.style.left = (window.scrollX + rect.left + rect.width / 2) + "px";
         toolbar.classList.add("visible");
@@ -11517,10 +12451,10 @@ function initHighlighterSystem() {
   document.addEventListener("touchend", handleSelectionChange);
 }
 
-function applySelectionHighlight(colorClass) {
+function applySelectionHighlight(colorClass, passedRange, containerEl) {
   const toolbar = document.getElementById("emleHighlighterToolbar");
   const sel = window.getSelection();
-  let range = _currentHighlightRange;
+  let range = passedRange || _currentHighlightRange;
   if (!range && sel && sel.rangeCount) {
     range = sel.getRangeAt(0);
   }
@@ -11544,6 +12478,10 @@ function applySelectionHighlight(colorClass) {
   if (sel) sel.removeAllRanges();
   if (toolbar) toolbar.classList.remove("visible");
   _currentHighlightRange = null;
+
+  // Persist highlights in notes if inside topic article or split notes
+  persistHighlightIfApplicable(containerEl || mark);
+
   showToast("✏️ تم التظليل بنجاح (اضغط على الكلمة المظللة لإزالته)");
 }
 
@@ -11558,12 +12496,31 @@ function clearCurrentSelectionHighlight() {
 function removeHighlightSpan(spanEl) {
   if (!spanEl || !spanEl.parentNode) return;
   const parent = spanEl.parentNode;
+  const targetContainer = spanEl.closest(".article-body, .snp-body");
+
   while (spanEl.firstChild) {
     parent.insertBefore(spanEl.firstChild, spanEl);
   }
   parent.removeChild(spanEl);
   parent.normalize();
+
+  persistHighlightIfApplicable(targetContainer);
   showToast("🗑️ تم إزالة التظليل");
+}
+
+function persistHighlightIfApplicable(targetEl) {
+  if (!targetEl) return;
+  try {
+    const articleBody = targetEl.closest ? targetEl.closest(".article-body") : null;
+    if (articleBody && state && state.currentTopicId) {
+      localStorage.setItem("emle_notes_hl_" + state.currentTopicId, articleBody.innerHTML);
+      return;
+    }
+    const snpBody = targetEl.closest ? targetEl.closest(".snp-body") : null;
+    if (snpBody && state && state.currentQuizTopicId) {
+      localStorage.setItem("emle_notes_hl_" + state.currentQuizTopicId, snpBody.innerHTML);
+    }
+  } catch(e) {}
 }
 
 /* 5. COMMUNITY DISCUSSION SYSTEM UNDER QUESTIONS */
@@ -11595,7 +12552,7 @@ function renderQuestionCommunitySectionHTML(q) {
                 📷 إرفاق صورة
                 <input type="file" accept="image/*" style="display:none;" onchange="handleCommImageSelect(${qnum}, this)">
               </label>
-              <img id="commImgPreview-${qnum}" class="comm-img-preview" alt="Preview">
+              <img id="commImgPreview-${qnum}" class="comm-img-preview" alt="معاينة الصورة" style="display:none;">
               <button id="commImgRemoveBtn-${qnum}" class="subtle-link-btn" style="display:none; color:var(--wrong);" onclick="removeCommImage(${qnum})">✕ إلغاء الصورة</button>
             </div>
             <button class="btn-teal" style="padding:5px 12px; font-size:12px;" onclick="postCommunityComment(${qnum})">
@@ -11789,6 +12746,8 @@ function likeCommunityComment(qnum, commentId) {
     if (listEl) listEl.innerHTML = renderCommunityCommentsListHTML(qnum);
   }
 }
+
+
 
 /* 6. ADMIN REVISION NOTES SYSTEM (ADMIN ONLY) */
 function getAdminNotesStorage() {
