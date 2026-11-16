@@ -2456,7 +2456,127 @@
 
   /* ================= DASHBOARD UPDATE BANNER (13 NOV) ================= */
 
-  .dashboard-update-banner {
+  
+  /* 📚 DASHBOARD BOOK BANNER */
+  .dashboard-book-banner {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 50%, #f0fdf4 100%);
+    border: 2px solid var(--teal);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    direction: rtl;
+    text-align: right;
+    box-shadow: 0 4px 16px rgba(10, 108, 116, 0.09);
+    position: relative;
+    font-family: inherit;
+  }
+  body.dark-mode .dashboard-book-banner {
+    background: linear-gradient(135deg, #0e2023 0%, #151d2a 100%);
+    border-color: #0d9488;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+  .dbb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .dbb-badge {
+    background: var(--teal);
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .dbb-price-badge {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  body.dark-mode .dbb-price-badge {
+    background: rgba(22, 101, 52, 0.35);
+    color: #86efac;
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+  .dbb-tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 700;
+    direction: ltr;
+  }
+  .dbb-title {
+    margin: 4px 0 6px 0;
+    font-size: 16.5px;
+    font-weight: 900;
+    color: var(--teal);
+    line-height: 1.4;
+  }
+  body.dark-mode .dbb-title {
+    color: #2dd4bf;
+  }
+  .dbb-sub {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .dbb-steps-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  body.dark-mode .dbb-steps-box {
+    background: rgba(30, 41, 59, 0.7);
+  }
+  .dbb-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .dbb-step-num {
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .dbb-link {
+    color: #0284c7;
+    font-weight: 800;
+    text-decoration: underline;
+    word-break: break-all;
+    display: inline-block;
+    margin-top: 2px;
+  }
+  body.dark-mode .dbb-link {
+    color: #38bdf8;
+  }
+  .dbb-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .dbb-btn {
+    padding: 7px 14px;
+    font-size: 12.5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+.dashboard-update-banner {
 
     background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdfa 100%);
 
@@ -8794,7 +8914,7 @@
 
     user-select: none !important;
 
-    -webkit-touch-callout: none !important;
+    /* touch-callout enabled for mobile study */
 
   }
 
@@ -9306,7 +9426,21 @@
 
 
 
+  
+  /* MOBILE & TABLET HIGHLIGHTER OPTIMIZATIONS */
   .emle-hl-toolbar {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .emle-hl-toolbar .hl-color-btn,
+  .emle-hl-toolbar .hl-erase-btn {
+    touch-action: manipulation;
+    min-width: 32px;
+    min-height: 32px;
+  }
+.emle-hl-toolbar {
 
     position: absolute;
 
@@ -10737,13 +10871,22 @@ function syncAdminCopyAccess() {
 (function initSecurityGuards() {
 
   document.addEventListener('contextmenu', function(e) {
-
     if (hasAdminCopyAccess()) return true;
 
+    // Allow touch long-press text selection in reading / study content on Mobile & Tablets
+    const target = e.target;
+    const isReadingArea = target && target.closest && target.closest(
+      '.article-body, .article-card, .snp-body, .topic-article-body, .notes-markdown-view, .vip-notes-view, .qc-stem, .opt-text, .hint-callout, .explanation-box, .dual-policy-card'
+    );
+    const hasSelection = window.getSelection && window.getSelection().toString().trim().length > 0;
+
+    // If long-press on touch device or active selection inside study area, allow native selection handles!
+    if (isReadingArea || hasSelection) {
+      return true;
+    }
+
     e.preventDefault();
-
     return false;
-
   }, { capture: true });
 
 
@@ -11116,7 +11259,54 @@ function syncAdminCopyAccess() {
 
       <!-- 📢 TOP DASHBOARD UPDATE BANNER (13 نوفمبر 2026) -->
 
-      <div class="dashboard-update-banner" id="dashUpdateBanner" dir="rtl">
+            <!-- 📚 PINNED VIP COMPLETE BOOK BANNER -->
+      <div class="dashboard-book-banner" id="dashBookBanner" dir="rtl">
+        <div class="dbb-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="dbb-badge">📚 حصرياً لمشتركي المنصة</span>
+            <span class="dbb-price-badge">20 ج فقط</span>
+          </div>
+          <span class="dbb-tag">📖 Complete VIP Reference Book (PDF)</span>
+        </div>
+
+        <h3 class="dbb-title">بناء على طلبكم، تم عمل كتاب مجمع للـ Notes كلها في 150 صفحة فقط! ✨</h3>
+        <p class="dbb-sub">جميع الـ 18 شابتر مجمعة ومنسقة بالكامل مع تصنيف الـ Topics وإحصائيات تكرار الامتحانات حتى يوليو 2026.</p>
+
+        <div class="dbb-steps-box">
+          <div class="dbb-step">
+            <span class="dbb-step-num">1️⃣</span>
+            <div class="dbb-step-text">
+              <strong>التحويل على الحساب التالي (20 جنيه فقط):</strong><br>
+              <a href="https://ipn.eg/S/ahmedsakr0025/instapay/7iiKvb" target="_blank" class="dbb-link">
+                ▫️ https://ipn.eg/S/ahmedsakr0025/instapay/7iiKvb
+              </a>
+            </div>
+          </div>
+
+          <div class="dbb-step">
+            <span class="dbb-step-num">2️⃣</span>
+            <div class="dbb-step-text">
+              <strong>بعدها ابعت سكرين شوت بالتحويل للأكونت ده لاستلام نسختك فوراً:</strong><br>
+              <a href="https://t.me/EMLE_inNutshell_Contact" target="_blank" class="dbb-link">
+                ▫️ https://t.me/EMLE_inNutshell_Contact
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dbb-actions">
+          <a href="https://ipn.eg/S/ahmedsakr0025/instapay/7iiKvb" target="_blank" class="btn-teal dbb-btn">
+            💳 الدفع عبر InstaPay (20 ج)
+          </a>
+          <a href="https://t.me/EMLE_inNutshell_Contact" target="_blank" class="btn-outline dbb-btn" style="border-color:#0284c7; color:#0284c7;">
+            📲 إرسال الإيصال واستلام الكتاب
+          </a>
+          <button type="button" class="subtle-link-btn" onclick="openUpdateAnnouncementModal()" style="font-size:12.5px; margin-right:auto;">
+            تفاصيل وخطة المذاكرة السريعة للكتاب &larr;
+          </button>
+        </div>
+      </div>
+<div class="dashboard-update-banner" id="dashUpdateBanner" dir="rtl">
 
         <div class="dub-header-row">
 
@@ -12457,6 +12647,17 @@ function syncAdminCopyAccess() {
         </button>
 
       </div>
+      <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border);">
+        <div style="font-size:11.5px; color:var(--text-muted); margin-bottom:8px; text-align:center;">نسخة احتياطية يدوية (لحفظ حلك خارج المتصفح):</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-outline" onclick="exportLocalProgressBackup()" style="flex:1; font-size:12px; justify-content:center;" type="button" title="تنزيل نسخة احتياطية من حلك على جهازك">
+            💾 تصدير نسخة
+          </button>
+          <button class="btn-outline" onclick="triggerImportProgress()" style="flex:1; font-size:12px; justify-content:center;" type="button" title="استعادة حلك السابق من ملف نسخة احتياطية">
+            📂 استعادة نسخة
+          </button>
+        </div>
+      </div>
 
     </div>
 
@@ -12503,6 +12704,18 @@ function syncAdminCopyAccess() {
         <span>Sign in with Google</span>
 
       </button>
+      <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border);">
+        <div style="font-size:11.5px; color:var(--text-muted); margin-bottom:8px; text-align:center;">أو نقل التقدم بين المتصفحات يدوياً (بدون إنترنت):</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-outline" onclick="exportLocalProgressBackup()" style="flex:1; font-size:12px; justify-content:center;" type="button" title="تنزيل نسخة احتياطية من حلك على جهازك">
+            💾 تصدير نسخة
+          </button>
+          <button class="btn-outline" onclick="triggerImportProgress()" style="flex:1; font-size:12px; justify-content:center;" type="button" title="استعادة حلك السابق من ملف نسخة احتياطية">
+            📂 استعادة نسخة
+          </button>
+        </div>
+      </div>
+      <input type="file" id="progressBackupFileInput" accept=".json" style="display:none;" onchange="handleImportProgressFile(event)" />
 
 
 
@@ -12548,155 +12761,112 @@ function syncAdminCopyAccess() {
 
 </div>
 
+<!-- ================= UPDATE ANNOUNCEMENT MODAL (FIRST TIME SEEN) ================= -->
+<div class="modal-backdrop" id="updateAnnouncementModal" onclick="if(event.target===this) dismissUpdateAnnouncement()">
+  <div class="modal-box update-announcement-box" dir="rtl">
+    <div class="uam-header" style="text-align:right;">
+      <div class="uam-badge-group">
+        <span class="uam-badge" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%);">📚 إصدار كتاب الـ VIP Notes</span>
+        <span class="uam-date" style="color:var(--teal); font-weight:800;">16 نوفمبر 2026</span>
+      </div>
+      <h2 class="uam-title" style="font-size:18px; color:var(--text); line-height:1.4; margin:8px 0 6px 0;">
+        بناءً على طلبكم، تم عمل كتاب مجمع للـ Notes كلها في ملف واحد PDF! 📖✨
+      </h2>
+      <p class="uam-subtitle" style="margin:0; font-size:13px; color:var(--text-secondary); line-height:1.6;">
+        تم جمع كافة النوتس والمفاتيح السريرية الـ 18 شابتر في ملف PDF واحد منسق بجودة عالية للدراسة والمراجعة السريعة:
+      </p>
+    </div>
+
+    <!-- Book Details Box -->
+    <div style="background:var(--surface-subtle); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:16px; text-align:right;">
+      <div style="font-size:15px; font-weight:900; color:#dc2626; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+        <span>🔴</span>
+        <span>الكتاب يشمل كل الـ 18 شابتر في 150 صفحة فقط!</span>
+      </div>
+
+      <div style="font-size:13.5px; color:var(--text); line-height:1.8; margin-bottom:14px;">
+        <div style="margin-bottom:8px; display:flex; align-items:flex-start; gap:8px;">
+          <span style="color:#0a6c74; font-weight:800; font-size:15px;">▫️</span>
+          <div><strong>النوتس بتغطي كل أفكار أسئلة السنين السابقة</strong> لغاية آخر امتحان (دور يوليو 2026) مجمعة ومقسمة لمواد ثم لشباتر ثم لـ Topics.</div>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:8px;">
+          <span style="color:#0a6c74; font-weight:800; font-size:15px;">▫️</span>
+          <div><strong>موضح جنب كل موضوع عدد مرات تكراره في الامتحانات</strong> بحيث لو مش لاحق وعاوز تقرأ المواضيع الـ Highyield فقط.</div>
+        </div>
+      </div>
+
+      <!-- Schedule Box -->
+      <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:12px 14px; font-size:13px; color:#92400e; line-height:1.75;">
+        <div style="font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+          <span>💡</span> <span>خطة الإنجاز السريع:</span>
+        </div>
+        <div>• يعني لو كل يوم هتذاكر <strong>20 صفحة فقط</strong>، هتخلص الكتاب قبل الامتحان الفعلي.</div>
+        <div>• ولو كل يوم هتذاكر <strong>30 صفحة</strong> هتخلصه قبل بداية الامتحانات المحاكاة / التحريبي.</div>
+      </div>
+    </div>
+
+    <!-- Pricing & Payment Box -->
+    <div style="background:linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border:1.5px solid #10b981; border-radius:10px; padding:16px; margin-bottom:18px; text-align:right;">
+      <div style="font-size:15px; font-weight:900; color:#15803d; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <span style="display:flex; align-items:center; gap:6px;">
+          <span>🔴</span> <span>الكتاب سعره 20ج فقط لمشتركي المنصة</span>
+        </span>
+        <span style="font-size:11px; background:#dcfce7; color:#166534; font-weight:800; padding:2px 8px; border-radius:6px; border:1px solid #bbf7d0;">حصرياً</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:#14532d; line-height:1.6;">
+        <div style="display:flex; align-items:flex-start; gap:8px;">
+          <span style="font-size:16px; flex-shrink:0;">1️⃣</span>
+          <div>
+            <strong>التحويل على الحساب التالي:</strong><br>
+            <a href="https://ipn.eg/S/ahmedsakr0025/instapay/7iiKvb" target="_blank" style="color:#059669; font-weight:800; text-decoration:underline; word-break:break-all; display:inline-block; margin-top:2px;">
+              ▫️ https://ipn.eg/S/ahmedsakr0025/instapay/7iiKvb
+            </a>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:flex-start; gap:8px;">
+          <span style="font-size:16px; flex-shrink:0;">2️⃣</span>
+          <div>
+            <strong>بعدها ابعت سكرين شوت بالتحويل للأكونت ده:</strong><br>
+            <a href="https://t.me/EMLE_inNutshell_Contact" target="_blank" style="color:#0284c7; font-weight:800; text-decoration:underline; word-break:break-all; display:inline-block; margin-top:2px;">
+              ▫️ https://t.me/EMLE_inNutshell_Contact
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="https://ipn.eg/S/ahmedsakr0025/instapay/7iiKvb" target="_blank" class="btn-teal" style="flex:1; justify-content:center; text-decoration:none; padding:10px; font-size:13.5px;">
+          💳 الدفع عبر InstaPay (20 ج)
+        </a>
+        <a href="https://t.me/EMLE_inNutshell_Contact" target="_blank" class="btn-outline" style="flex:1; justify-content:center; text-decoration:none; padding:10px; font-size:13.5px; border-color:#0284c7; color:#0284c7;">
+          📲 إرسال الإيصال واستلام الكتاب
+        </a>
+      </div>
+      <button type="button" class="btn-outline" onclick="dismissUpdateAnnouncement()" style="justify-content:center; width:100%; padding:9px; font-size:13px;">
+        إغلاق ومتابعة المذاكرة على المنصة ✓
+      </button>
+    </div>
+  </div>
+</div>
+
+
 
 
 <!-- ================= SESSION START CHOICE MODAL (RETRY ALL VS KEEP ANSWERS) ================= -->
-
 <div class="modal-backdrop" id="sessionChoiceModal" onclick="if(event.target===this) closeSessionChoiceModal()">
-
   <div class="modal-box" style="max-width:520px; width:94%;" dir="rtl">
-
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
-
       <div>
-
         <h3 style="margin:0; font-size:16.5px; color:var(--text);" id="scmTitle">⚙️ خيارات بدء السيشن</h3>
-
         <div style="font-size:12.5px; color:var(--teal); font-weight:700; margin-top:4px;" id="scmSubtitle"></div>
-
       </div>
-
-
-
-<!-- ================= PLATFORM UPDATE ANNOUNCEMENT MODAL (FIRST TIME SEEN) ================= -->
-
-<div class="modal-backdrop" id="updateAnnouncementModal" onclick="if(event.target===this) dismissUpdateAnnouncement()">
-
-  <div class="modal-box update-announcement-box" dir="rtl">
-
-    <div class="uam-header">
-
-      <div class="uam-badge-group">
-
-        <span class="uam-badge">🎉 تحديث جديد للمنصة</span>
-
-        <span class="uam-date">13 نوفمبر 2026</span>
-
-      </div>
-
-      <h2 class="uam-title">تحديثات وتحسينات جديدة لمنصة EMLE in a Nutshell 🚀</h2>
-
-      <p class="uam-subtitle">تم تطبيق حزمة من التحسينات والميزات الجديدة بناءً على مقترحاتكم لضمان تجربة مذاكرة ومراجعة استثنائية:</p>
-
-    </div>
-
-
-
-    <div class="uam-list">
-
-      <div class="uam-item">
-
-        <div class="uam-item-icon">🌙</div>
-
-        <div class="uam-item-content">
-
-          <h4>الوضع الليلي (Dark Mode)</h4>
-
-          <p>يمكنك الآن التبديل بسهولة إلى الوضع الداكن من الزر بأعلى الصفحة لتجربة مذاكرة ليلية مريحة لعينيك.</p>
-
-        </div>
-
-      </div>
-
-
-
-      <div class="uam-item">
-
-        <div class="uam-item-icon">📱</div>
-
-        <div class="uam-item-content">
-
-          <h4>حماية زر الرجوع على الموبايل (Mobile Back Guard)</h4>
-
-          <p>لن تخرج المنصة فجأة عند الضغط على زر Back في هاتفك؛ بل سيُغلق النوافذ المنبثقة أولاً أو يعود بك للشاشة السابقة بسلاسة.</p>
-
-        </div>
-
-      </div>
-
-
-
-      <div class="uam-item">
-
-        <div class="uam-item-icon">🔄</div>
-
-        <div class="uam-item-content">
-
-          <h4>خيار إعادة المحاولة (Retry) لجميع أسئلة أي سيشن</h4>
-
-          <p>عند بدء أي Custom Exam أو مراجعة الأسئلة الخاطئة، يمكنك الآن الاختيار بين تصفير الأسئلة وحلها من جديد، أو الإبقاء على حلولك السابقة لمراجعتها.</p>
-
-        </div>
-
-      </div>
-
-
-
-      <div class="uam-item">
-
-        <div class="uam-item-icon">📊</div>
-
-        <div class="uam-item-content">
-
-          <h4>سجل المحاولات التفصيلي لكل سؤال</h4>
-
-          <p>عداد ذكي فوق كل سؤال يوضح عدد محاولاتك، وبالضغط عليه تظهر قائمة منسدلة بجميع إجاباتك السابقة وتواريخها وهل كانت صحيحة أم خاطئة.</p>
-
-        </div>
-
-      </div>
-
-
-
-      <div class="uam-item">
-
-        <div class="uam-item-icon">✅</div>
-
-        <div class="uam-item-content">
-
-          <h4>مطابقة تامة 100% لإجابات د. أحمد عامر</h4>
-
-          <p>تمت مراجعة جميع أسئلة المنصة بالكامل مع أحدث تفريغات د. أحمد عامر، مع رابط مباشر بالبانر لمراجعة الـ 161 سؤال التي طرأ عليها تعديل.</p>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-
-    <div class="uam-footer">
-
-      <button type="button" class="btn-teal uam-confirm-btn" onclick="dismissUpdateAnnouncement()">
-
-        <span>فهمت ذلك ✓</span>
-
-      </button>
-
-      <div class="uam-hint">لن يظهر هذا الإشعار مجدداً إلا عند إضافة تحديثات جديدة. نتمنى لكم التوفيق دائماً! 🩺✨</div>
-
-    </div>
-
-  </div>
-
-</div>
-
       <button class="subtle-link-btn" onclick="closeSessionChoiceModal()">&times; إغلاق</button>
-
     </div>
-
-
 
     <p style="margin:0 0 12px 0; font-size:13.5px; color:var(--text-secondary); line-height:1.6;" id="scmPromptText">
 
@@ -13252,51 +13422,47 @@ function safeLocalStorageSet(key, value) {
   }
 }
 
-function saveState() {
+let _saveStateTimer = null;
 
+function saveState(immediate = false) {
+  if (immediate) {
+    if (_saveStateTimer) { clearTimeout(_saveStateTimer); _saveStateTimer = null; }
+    _doSaveState();
+    return;
+  }
+  if (!_saveStateTimer) {
+    _saveStateTimer = setTimeout(() => {
+      _saveStateTimer = null;
+      _doSaveState();
+    }, 200);
+  }
+}
+
+function _doSaveState() {
   try {
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-
+    safeLocalStorageSet(STORAGE_KEY, JSON.stringify({
       topicsRead: state.topicsRead,
-
       qStatus: state.qStatus,
-
       streak: state.streak,
-
       eliminatedOpts: state.eliminatedOpts,
-
       peerVotedQs: state.peerVotedQs,
-
       studyPlanScope: state.studyPlanScope,
-
       chapterOrder: state.chapterOrder,
-
       darkMode: state.darkMode
-
     }));
-
   } catch (e) {}
 
-
-
   if (currentUser && fbDb) {
-
     _hasPendingCloudSync = true;
-
     updateSyncIndicator("syncing");
-
     clearTimeout(_cloudSyncTimer);
-
     _cloudSyncTimer = setTimeout(() => {
-
       syncProgressToCloud();
-
     }, 1200);
-
   }
-
 }
+
+window.addEventListener("beforeunload", () => _doSaveState());
 
 
 
@@ -14174,152 +14340,108 @@ const CLINICAL_TERMS = {
 
 
 
-// Safe Token-Based Annotator: Never matches inside already-created span attributes!
+// High-Performance Memoized Annotator with Pre-Compiled Regexes
+const _medAnnotCache = new Map();
+let _precompiledTerms = null;
+let _precompiledAbbrevs = null;
+
+function _getPrecompiledGlossaries() {
+  if (!_precompiledTerms) {
+    const termKeys = Object.keys(CLINICAL_TERMS).sort((a, b) => b.length - a.length);
+    _precompiledTerms = termKeys.map(term => {
+      const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return {
+        rx: new RegExp(`(^|[^\\w>@])(${escaped})(?![\\w<@])`, "gi"),
+        entry: CLINICAL_TERMS[term]
+      };
+    });
+  }
+  if (!_precompiledAbbrevs) {
+    const abbrevKeys = Object.keys(MED_GLOSSARY).sort((a, b) => b.length - a.length);
+    _precompiledAbbrevs = abbrevKeys.map(abbr => {
+      const escaped = abbr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return {
+        abbr: abbr,
+        rx: new RegExp(`(^|[^\\w>@])(${escaped})(?![\\w<@])`, "g"),
+        entry: MED_GLOSSARY[abbr]
+      };
+    });
+  }
+  return { terms: _precompiledTerms, abbrevs: _precompiledAbbrevs };
+}
 
 function annotateMedicalHTML(htmlStr) {
-
   if (!htmlStr) return "";
+  if (_medAnnotCache.has(htmlStr)) return _medAnnotCache.get(htmlStr);
 
   const container = document.createElement("div");
-
   container.innerHTML = htmlStr;
 
-
-
   const walk = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
-
   const textNodes = [];
-
   let n;
-
   while ((n = walk.nextNode())) {
-
     const parentTag = n.parentElement ? n.parentElement.tagName : "";
-
     if (parentTag !== "SCRIPT" && parentTag !== "STYLE" && !n.parentElement.classList.contains("med-tip")) {
-
       textNodes.push(n);
-
     }
-
   }
-
-
 
   const labRegex = /\b(\d+(?:\.\d+)?(?:\s*\/\s*\d+)?\s*(?:mg\/dL|mg\/dl|g\/dL|gm\/dl|pg\/mL|ng\/ml|ng\/mL|mIU\/L|mlU\/1|mEq\/L|mm\/hr|μg\/L|L\/minute|L\/min|mm\s*Hg|mmHg|bpm|beats\/min|breaths\/min|mL\/h|cm\s*H2O|\b\d+(?:\.\d+)?\s*°C|\b39C\b))|(?:\b(?:ABI|Ankle-brachial index|ankle brachial index|LVEF|ejection fraction|EF|oxygen saturation|SpO2|FEV1\/FVC|FEV1|PH|pH|PCO2|PaCO2|PO2|PaO2|Pao2)\s*(?:ratio|is|of|measures|testing reveals a value of|:)?\s*\(?\d+(?:\.\d+)?%?\)?)/gi;
 
-
-
-  const abbrevKeys = Object.keys(MED_GLOSSARY).sort((a, b) => b.length - a.length);
-
-  const termKeys = Object.keys(CLINICAL_TERMS).sort((a, b) => b.length - a.length);
-
-
+  const { terms, abbrevs } = _getPrecompiledGlossaries();
 
   textNodes.forEach(node => {
-
     const text = node.nodeValue;
-
     if (!text || text.trim().length < 2) return;
 
-
-
     const tokens = [];
-
     function storeToken(spanHtml) {
-
       const id = tokens.length;
-
       tokens.push(spanHtml);
-
       return `@@MEDTIP_${id}@@`;
-
     }
-
-
 
     let safeHtml = text
-
       .replace(/&/g, "&amp;")
-
       .replace(/</g, "&lt;")
-
       .replace(/>/g, "&gt;");
 
-
-
     // 1. Replace Lab / Vital patterns with placeholders
-
     safeHtml = safeHtml.replace(labRegex, match => {
-
       const info = resolveLabReference(match, text);
-
       if (!info) return match;
-
       return storeToken(`<span class="med-tip tip-lab" data-cat="NORMAL REFERENCE RANGE" data-title="${escapeAttr(info[0])}" data-body="${escapeAttr(info[1])}">${match}</span>`);
-
     });
 
-
-
-    // 2. Replace Clinical Terms with placeholders (avoid lookbehind for Safari/iPadOS <16.4)
-
-    termKeys.forEach(term => {
-
-      const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-      const rx = new RegExp(`(^|[^\\w>@])(${escapedTerm})(?![\\w<@])`, "gi");
-
-      safeHtml = safeHtml.replace(rx, (_, prefix, m) => {
-
-        const entry = CLINICAL_TERMS[term];
-
-        return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(entry[0])}" data-title="${escapeAttr(entry[1])}" data-body="${escapeAttr(entry[2])}">${m}</span>`);
-
+    // 2. Replace Clinical Terms with placeholders
+    for (let i = 0; i < terms.length; i++) {
+      const item = terms[i];
+      safeHtml = safeHtml.replace(item.rx, (_, prefix, m) => {
+        return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(item.entry[0])}" data-title="${escapeAttr(item.entry[1])}" data-body="${escapeAttr(item.entry[2])}">${m}</span>`);
       });
-
-    });
-
-
-
-    // 3. Replace Abbreviations with placeholders (avoid lookbehind for Safari/iPadOS <16.4)
-
-    abbrevKeys.forEach(abbr => {
-
-      const escapedAbbr = abbr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-      const rx = new RegExp(`(^|[^\\w>@])(${escapedAbbr})(?![\\w<@])`, "g");
-
-      safeHtml = safeHtml.replace(rx, (_, prefix, m) => {
-
-        const entry = MED_GLOSSARY[abbr];
-
-        return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(entry[0])}" data-title="${escapeAttr(abbr + ' — ' + entry[1])}" data-body="${escapeAttr(entry[2])}">${m}</span>`);
-
-      });
-
-    });
-
-
-
-    if (tokens.length > 0) {
-
-      const restored = safeHtml.replace(/@@MEDTIP_(\d+)@@/g, (_, idx) => tokens[Number(idx)]);
-
-      const spanWrap = document.createElement("span");
-
-      spanWrap.innerHTML = restored;
-
-      node.parentNode.replaceChild(spanWrap, node);
-
     }
 
+    // 3. Replace Abbreviations with placeholders
+    for (let i = 0; i < abbrevs.length; i++) {
+      const item = abbrevs[i];
+      safeHtml = safeHtml.replace(item.rx, (_, prefix, m) => {
+        return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(item.entry[0])}" data-title="${escapeAttr(item.abbr + ' — ' + item.entry[1])}" data-body="${escapeAttr(item.entry[2])}">${m}</span>`);
+      });
+    }
+
+    if (tokens.length > 0) {
+      const restored = safeHtml.replace(/@@MEDTIP_(\d+)@@/g, (_, idx) => tokens[Number(idx)]);
+      const spanWrap = document.createElement("span");
+      spanWrap.innerHTML = restored;
+      node.parentNode.replaceChild(spanWrap, node);
+    }
   });
 
-
-
-  return container.innerHTML;
-
+  const res = container.innerHTML;
+  if (_medAnnotCache.size > 2500) _medAnnotCache.clear();
+  _medAnnotCache.set(htmlStr, res);
+  return res;
 }
 
 
@@ -21270,7 +21392,14 @@ function renderSplitNotesPane() {
 
   pane.querySelectorAll(".emle-hl").forEach(mark => {
 
-    mark.onclick = function(ev) {
+        function handleRemoveMark(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      removeHighlightSpan(mark);
+    }
+    mark.onclick = handleRemoveMark;
+    mark.ontouchend = handleRemoveMark;
+    mark._dummy = function(ev) {
 
       ev.stopPropagation();
 
@@ -21378,25 +21507,43 @@ function renderQuizPage(resetQTimer) {
 
 
 
-  dotsContainer.innerHTML = qs.map((item, idx) => {
-
-    const ist = state.qStatus[item.number] || {};
-
-    let cls = idx === state.quizIndex ? "active-dot" : "";
-
-    if (ist.status === "correct") cls += " dot-correct";
-
-    else if (ist.status === "hint") cls += " dot-hint";
-
-    else if (ist.status === "wrong") cls += " dot-wrong";
-
-    if (ist.flagged) cls += " dot-flagged";
-
-    const flagBadge = ist.flagged ? `<span class="dot-flag-badge" title="Flagged Question">🚩</span>` : "";
-
-    return `<button class="q-dot ${cls}" id="qdot-${idx}" onclick="jumpQuizIdx(${idx})" title="Question ${idx + 1}${ist.flagged ? ' (Flagged 🚩)' : ''}">${idx + 1}${flagBadge}</button>`;
-
-  }).join("");
+  const filterSig = (state.quizFilter || "q") + "_" + qs.length + (state.dotsExpanded ? "_exp" : "_col");
+  if (dotsContainer._lastSig !== filterSig) {
+    dotsContainer._lastSig = filterSig;
+    dotsContainer.innerHTML = qs.map((item, idx) => {
+      const ist = state.qStatus[item.number] || {};
+      let cls = idx === state.quizIndex ? "active-dot" : "";
+      if (ist.status === "correct") cls += " dot-correct";
+      else if (ist.status === "hint") cls += " dot-hint";
+      else if (ist.status === "wrong") cls += " dot-wrong";
+      if (ist.flagged) cls += " dot-flagged";
+      const flagBadge = ist.flagged ? `<span class="dot-flag-badge" title="Flagged Question">🚩</span>` : "";
+      return `<button class="q-dot ${cls}" id="qdot-${idx}" onclick="jumpQuizIdx(${idx})" title="Question ${idx + 1}${ist.flagged ? ' (Flagged 🚩)' : ''}">${idx + 1}${flagBadge}</button>`;
+    }).join("");
+  } else {
+    const oldActive = dotsContainer.querySelector(".active-dot");
+    if (oldActive && oldActive.id !== ("qdot-" + state.quizIndex)) {
+      oldActive.classList.remove("active-dot");
+    }
+    const curDot = document.getElementById("qdot-" + state.quizIndex);
+    if (curDot) {
+      curDot.classList.add("active-dot");
+      curDot.classList.remove("dot-correct", "dot-hint", "dot-wrong");
+      if (st.status === "correct") curDot.classList.add("dot-correct");
+      else if (st.status === "hint") curDot.classList.add("dot-hint");
+      else if (st.status === "wrong") curDot.classList.add("dot-wrong");
+      if (st.flagged) {
+        curDot.classList.add("dot-flagged");
+        if (!curDot.querySelector(".dot-flag-badge")) {
+          curDot.insertAdjacentHTML("beforeend", `<span class="dot-flag-badge" title="Flagged Question">🚩</span>`);
+        }
+      } else {
+        curDot.classList.remove("dot-flagged");
+        const fb = curDot.querySelector(".dot-flag-badge");
+        if (fb) fb.remove();
+      }
+    }
+  }
 
 
 
@@ -23325,135 +23472,114 @@ function updateAuthTopBar() {
 
 
 async function syncProgressFromCloud(user) {
-
   if (!user || !fbDb) return;
-
   try {
-
     updateSyncIndicator("syncing");
-
     const docRef = fbDb.collection("users").doc(user.uid);
 
-    const snap = await docRef.get();
-
-
-
-    if (snap.exists) {
-
-      const data = snap.data();
-
-      state.topicsRead = Object.assign({}, state.topicsRead, data.topicsRead || {});
-
-      const cloudQs = data.qStatus || {};
-
-      const mergedQs = Object.assign({}, state.qStatus);
-
-      Object.keys(cloudQs).forEach(k => {
-
-        const loc = mergedQs[k];
-
-        const cld = cloudQs[k];
-
-        if (!loc) {
-
-          mergedQs[k] = cld;
-
-        } else {
-
-          const locHist = Array.isArray(loc.history) ? loc.history : [];
-
-          const cldHist = Array.isArray(cld.history) ? cld.history : [];
-
-          const bestHist = locHist.length >= cldHist.length ? locHist : cldHist;
-
-          mergedQs[k] = Object.assign({}, loc, cld, { history: bestHist });
-
-        }
-
-      });
-
-      state.qStatus = mergedQs;
-
-      if (data.streak) {
-
-        state.streak = Object.assign({}, state.streak, data.streak);
-
-      }
-
-      if (data.eliminatedOpts) {
-
-        state.eliminatedOpts = Object.assign({}, state.eliminatedOpts, data.eliminatedOpts || {});
-
-      }
-
-      if (data.peerVotedQs) {
-
-        state.peerVotedQs = Object.assign({}, state.peerVotedQs, data.peerVotedQs || {});
-
-      }
-
-
-
-      try {
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-
-          topicsRead: state.topicsRead,
-
-          qStatus: state.qStatus,
-
-          streak: state.streak,
-
-          eliminatedOpts: state.eliminatedOpts,
-
-          peerVotedQs: state.peerVotedQs
-
-        }));
-
-      } catch (e) {}
-
-
-
-      if (typeof navigateTo === "function" && state.currentView) {
-
-        navigateTo(state.currentView, state.currentTopicId);
-
-      }
-
-      if (typeof renderStreakWidget === "function") {
-
-        renderStreakWidget();
-
-      }
-
-      updateSyncIndicator("synced");
-
-      showToast("Cloud progress loaded successfully!");
-
-    } else {
-
-      await syncProgressToCloud(true);
-
-      if (state.currentView === "quiz" && typeof renderQuizPage === "function") {
-
-        renderQuizPage(false);
-
-      }
-
-      showToast("Account linked & local progress uploaded to cloud!");
-
+    // 1. Prefer fresh cloud server snapshot to bypass stale IndexedDB browser cache
+    let snap;
+    try {
+      snap = await docRef.get({ source: "server" });
+    } catch (e) {
+      snap = await docRef.get();
     }
 
+    if (snap && snap.exists) {
+      const data = snap.data() || {};
+
+      // 1. Merge topicsRead (Union of both)
+      state.topicsRead = Object.assign({}, data.topicsRead || {}, state.topicsRead || {});
+
+      // 2. Merge qStatus with intelligent conflict resolution (answeredAt & status aware)
+      const cloudQs = data.qStatus || {};
+      const mergedQs = Object.assign({}, state.qStatus || {});
+
+      Object.keys(cloudQs).forEach(k => {
+        const loc = mergedQs[k];
+        const cld = cloudQs[k];
+        if (!loc) {
+          mergedQs[k] = cld;
+        } else {
+          const locHist = Array.isArray(loc.history) ? loc.history : [];
+          const cldHist = Array.isArray(cld.history) ? cld.history : [];
+          const bestHist = (locHist.length >= cldHist.length ? locHist : cldHist).slice(-10);
+
+          const locTime = loc.answeredAt || 0;
+          const cldTime = cld.answeredAt || 0;
+          const locAnswered = typeof loc.selected === "number" && !!loc.status;
+          const cldAnswered = typeof cld.selected === "number" && !!cld.status;
+
+          // Intelligently determine latest & best answer
+          let winner;
+          if (locAnswered && !cldAnswered) {
+            winner = loc;
+          } else if (!locAnswered && cldAnswered) {
+            winner = cld;
+          } else if (locTime >= cldTime) {
+            winner = loc;
+          } else {
+            winner = cld;
+          }
+
+          const loser = (winner === loc) ? cld : loc;
+          mergedQs[k] = Object.assign({}, loser, winner, {
+            flagged: !!(loc.flagged || cld.flagged),
+            hintUsed: !!(loc.hintUsed || cld.hintUsed),
+            history: bestHist
+          });
+        }
+      });
+      state.qStatus = mergedQs;
+
+      // 3. Merge streak (highest streak & union of days)
+      if (data.streak) {
+        state.streak = {
+          current: Math.max(state.streak.current || 0, data.streak.current || 0),
+          best: Math.max(state.streak.best || 0, data.streak.best || 0),
+          lastDate: (state.streak.lastDate > (data.streak.lastDate || "")) ? state.streak.lastDate : (data.streak.lastDate || state.streak.lastDate || ""),
+          days: Object.assign({}, data.streak.days || {}, state.streak.days || {}),
+          todayQs: Math.max(state.streak.todayQs || 0, data.streak.todayQs || 0),
+          goal: data.streak.goal || state.streak.goal || 30
+        };
+      }
+
+      // 4. Merge eliminatedOpts and peerVotedQs
+      if (data.eliminatedOpts) {
+        state.eliminatedOpts = Object.assign({}, data.eliminatedOpts, state.eliminatedOpts || {});
+      }
+      if (data.peerVotedQs) {
+        state.peerVotedQs = Object.assign({}, data.peerVotedQs, state.peerVotedQs || {});
+      }
+
+      // 5. Save locally
+      saveState(true);
+
+      // 6. CRUCIAL TWO-WAY SYNC: Immediately upload merged progress back to cloud
+      // Guarantees all questions from all browsers are consolidated in cloud
+      await syncProgressToCloud(true);
+
+      if (typeof navigateTo === "function" && state.currentView) {
+        navigateTo(state.currentView, state.currentTopicId);
+      }
+      if (typeof renderStreakWidget === "function") {
+        renderStreakWidget();
+      }
+      updateSyncIndicator("synced");
+      showToast("Cloud progress loaded & synchronized successfully!");
+    } else {
+      // First time signing in on this account: push local progress to cloud
+      await syncProgressToCloud(true);
+      if (state.currentView === "quiz" && typeof renderQuizPage === "function") {
+        renderQuizPage(false);
+      }
+      showToast("Account linked & local progress uploaded to cloud!");
+    }
   } catch (err) {
-
     console.error("Cloud fetch error:", err);
-
     updateSyncIndicator("error");
-
   }
-
 }
-
 
 
 async function syncProgressToCloud(isImmediate = false) {
@@ -23725,6 +23851,127 @@ async function handleSignOut() {
 }
 
 
+
+function exportLocalProgressBackup() {
+  try {
+    const backupData = {
+      version: 1,
+      appName: "EMLE in a Nutshell",
+      exportedAt: new Date().toISOString(),
+      userEmail: (currentUser && currentUser.email) || "guest",
+      topicsRead: state.topicsRead || {},
+      qStatus: state.qStatus || {},
+      streak: state.streak || {},
+      eliminatedOpts: state.eliminatedOpts || {},
+      peerVotedQs: state.peerVotedQs || {},
+      studyPlanScope: state.studyPlanScope || "all",
+      chapterOrder: state.chapterOrder || []
+    };
+
+    const str = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([str], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = "EMLE_VIP_Notes_Backup_" + dateStr + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("💾 تم تنزيل النسخة الاحتياطية بنجاح!");
+  } catch (err) {
+    console.error("Backup export failed:", err);
+    showToast("تعذر تصدير النسخة الاحتياطية.");
+  }
+}
+
+function triggerImportProgress() {
+  const inp = document.getElementById("progressBackupFileInput");
+  if (inp) {
+    inp.value = "";
+    inp.click();
+  }
+}
+
+function handleImportProgressFile(event) {
+  const file = event && event.target && event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data || (!data.qStatus && !data.topicsRead)) {
+        throw new Error("Invalid backup file format");
+      }
+
+      state.topicsRead = Object.assign({}, state.topicsRead || {}, data.topicsRead || {});
+
+      const incomingQs = data.qStatus || {};
+      const mergedQs = Object.assign({}, state.qStatus || {});
+      Object.keys(incomingQs).forEach(k => {
+        const loc = mergedQs[k];
+        const inc = incomingQs[k];
+        if (!loc) {
+          mergedQs[k] = inc;
+        } else {
+          const locHist = Array.isArray(loc.history) ? loc.history : [];
+          const incHist = Array.isArray(inc.history) ? inc.history : [];
+          const bestHist = (locHist.length >= incHist.length ? locHist : incHist).slice(-10);
+          const locTime = loc.answeredAt || 0;
+          const incTime = inc.answeredAt || 0;
+          const locAnswered = typeof loc.selected === "number" && !!loc.status;
+          const incAnswered = typeof inc.selected === "number" && !!inc.status;
+          let winner = (locAnswered && !incAnswered) ? loc : (!locAnswered && incAnswered) ? inc : (incTime >= locTime ? inc : loc);
+          let loser = (winner === loc) ? inc : loc;
+          mergedQs[k] = Object.assign({}, loser, winner, {
+            flagged: !!(loc.flagged || inc.flagged),
+            hintUsed: !!(loc.hintUsed || inc.hintUsed),
+            history: bestHist
+          });
+        }
+      });
+      state.qStatus = mergedQs;
+
+      if (data.streak) {
+        state.streak = {
+          current: Math.max(state.streak.current || 0, data.streak.current || 0),
+          best: Math.max(state.streak.best || 0, data.streak.best || 0),
+          lastDate: (state.streak.lastDate > (data.streak.lastDate || "")) ? state.streak.lastDate : (data.streak.lastDate || state.streak.lastDate || ""),
+          days: Object.assign({}, data.streak.days || {}, state.streak.days || {}),
+          todayQs: Math.max(state.streak.todayQs || 0, data.streak.todayQs || 0),
+          goal: data.streak.goal || state.streak.goal || 30
+        };
+      }
+      if (data.eliminatedOpts) {
+        state.eliminatedOpts = Object.assign({}, state.eliminatedOpts || {}, data.eliminatedOpts);
+      }
+      if (data.peerVotedQs) {
+        state.peerVotedQs = Object.assign({}, state.peerVotedQs || {}, data.peerVotedQs);
+      }
+
+      saveState(true);
+
+      if (currentUser && fbDb) {
+        await syncProgressToCloud(true);
+      }
+
+      closeAuthModal();
+      if (typeof navigateTo === "function" && state.currentView) {
+        navigateTo(state.currentView, state.currentTopicId);
+      }
+      if (typeof renderStreakWidget === "function") {
+        renderStreakWidget();
+      }
+      showToast("✅ تم استعادة كافة التقدم والأسئلة بنجاح!");
+    } catch (err) {
+      console.error("Backup import failed:", err);
+      alert("تعذر قراءة ملف النسخة الاحتياطية. يرجى التأكد من اختيار ملف JSON صحيح.");
+    }
+  };
+  reader.readAsText(file);
+}
 
 async function manualForceSync() {
 
@@ -24160,7 +24407,7 @@ async function _gunzipBytesSafe(bytes) {
 
 // ================= UPDATE ANNOUNCEMENT MODAL LOGIC =================
 
-const CURRENT_PLATFORM_UPDATE_ID = "emle_update_2026_11_13_v1";
+const CURRENT_PLATFORM_UPDATE_ID = "emle_book_release_2026_11_16_v1";
 
 
 
@@ -24424,7 +24671,7 @@ function shuffleCurrentSession() {
 
   state.activeQuizQs = shuffleArray(state.activeQuizQs);
 
-  state.quizIndex = 0;
+  state.quizIndex = 0; const dBox = document.getElementById("quizDotsStrip"); if (dBox) delete dBox._lastSig;
 
   renderQuizPage(true);
 
@@ -25176,7 +25423,14 @@ function highlightRangeSafely(range, colorClass) {
 
     mark.title = "اضغط لإزالة التظليل";
 
-    mark.onclick = function(ev) {
+        function handleRemoveMark(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      removeHighlightSpan(mark);
+    }
+    mark.onclick = handleRemoveMark;
+    mark.ontouchend = handleRemoveMark;
+    mark._dummy = function(ev) {
 
       ev.stopPropagation();
 
@@ -25300,7 +25554,14 @@ function highlightRangeSafely(range, colorClass) {
 
     mark.title = "اضغط لإزالة التظليل";
 
-    mark.onclick = function(ev) {
+        function handleRemoveMark(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      removeHighlightSpan(mark);
+    }
+    mark.onclick = handleRemoveMark;
+    mark.ontouchend = handleRemoveMark;
+    mark._dummy = function(ev) {
 
       ev.stopPropagation();
 
@@ -25327,117 +25588,90 @@ function highlightRangeSafely(range, colorClass) {
 
 
 function initHighlighterSystem() {
-
   const toolbar = document.getElementById("emleHighlighterToolbar");
-
-
 
   syncHighlighterTopbarUI();
 
-
-
-  function handleSelectionChange(e) {
-
-    if (toolbar && toolbar.contains(e.target)) return;
-
-    const topbarTool = document.getElementById("topbarHlTool");
-
-    if (topbarTool && topbarTool.contains(e.target)) return;
-
-
-
-    setTimeout(() => {
-
-      const sel = window.getSelection();
-
-      if (!sel || sel.isCollapsed || !sel.rangeCount) {
-
-        if (toolbar) toolbar.classList.remove("visible");
-
-        _currentHighlightRange = null;
-
-        return;
-
-      }
-
-
-
-      const text = sel.toString().trim();
-
-      if (text.length < 2) {
-
-        if (toolbar) toolbar.classList.remove("visible");
-
-        _currentHighlightRange = null;
-
-        return;
-
-      }
-
-
-
-      const range = sel.getRangeAt(0);
-
-      const container = range.commonAncestorContainer;
-
-      const el = container.nodeType === 1 ? container : container.parentElement;
-
-      if (!el) return;
-
-
-
-      const readingContainer = el.closest(".article-body, .article-card, .snp-body, .notes-markdown-view, .vip-notes-view, .qc-stem, .opt-text, .hint-callout, .explanation-box, .dual-policy-card, .topic-article-body");
-
-      if (!readingContainer) {
-
-        if (toolbar) toolbar.classList.remove("visible");
-
-        _currentHighlightRange = null;
-
-        return;
-
-      }
-
-
-
-      // If Auto-Highlight Pen mode is ON, highlight safely
-
-      if (state && state.hlPenActive !== false) {
-
-        applySelectionHighlight("emle-hl-" + (state.hlActiveColor || "yellow"), range, readingContainer);
-
-        return;
-
-      }
-
-
-
-      // Fallback: show floating toolbar if pen mode is OFF
-
-      _currentHighlightRange = range.cloneRange();
-
-      const rect = range.getBoundingClientRect();
-
-      if (toolbar && rect.width > 0 && rect.height > 0) {
-
-        toolbar.style.top = (window.scrollY + rect.top) + "px";
-
-        toolbar.style.left = (window.scrollX + rect.left + rect.width / 2) + "px";
-
-        toolbar.classList.add("visible");
-
-      }
-
-    }, 40);
-
+  // Prevent touching toolbar buttons from collapsing active text selection on mobile/tablet
+  if (toolbar) {
+    toolbar.addEventListener("mousedown", (ev) => ev.preventDefault());
+    toolbar.addEventListener("touchstart", (ev) => {
+      ev.stopPropagation();
+    }, { passive: true });
   }
 
+  function handleSelectionChange(e) {
+    if (toolbar && toolbar.contains(e && e.target)) return;
+    const topbarTool = document.getElementById("topbarHlTool");
+    if (topbarTool && topbarTool.contains(e && e.target)) return;
 
+    setTimeout(() => {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.rangeCount) {
+        if (toolbar) toolbar.classList.remove("visible");
+        _currentHighlightRange = null;
+        return;
+      }
+
+      const text = sel.toString().trim();
+      if (text.length < 2) {
+        if (toolbar) toolbar.classList.remove("visible");
+        _currentHighlightRange = null;
+        return;
+      }
+
+      const range = sel.getRangeAt(0);
+      const container = range.commonAncestorContainer;
+      const el = container.nodeType === 1 ? container : container.parentElement;
+      if (!el) return;
+
+      const readingContainer = el.closest(".article-body, .article-card, .snp-body, .notes-markdown-view, .vip-notes-view, .qc-stem, .opt-text, .hint-callout, .explanation-box, .dual-policy-card, .topic-article-body");
+      if (!readingContainer) {
+        if (toolbar) toolbar.classList.remove("visible");
+        _currentHighlightRange = null;
+        return;
+      }
+
+      // If Auto-Highlight Pen mode is ON, highlight immediately
+      if (state && state.hlPenActive !== false) {
+        applySelectionHighlight("emle-hl-" + (state.hlActiveColor || "yellow"), range, readingContainer);
+        return;
+      }
+
+      // Fallback: show floating toolbar on mobile & desktop
+      _currentHighlightRange = range.cloneRange();
+      const rect = range.getBoundingClientRect();
+      if (toolbar && rect.width > 0 && rect.height > 0) {
+        // Intelligent mobile-aware positioning:
+        let top = window.scrollY + rect.top - 12;
+        // If selection is near the top of the viewport (under sticky topbar), show toolbar BELOW selection
+        if (rect.top < 70) {
+          top = window.scrollY + rect.bottom + 12;
+        }
+        let left = window.scrollX + rect.left + rect.width / 2;
+        const screenW = window.innerWidth || 360;
+        const minLeft = 110;
+        const maxLeft = screenW - 110;
+        left = Math.max(minLeft, Math.min(maxLeft, left));
+
+        toolbar.style.top = top + "px";
+        toolbar.style.left = left + "px";
+        toolbar.classList.add("visible");
+      }
+    }, 40);
+  }
 
   document.addEventListener("mouseup", handleSelectionChange);
-
   document.addEventListener("touchend", handleSelectionChange);
 
+  // W3C selectionchange listener for iOS Safari and Android Chrome text selection pins
+  let _selChangeTimer = null;
+  document.addEventListener("selectionchange", function(e) {
+    clearTimeout(_selChangeTimer);
+    _selChangeTimer = setTimeout(() => {
+      handleSelectionChange(e);
+    }, 180);
+  });
 }
 
 
@@ -25542,7 +25776,7 @@ function persistHighlightIfApplicable(targetEl) {
 
       if (!isCorruptedNotesHtml(articleBody.innerHTML)) {
 
-        localStorage.setItem("emle_notes_hl_" + state.currentTopicId, articleBody.innerHTML);
+        safeLocalStorageSet("emle_notes_hl_" + state.currentTopicId, articleBody.innerHTML);
 
       }
 
@@ -25556,7 +25790,7 @@ function persistHighlightIfApplicable(targetEl) {
 
       if (!isCorruptedNotesHtml(snpBody.innerHTML)) {
 
-        localStorage.setItem("emle_notes_hl_" + state.currentQuizTopicId, snpBody.innerHTML);
+        safeLocalStorageSet("emle_notes_hl_" + state.currentQuizTopicId, snpBody.innerHTML);
 
       }
 
