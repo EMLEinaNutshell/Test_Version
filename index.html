@@ -15770,35 +15770,31 @@ function navigateTo(view, param, navOpts) {
 
 
 
+  if (!view || typeof view !== "string") view = "home";
+
   document.querySelectorAll(".view-page").forEach(el => el.classList.remove("active"));
 
-  document.getElementById("page-" + view).classList.add("active");
+  const targetPage = document.getElementById("page-" + view) || document.getElementById("page-home");
+  if (targetPage) {
+    targetPage.classList.add("active");
+  }
 
+  try {
+    if (view === "home") renderHome();
+    else if (view === "library") renderLibrary();
+    else if (view === "quizzes") renderQuizzesHub();
+    else if (view === "chapter") renderChapter();
+    else if (view === "topic") renderTopicPage(state.currentTopicId);
+    else if (view === "quiz") renderQuizPage(true);
+    else if (view === "exams") renderExamsPage();
+    else if (view === "analytics") renderAnalyticsPage();
+    else if (view === "studyplan") renderStudyPlanPage();
+  } catch (err) {
+    console.error("View rendering error for " + view + ":", err);
+  }
 
-
-  if (view === "home") renderHome();
-
-  else if (view === "library") renderLibrary();
-
-  else if (view === "quizzes") renderQuizzesHub();
-
-  else if (view === "chapter") renderChapter();
-
-  else if (view === "topic") renderTopicPage(state.currentTopicId);
-
-  else if (view === "quiz") renderQuizPage(true);
-
-  else if (view === "exams") renderExamsPage();
-
-  else if (view === "analytics") renderAnalyticsPage();
-
-  else if (view === "studyplan") renderStudyPlanPage();
-
-
-
-  renderBreadcrumbs();
-
-  renderSidebarTree();
+  try { renderBreadcrumbs(); } catch(e) {}
+  try { renderSidebarTree(); } catch(e) {}
 
   if (window.innerWidth <= 820) {
 
@@ -16178,7 +16174,12 @@ function renderStreakWidget() {
 
   if (!badge || !daysRow) return;
 
-
+  if (!state.streak || typeof state.streak !== "object") {
+    state.streak = { current: 1, best: 1, lastDate: "", days: {}, todayQs: 0, goal: 30 };
+  }
+  if (!state.streak.days || typeof state.streak.days !== "object") {
+    state.streak.days = {};
+  }
 
   const today = getTodayKey();
 
@@ -20672,7 +20673,14 @@ function renderChapter() {
 
 function renderTopicPage(topicId) {
 
-  const t = DATA.topics.find(x => x.id === topicId);
+  if (!DATA || !Array.isArray(DATA.topics) || DATA.topics.length === 0) return;
+
+  let t = DATA.topics.find(x => x.id === topicId);
+
+  if (!t) {
+    t = DATA.topics[0];
+    if (t) state.currentTopicId = t.id;
+  }
 
   if (!t) return;
 
@@ -23559,7 +23567,7 @@ async function syncProgressFromCloud(user) {
       // Guarantees all questions from all browsers are consolidated in cloud
       await syncProgressToCloud(true);
 
-      if (typeof navigateTo === "function" && state.currentView) {
+      if (typeof navigateTo === "function" && state.currentView && DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
         navigateTo(state.currentView, state.currentTopicId);
       }
       if (typeof renderStreakWidget === "function") {
@@ -23958,7 +23966,7 @@ function handleImportProgressFile(event) {
       }
 
       closeAuthModal();
-      if (typeof navigateTo === "function" && state.currentView) {
+      if (typeof navigateTo === "function" && state.currentView && DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
         navigateTo(state.currentView, state.currentTopicId);
       }
       if (typeof renderStreakWidget === "function") {
@@ -24543,10 +24551,9 @@ async function bootCompressedPortal() {
 
   try { loadState(); } catch(e) { console.warn("loadState error:", e); }
 
-  try { initFirebase(); } catch(e) { console.warn("initFirebase error:", e); }
-
   try { renderPomo(); } catch(e) { console.warn("renderPomo error:", e); }
 
+  // 1. Decrypt and initialize DATA first to guarantee data readiness
   try {
 
     const b64 = DATA_SEC_ENC;
@@ -24584,6 +24591,9 @@ async function bootCompressedPortal() {
     try { renderSidebarTree(); } catch(err) {}
 
   }
+
+  // 2. Initialize Firebase after DATA is 100% loaded and home is active
+  try { initFirebase(); } catch(e) { console.warn("initFirebase error:", e); }
 
   try { checkUpdateAnnouncement(); } catch(e) {}
 
