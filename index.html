@@ -14446,6 +14446,16 @@ function annotateMedicalHTML(htmlStr) {
 
 
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function escapeAttr(str) {
 
   return String(str)
@@ -26283,53 +26293,34 @@ function getAdminNotesStorage() {
 
 
 function renderAdminRevisionBoxHTML(targetKey, targetLabel) {
+  try {
+    if (!isAdminAccount()) return "";
+    const allNotes = getAdminNotesStorage();
+    const currentVal = allNotes[targetKey] || "";
 
-  if (!isAdminAccount()) return "";
-
-  const allNotes = getAdminNotesStorage();
-
-  const currentVal = allNotes[targetKey] || "";
-
-
-
-  return `
-
+    return `
     <div class="admin-revision-box" dir="rtl">
-
       <div class="arb-header">
-
         <div class="arb-title">
-
           <span>🛠️ صندوق ملاحظات وتعديلات الأدمن (خاص بك فقط)</span>
-
           <span class="arb-target-badge">${escapeHtml(targetLabel)}</span>
-
         </div>
-
         <div class="arb-actions">
-
           <button type="button" class="arb-btn arb-btn-copy" onclick="copyAdminRevisionNote('${targetKey}', '${escapeHtml(targetLabel)}')">📋 نسخ الملاحظة للأسيستنت</button>
-
           <button type="button" class="arb-btn" onclick="openAllAdminNotesModal()">📚 عرض كل الملاحظات</button>
-
         </div>
-
       </div>
-
       <textarea class="arb-textarea" id="adminNote_${targetKey}" placeholder="اكتب هنا أي تعديل ترغب في تطبيقه على هذا السؤال/الموضوع لاحقاً (مثلاً: تعديل صيغة خيار، إضافة ملحوظة، تحديث إجابة)... وسيتم حفظه تلقائياً لنسخه للأسيستنت." oninput="saveAdminRevisionNote('${targetKey}', this.value)">${escapeHtml(currentVal)}</textarea>
-
       <div class="arb-footer">
-
         <span id="adminNoteStatus_${targetKey}">💾 يُحفظ تلقائياً في المتصفح</span>
-
         <button type="button" class="subtle-link-btn" style="color:var(--wrong); font-size:11px;" onclick="clearAdminRevisionNote('${targetKey}')">مسح الملاحظة</button>
-
       </div>
-
     </div>
-
   `;
-
+  } catch (err) {
+    console.error("renderAdminRevisionBoxHTML error:", err);
+    return "";
+  }
 }
 
 
