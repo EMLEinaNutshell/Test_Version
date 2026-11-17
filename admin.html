@@ -1008,6 +1008,49 @@ function classifyQuestionStatus(st) {
   };
 }
 
+const EGYPT_GOV_MAP = [
+  { gov: "القاهرة", keywords: ["cairo", "qahirah", "helwan", "maadi", "nasr city", "heliopolis", "shubra", "cu.edu.eg", "kasralainy", "asu.edu.eg", "ain shams", "al-azhar", "azhar"] },
+  { gov: "الجيزة", keywords: ["giza", "jizah", "6th of october", "october", "sheikh zayed", "zayed", "haram", "dokki", "agouza", "o6u", "msa", "must"] },
+  { gov: "الإسكندرية", keywords: ["alexandria", "iskandariyah", "alex", "smouha", "miami", "borg el arab", "alexu.edu.eg"] },
+  { gov: "الدقهلية", keywords: ["dakahlia", "daqahliya", "daqahliyah", "al mansurah", "mansoura", "mansura", "bilqas", "talkha", "mit ghamr", "sinbillawayn", "dikirnis", "mans.edu.eg"] },
+  { gov: "الغربية", keywords: ["gharbia", "gharbiyah", "tanta", "al mahallah al kubra", "mahalla", "kafr el zayat", "zefta", "tanta.edu.eg"] },
+  { gov: "الشرقية", keywords: ["sharqia", "sharqiyah", "ash sharqiyah", "zagazig", "10th of ramadan", "bilbeis", "faqus", "minya al qamh", "zu.edu.eg"] },
+  { gov: "القليوبية", keywords: ["qalyubia", "qalyubiyah", "al qalyubiyah", "banha", "benha", "shubra al khaymah", "qalyub", "khanka", "bu.edu.eg"] },
+  { gov: "المنوفية", keywords: ["monufia", "monufiyah", "menofia", "al minufiyah", "shibin al kawm", "shibin el kom", "menouf", "ashmoun", "sadat city", "menofia.edu.eg"] },
+  { gov: "البحيرة", keywords: ["beheira", "buhayrah", "al buhayrah", "damanhur", "kafr el dawwar", "edko", "rashid", "rosetta", "dmu.edu.eg"] },
+  { gov: "كفر الشيخ", keywords: ["kafr el sheikh", "kafr ash shaykh", "desouk", "disuq", "baltim", "kfs.edu.eg"] },
+  { gov: "دمياط", keywords: ["damietta", "dumyat", "ras el bar", "faraskur", "du.edu.eg"] },
+  { gov: "بورسعيد", keywords: ["port said", "bur said", "port fouad", "psu.edu.eg"] },
+  { gov: "الإسماعيلية", keywords: ["ismailia", "al ismailiyah", "fayid", "qantara", "suez.edu.eg", "scu.edu.eg"] },
+  { gov: "السويس", keywords: ["suez", "as suways", "ain sokhna"] },
+  { gov: "الفيوم", keywords: ["fayoum", "faiyum", "al fayyum", "ibshaway", "fayoum.edu.eg"] },
+  { gov: "بني سويف", keywords: ["beni suef", "bani suwayf", "bns", "nasser", "bsu.edu.eg"] },
+  { gov: "المنيا", keywords: ["minya", "al minya", "malawi", "samalut", "maghagha", "minia.edu.eg"] },
+  { gov: "أسيوط", keywords: ["asyut", "assiut", "al asyut", "dairut", "manfalut", "qusiya", "abnub", "aun.edu.eg"] },
+  { gov: "سوهاج", keywords: ["sohag", "suhaj", "akhmim", "girga", "tahta", "sohag.edu.eg"] },
+  { gov: "قنا", keywords: ["qena", "qina", "nagaa hammadi", "dishna", "qus", "svu.edu.eg"] },
+  { gov: "الأقصر", keywords: ["luxor", "al uqsur", "esna", "armant"] },
+  { gov: "أسوان", keywords: ["aswan", "kom ombo", "edfu", "aswu.edu.eg"] },
+  { gov: "البحر الأحمر", keywords: ["red sea", "al bahr al ahmar", "hurghada", "safaga", "el gouna", "marsa alam"] },
+  { gov: "مطروح", keywords: ["matrouh", "matruh", "marsa matruh", "siwa", "el alamein", "alamein"] },
+  { gov: "الوادي الجديد", keywords: ["new valley", "al wadi al jadid", "kharga", "dakhla"] },
+  { gov: "شمال سيناء", keywords: ["north sinai", "shamal sina", "arish", "al arish"] },
+  { gov: "جنوب سيناء", keywords: ["south sinai", "janub sina", "sharm el sheikh", "sharm", "dahab", "nuweiba"] }
+];
+
+function resolveGovernorateFromText(text) {
+  if (!text) return "";
+  const lower = String(text).toLowerCase();
+  for (const item of EGYPT_GOV_MAP) {
+    for (const kw of item.keywords) {
+      if (lower.includes(kw)) {
+        return item.gov;
+      }
+    }
+  }
+  return "";
+}
+
 function computeUserRecord(uid, raw, nowMs = Date.now()) {
   const data = raw || {};
   const email = String(data.userEmail || "").trim();
@@ -1056,13 +1099,37 @@ function computeUserRecord(uid, raw, nowMs = Date.now()) {
     : (daysSinceActive <= 7 ? "week" : (daysSinceActive <= 30 ? "month" : "dormant"));
 
   const device = parseDeviceInfo(data.userAgent);
-  const rawGov = String(data.governorate || data.gov || data.city || "").trim();
-  const governorate = rawGov || "غير محدد";
+  let governorate = String(data.governorate || data.gov || data.city || "").trim();
+  let govSource = data.govSource || (governorate ? "saved" : "");
+
+  if (!governorate) {
+    const fromEmail = resolveGovernorateFromText(data.userEmail || email || "");
+    if (fromEmail) {
+      governorate = fromEmail;
+      govSource = "email_domain";
+    } else if (data.ipRegion || data.ipCity) {
+      const fromIp = resolveGovernorateFromText(`${data.ipRegion || ""} ${data.ipCity || ""}`);
+      if (fromIp) {
+        governorate = fromIp;
+        govSource = "ip_geo";
+      }
+    }
+  }
+
+  if (!governorate) {
+    governorate = "غير محدد";
+    govSource = "unknown";
+  }
+
   return {
     uid,
     displayName,
     email,
     governorate,
+    govSource,
+    lastIp: data.lastIp || "",
+    ipCity: data.ipCity || "",
+    ipRegion: data.ipRegion || "",
     solvedValid,
     revealedCount,
     totalAttempted,
@@ -1824,6 +1891,24 @@ function renderUsersTable() {
     const accBadge = u.accuracy === null
       ? `<span class="badge b-gray">—</span>`
       : `<span class="badge ${u.accuracy >= 70 ? "b-green" : (u.accuracy >= 50 ? "b-amber" : "b-red")}">${u.accuracy}%</span>`;
+
+    let govBadgeClass = "b-gray";
+    let govIcon = "⚪ ";
+    let govTooltip = "بانتظار مزامنة IP الطالب عند فتحه للمنصة";
+    if (u.governorate && u.governorate !== "غير محدد") {
+      govBadgeClass = "b-teal";
+      if (u.govSource === "email_domain") {
+        govIcon = "🎓 ";
+        govTooltip = "تم التحديد تلقائياً عبر نطاق البريد الجامعي";
+      } else if (u.govSource === "ip_geo") {
+        govIcon = "🌐 ";
+        govTooltip = `تم التحديد تلقائياً عبر IP الجهاز (${u.lastIp || u.ipCity || "مصر"})`;
+      } else {
+        govIcon = "📍 ";
+        govTooltip = "محافظة مسجلة";
+      }
+    }
+
     return `
       <tr class="clickable" onclick="openStudentModal('${escapeHtml(u.uid)}')">
         <td class="num">${idx + 1}</td>
@@ -1831,7 +1916,7 @@ function renderUsersTable() {
           <div class="user-cell-name">${escapeHtml(u.displayName)}</div>
           <span class="user-cell-email">${escapeHtml(u.email)}</span>
         </td>
-        <td><span class="badge ${u.governorate && u.governorate !== 'غير محدد' ? 'b-teal' : 'b-gray'}">${escapeHtml(u.governorate)}</span></td>
+        <td><span class="badge ${govBadgeClass}" title="${escapeHtml(govTooltip)}">${govIcon}${escapeHtml(u.governorate)}</span></td>
         <td>${renderStatusBadge(u)}</td>
         <td class="num"><strong>${u.totalAttempted}</strong> <span style="color:var(--text-muted); font-size:11px;">(${u.correctCount}✓)</span></td>
         <td>${accBadge}</td>
@@ -1982,7 +2067,11 @@ function openStudentModal(uid) {
 
   document.getElementById("modalStudentBody").innerHTML = `
     <div class="mini-grid">
-      <div class="mini-stat"><div class="l">المحافظة</div><div class="v" style="font-size:13.5px; font-weight:700; color:var(--teal);">${escapeHtml(u.governorate)}</div></div>
+      <div class="mini-stat">
+        <div class="l">المحافظة</div>
+        <div class="v" style="font-size:13.5px; font-weight:700; color:var(--teal);">${escapeHtml(u.governorate)}</div>
+        <div style="font-size:10.5px; color:var(--text-muted);">${u.govSource === 'email_domain' ? '🎓 تم التعرف عبر البريد الجامعي' : (u.govSource === 'ip_geo' ? '🌐 تم الاكتشاف عبر IP تلقائياً' : (u.govSource === 'saved' ? '📍 محافظة محفوظة' : 'بانتظار مزامنة IP الحساب'))}</div>
+      </div>
       <div class="mini-stat"><div class="l">إجمالي الأسئلة</div><div class="v">${u.totalAttempted}</div></div>
       <div class="mini-stat"><div class="l">صحيح / خطأ</div><div class="v">${u.correctCount} / ${u.wrongCount}</div></div>
       <div class="mini-stat"><div class="l">الدقة</div><div class="v">${u.accuracy !== null ? u.accuracy + "%" : "—"}</div></div>
@@ -1993,7 +2082,7 @@ function openStudentModal(uid) {
     </div>
 
     <div style="margin:12px 0; padding:10px 14px; background:var(--surface-subtle); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-      <span style="font-size:12.5px; font-weight:700;">📍 تعديل محافظة الطالب:</span>
+      <span style="font-size:12.5px; font-weight:700;">📍 تعديل المحافظة يدوياً للطالب:</span>
       <div style="display:flex; align-items:center; gap:8px;">
         <select class="select" id="studentGovSelect" style="padding:4px 10px; font-size:12.5px;">
           <option value="">-- غير محدد --</option>
@@ -2004,7 +2093,7 @@ function openStudentModal(uid) {
     </div>
 
     <div style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
-      آخر نشاط مسجل: <strong>${escapeHtml(formatExactDateTime(u.lastActiveMs))}</strong> • أيام النشاط المسجلة: <strong class="num">${u.activeDaysCount}</strong> يوم
+      آخر نشاط مسجل: <strong>${escapeHtml(formatExactDateTime(u.lastActiveMs))}</strong> ${u.lastIp ? `• عنوان IP: <code class="ltr">${escapeHtml(u.lastIp)}</code> (${escapeHtml(u.ipCity || u.ipRegion || 'مصر')})` : ''} • أيام النشاط المسجلة: <strong class="num">${u.activeDaysCount}</strong> يوم
     </div>
     ${recentDays.length ? `
       <div style="font-size:12.5px; font-weight:700; margin-bottom:6px;">آخر أيام التفاعل:</div>
