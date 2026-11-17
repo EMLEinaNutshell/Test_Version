@@ -13046,6 +13046,41 @@ function syncAdminCopyAccess() {
 
         <div id="userEmailDisplay" style="font-size:12.5px; color:var(--text-muted); margin-top:2px;">student@example.com</div>
 
+        <div style="margin-top:12px; text-align:right; direction:rtl;">
+          <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">📍 المحافظة:</label>
+          <select id="userGovSelectProfile" onchange="handleUserGovChange(this.value)" style="width:100%; font-size:12.5px; padding:6px 10px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--text);">
+            <option value="">-- اختر محافظتك --</option>
+            <option value="القاهرة">القاهرة</option>
+            <option value="الجيزة">الجيزة</option>
+            <option value="الإسكندرية">الإسكندرية</option>
+            <option value="الدقهلية">الدقهلية</option>
+            <option value="الشرقية">الشرقية</option>
+            <option value="الغربية">الغربية</option>
+            <option value="المنوفية">المنوفية</option>
+            <option value="القليوبية">القليوبية</option>
+            <option value="البحيرة">البحيرة</option>
+            <option value="كفر الشيخ">كفر الشيخ</option>
+            <option value="دمياط">دمياط</option>
+            <option value="بورسعيد">بورسعيد</option>
+            <option value="الإسماعيلية">الإسماعيلية</option>
+            <option value="السويس">السويس</option>
+            <option value="الفيوم">الفيوم</option>
+            <option value="بني سويف">بني سويف</option>
+            <option value="المنيا">المنيا</option>
+            <option value="أسيوط">أسيوط</option>
+            <option value="سوهاج">سوهاج</option>
+            <option value="قنا">قنا</option>
+            <option value="الأقصر">الأقصر</option>
+            <option value="أسوان">أسوان</option>
+            <option value="البحر الأحمر">البحر الأحمر</option>
+            <option value="الوادي الجديد">الوادي الجديد</option>
+            <option value="مطروح">مطروح</option>
+            <option value="شمال سيناء">شمال سيناء</option>
+            <option value="جنوب سيناء">جنوب سيناء</option>
+            <option value="خارج مصر">خارج مصر</option>
+          </select>
+        </div>
+
         <div style="margin-top:10px;">
 
           <span class="auth-badge-pill" id="modalSyncBadge" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;">
@@ -13775,6 +13810,8 @@ const DARK_MODE_KEY = "emle_portal_dark_mode_v1";
 
 let state = {
 
+  governorate: "",
+
   topicsRead: {},
 
   qStatus: {},
@@ -13885,6 +13922,8 @@ function loadState() {
 
       state.qStatus = parsed.qStatus || {};
 
+      if (parsed.governorate) state.governorate = parsed.governorate;
+
       if (parsed.streak) state.streak = Object.assign(state.streak, parsed.streak);
 
       if (parsed.eliminatedOpts) state.eliminatedOpts = parsed.eliminatedOpts;
@@ -13968,6 +14007,7 @@ function _doSaveState() {
   invalidateStatsCache();
   try {
     safeLocalStorageSet(STORAGE_KEY, JSON.stringify({
+      governorate: state.governorate,
       topicsRead: state.topicsRead,
       qStatus: state.qStatus,
       streak: state.streak,
@@ -24056,6 +24096,7 @@ async function onUserAuthStateChanged(user) {
     await syncProgressFromCloud(user);
 
     updateAuthTopBar();
+    autoDetectUserGovernorateSilently();
 
   } else {
 
@@ -24262,6 +24303,10 @@ async function syncProgressFromCloud(user) {
         };
       }
 
+      if (data.governorate) {
+        state.governorate = data.governorate;
+      }
+
       // 4. Merge eliminatedOpts and peerVotedQs
       if (data.eliminatedOpts) {
         state.eliminatedOpts = Object.assign({}, data.eliminatedOpts, state.eliminatedOpts || {});
@@ -24329,6 +24374,8 @@ async function syncProgressToCloud(isImmediate = false) {
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
 
       userEmail: currentUser.email || "",
+
+      governorate: state.governorate || "",
 
       displayName: currentUser.displayName || "",
 
@@ -24400,6 +24447,9 @@ function openAuthModal() {
 
     document.getElementById("userEmailDisplay").textContent = email;
 
+    const govSel = document.getElementById("userGovSelectProfile");
+    if (govSel) govSel.value = state.governorate || "";
+
 
 
     const initial = name.charAt(0).toUpperCase();
@@ -24450,6 +24500,140 @@ function closeAuthModal() {
 
   if (modal) modal.classList.remove("show");
 
+}
+
+async function handleUserGovChange(val) {
+  state.governorate = val || "";
+  state.govSource = val ? "manual" : "";
+  saveState(true);
+  if (currentUser && fbDb) {
+    try {
+      await fbDb.collection("users").doc(currentUser.uid).set({
+        governorate: val || "",
+        govSource: val ? "manual" : ""
+      }, { merge: true });
+      showToast("تم حفظ المحافظة بنجاح 📍");
+    } catch (e) {
+      console.warn("Failed to save governorate:", e);
+    }
+  }
+}
+
+const EGYPT_GOV_MAP = [
+  { gov: "القاهرة", keywords: ["cairo", "qahirah", "helwan", "maadi", "nasr city", "heliopolis", "shubra", "cu.edu.eg", "kasralainy", "asu.edu.eg", "ain shams", "al-azhar", "azhar"] },
+  { gov: "الجيزة", keywords: ["giza", "jizah", "6th of october", "october", "sheikh zayed", "zayed", "haram", "dokki", "agouza", "o6u", "msa", "must"] },
+  { gov: "الإسكندرية", keywords: ["alexandria", "iskandariyah", "alex", "smouha", "miami", "borg el arab", "alexu.edu.eg"] },
+  { gov: "الدقهلية", keywords: ["dakahlia", "daqahliya", "daqahliyah", "al mansurah", "mansoura", "mansura", "bilqas", "talkha", "mit ghamr", "sinbillawayn", "dikirnis", "mans.edu.eg"] },
+  { gov: "الغربية", keywords: ["gharbia", "gharbiyah", "tanta", "al mahallah al kubra", "mahalla", "kafr el zayat", "zefta", "tanta.edu.eg"] },
+  { gov: "الشرقية", keywords: ["sharqia", "sharqiyah", "ash sharqiyah", "zagazig", "10th of ramadan", "bilbeis", "faqus", "minya al qamh", "zu.edu.eg"] },
+  { gov: "القليوبية", keywords: ["qalyubia", "qalyubiyah", "al qalyubiyah", "banha", "benha", "shubra al khaymah", "qalyub", "khanka", "bu.edu.eg"] },
+  { gov: "المنوفية", keywords: ["monufia", "monufiyah", "menofia", "al minufiyah", "shibin al kawm", "shibin el kom", "menouf", "ashmoun", "sadat city", "menofia.edu.eg"] },
+  { gov: "البحيرة", keywords: ["beheira", "buhayrah", "al buhayrah", "damanhur", "kafr el dawwar", "edko", "rashid", "rosetta", "dmu.edu.eg"] },
+  { gov: "كفر الشيخ", keywords: ["kafr el sheikh", "kafr ash shaykh", "desouk", "disuq", "baltim", "kfs.edu.eg"] },
+  { gov: "دمياط", keywords: ["damietta", "dumyat", "ras el bar", "faraskur", "du.edu.eg"] },
+  { gov: "بورسعيد", keywords: ["port said", "bur said", "port fouad", "psu.edu.eg"] },
+  { gov: "الإسماعيلية", keywords: ["ismailia", "al ismailiyah", "fayid", "qantara", "suez.edu.eg", "scu.edu.eg"] },
+  { gov: "السويس", keywords: ["suez", "as suways", "ain sokhna"] },
+  { gov: "الفيوم", keywords: ["fayoum", "faiyum", "al fayyum", "ibshaway", "fayoum.edu.eg"] },
+  { gov: "بني سويف", keywords: ["beni suef", "bani suwayf", "bns", "nasser", "bsu.edu.eg"] },
+  { gov: "المنيا", keywords: ["minya", "al minya", "malawi", "samalut", "maghagha", "minia.edu.eg"] },
+  { gov: "أسيوط", keywords: ["asyut", "assiut", "al asyut", "dairut", "manfalut", "qusiya", "abnub", "aun.edu.eg"] },
+  { gov: "سوهاج", keywords: ["sohag", "suhaj", "akhmim", "girga", "tahta", "sohag.edu.eg"] },
+  { gov: "قنا", keywords: ["qena", "qina", "nagaa hammadi", "dishna", "qus", "svu.edu.eg"] },
+  { gov: "الأقصر", keywords: ["luxor", "al uqsur", "esna", "armant"] },
+  { gov: "أسوان", keywords: ["aswan", "kom ombo", "edfu", "aswu.edu.eg"] },
+  { gov: "البحر الأحمر", keywords: ["red sea", "al bahr al ahmar", "hurghada", "safaga", "el gouna", "marsa alam"] },
+  { gov: "مطروح", keywords: ["matrouh", "matruh", "marsa matruh", "siwa", "el alamein", "alamein"] },
+  { gov: "الوادي الجديد", keywords: ["new valley", "al wadi al jadid", "kharga", "dakhla"] },
+  { gov: "شمال سيناء", keywords: ["north sinai", "shamal sina", "arish", "al arish"] },
+  { gov: "جنوب سيناء", keywords: ["south sinai", "janub sina", "sharm el sheikh", "sharm", "dahab", "nuweiba"] }
+];
+
+function resolveGovernorateFromText(text) {
+  if (!text) return "";
+  const lower = String(text).toLowerCase();
+  for (const item of EGYPT_GOV_MAP) {
+    for (const kw of item.keywords) {
+      if (lower.includes(kw)) {
+        return item.gov;
+      }
+    }
+  }
+  return "";
+}
+
+let _govAutoDetectRunning = false;
+async function autoDetectUserGovernorateSilently() {
+  if (_govAutoDetectRunning) return;
+  _govAutoDetectRunning = true;
+
+  try {
+    let detected = state.governorate || "";
+    let source = state.govSource || "";
+    let ip = state.lastIp || "";
+    let city = state.ipCity || "";
+    let region = state.ipRegion || "";
+
+    // 1. Try educational / university email domain if signed in
+    if (!detected && currentUser && currentUser.email) {
+      detected = resolveGovernorateFromText(currentUser.email);
+      if (detected) source = "email_domain";
+    }
+
+    // 2. Fast silent IP Geolocation via GeoJS
+    if (!detected) {
+      try {
+        const res = await Promise.race([
+          fetch("https://get.geojs.io/v1/ip/geo.json").then(r => r.json()),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 3500))
+        ]);
+        if (res && res.country === "Egypt") {
+          ip = res.ip || "";
+          city = res.city || "";
+          region = res.region || "";
+          detected = resolveGovernorateFromText(`${region} ${city}`) || region;
+          if (detected) source = "ip_geo";
+        }
+      } catch (e1) {
+        try {
+          const res2 = await fetch("https://freeipapi.com/api/json").then(r => r.json());
+          if (res2 && (res2.countryName === "Egypt" || res2.countryCode === "EG")) {
+            ip = res2.ipAddress || "";
+            city = res2.cityName || "";
+            region = res2.regionName || "";
+            detected = resolveGovernorateFromText(`${region} ${city}`) || region;
+            if (detected) source = "ip_geo";
+          }
+        } catch (e2) {}
+      }
+    }
+
+    if (detected) {
+      state.governorate = detected;
+      state.govSource = source || "ip_geo";
+      state.lastIp = ip || state.lastIp || "";
+      state.ipCity = city || state.ipCity || "";
+      state.ipRegion = region || state.ipRegion || "";
+      saveState();
+
+      const profileGovSel = document.getElementById("userGovSelectProfile");
+      if (profileGovSel && !profileGovSel.value) profileGovSel.value = detected;
+
+      if (currentUser && fbDb) {
+        fbDb.collection("users").doc(currentUser.uid).set({
+          governorate: detected,
+          govSource: state.govSource,
+          ipCity: state.ipCity,
+          ipRegion: state.ipRegion,
+          lastIp: state.lastIp
+        }, { merge: true }).catch(() => {});
+      }
+    }
+  } catch (err) {
+    console.debug("Silent gov detection bypassed:", err);
+  } finally {
+    _govAutoDetectRunning = false;
+  }
 }
 
 
@@ -24670,6 +24854,10 @@ function handleImportProgressFile(event) {
           todayQs: Math.max(state.streak.todayQs || 0, data.streak.todayQs || 0),
           goal: data.streak.goal || state.streak.goal || 30
         };
+      }
+
+      if (data.governorate) {
+        state.governorate = data.governorate;
       }
       if (data.eliminatedOpts) {
         state.eliminatedOpts = Object.assign({}, state.eliminatedOpts || {}, data.eliminatedOpts);
@@ -25091,6 +25279,7 @@ async function bootCompressedPortal() {
 
 function retryDataBoot() {
   bootCompressedPortal();
+  setTimeout(autoDetectUserGovernorateSilently, 1000);
 }
 
 window.addEventListener("resize", syncTopbarHeight);
@@ -25110,6 +25299,7 @@ function _startPortalBoot() {
   }
 
   bootCompressedPortal();
+  setTimeout(autoDetectUserGovernorateSilently, 1000);
 
 }
 
