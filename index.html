@@ -6212,9 +6212,9 @@
 
     display: flex;
 
-    justify-content: space-between;
+    flex-direction: column;
 
-    align-items: flex-start;
+    gap: 8px;
 
     margin-bottom: 14px;
 
@@ -6222,29 +6222,65 @@
 
     border-bottom: 1px solid var(--border);
 
-    gap: 12px;
-
-    flex-wrap: wrap;
-
   }
 
-
-
-  .qc-meta-left {
+  .qc-top-row {
 
     display: flex;
 
-    flex-direction: column;
+    justify-content: space-between;
 
-    gap: 6px;
+    align-items: center;
 
-    min-width: 0;
+    gap: 10px;
 
-    flex: 1;
+    flex-wrap: wrap;
+
+    width: 100%;
 
   }
 
-  .qc-single-row {
+  .qc-title-wrap {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    min-width: 0;
+
+  }
+
+  .qc-qnum-title {
+
+    font-weight: 700;
+
+    color: var(--text);
+
+    font-size: 14px;
+
+    white-space: nowrap;
+
+  }
+
+  .qc-actions-wrap {
+
+    display: flex;
+
+    gap: 6px;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    margin-left: auto;
+
+  }
+
+  .qc-exam-tags-row {
 
     display: flex;
 
@@ -6252,15 +6288,11 @@
 
     gap: 6px;
 
-    flex-wrap: nowrap;
-
-    overflow: hidden;
-
-  }
-
-  .qc-single-row.tags-expanded {
-
     flex-wrap: wrap;
+
+    width: 100%;
+
+    padding-top: 2px;
 
   }
 
@@ -8808,6 +8840,12 @@
 
     .qc-header {
 
+      gap: 10px;
+
+    }
+
+    .qc-top-row {
+
       flex-direction: column;
 
       align-items: flex-start;
@@ -8816,17 +8854,11 @@
 
     }
 
-    .qc-meta-left {
+    .qc-actions-wrap {
+
+      margin-left: 0;
 
       width: 100%;
-
-    }
-
-    .qc-single-row {
-
-      flex-wrap: wrap;
-
-      gap: 6px;
 
     }
 
@@ -9350,41 +9382,51 @@
 
   .admin-amer-pill {
 
-    background: #4f46e5;
+    background: #eef2ff;
 
-    color: #ffffff !important;
+    color: #4f46e5 !important;
 
-    padding: 2px 8px;
+    padding: 2px 7px;
 
-    border-radius: 6px;
+    border-radius: 999px;
 
-    font-size: 11.5px;
+    font-size: 11px;
 
     font-weight: 700;
+
+    font-family: var(--font-mono, monospace), system-ui;
 
     display: inline-flex;
 
     align-items: center;
 
-    gap: 4px;
+    gap: 2px;
 
-    margin-left: 6px;
+    margin-left: 4px;
 
-    border: 1px solid #4338ca;
+    border: 1px solid #c7d2fe;
 
-    box-shadow: 0 1px 3px rgba(79, 70, 229, 0.25);
+    box-shadow: 0 1px 2px rgba(79, 70, 229, 0.08);
 
     vertical-align: middle;
+
+    white-space: nowrap !important;
+
+    flex-shrink: 0 !important;
+
+    letter-spacing: 0.3px;
 
   }
 
   body.dark-mode .admin-amer-pill {
 
-    background: #6366f1;
+    background: rgba(99, 102, 241, 0.18);
 
-    border-color: #4f46e5;
+    border-color: rgba(99, 102, 241, 0.35);
 
-    color: #ffffff !important;
+    color: #a5b4fc !important;
+
+    box-shadow: none;
 
   }
 
@@ -21788,19 +21830,7 @@ function renderQuizPage(resetQTimer) {
 
   const countNum = tags.length > 0 ? tags.length : 1;
 
-  const maxInlineTags = 3;
-
-  const visibleTags = state.examTagsExpanded ? tags : tags.slice(0, maxInlineTags);
-
-
-
-  const inlineChipsHTML = visibleTags.map(tag => formatExamTagChip(tag)).join("");
-
-  const expandTagsBtnHTML = (tags.length > maxInlineTags)
-
-    ? `<button class="tags-more-btn" onclick="toggleExpandExamTags()" title="${state.examTagsExpanded ? 'Collapse exam dates' : 'Show all ' + tags.length + ' exam dates'}">${state.examTagsExpanded ? '−' : '+'}</button>`
-
-    : "";
+  const allChipsHTML = tags.map(tag => formatExamTagChip(tag)).join("");
 
 
 
@@ -21810,65 +21840,71 @@ function renderQuizPage(resetQTimer) {
 
       <div class="qc-header">
 
-        <div class="qc-meta-left">
+        <div class="qc-top-row">
 
-          <div class="qc-single-row ${state.examTagsExpanded ? 'tags-expanded' : ''}">
+          <div class="qc-title-wrap">
 
-            <span style="font-weight:700; color:var(--text); flex-shrink:0;">Question ${state.quizIndex + 1} of ${qs.length}</span>
+            <span class="qc-qnum-title">Question ${state.quizIndex + 1} of ${qs.length}</span>
 
-            ${isAdminAccount() ? `<span class="admin-amer-pill" title="رقم السؤال الأصلي في مذكرة د. أحمد عامر (يظهر للأدمن فقط)">📖 د. عامر #${q.number}</span>` : ''}
-
-            <span class="exam-count-pill">&times;${countNum}</span>
-
-            ${inlineChipsHTML}
-
-            ${expandTagsBtnHTML}
+            ${isAdminAccount() ? `<span class="admin-amer-pill" title="رقم السؤال في مذكرة د. أحمد عامر (أدمن)">#${q.number}</span>` : ''}
 
             ${st.revealed ? `<span class="status-pill" style="background:var(--wrong-bg); color:var(--wrong); font-size:11px; flex-shrink:0;">Answer Revealed</span>` : ''}
 
           </div>
 
-        </div>
+          <div class="qc-actions-wrap">
 
-        <div style="display:flex; gap:6px; flex-wrap:wrap; flex-shrink:0; align-items:center;">
+            ${renderQuestionAttemptsDropdownHTML(q, st)}
 
-          ${renderQuestionAttemptsDropdownHTML(q, st)}
+            <button class="subtle-link-btn" id="btnShuffleQuiz" onclick="shuffleCurrentSession()" title="إعادة ترتيب أسئلة السيشن الحالية عشوائياً">🔀 Shuffle</button>
 
-          <button class="subtle-link-btn" id="btnShuffleQuiz" onclick="shuffleCurrentSession()" title="إعادة ترتيب أسئلة السيشن الحالية عشوائياً">🔀 Shuffle</button>
+            <button class="subtle-link-btn" onclick="finishAndShowSessionResults()" title="عرض تقرير النتيجة والملاحظات للسيشن الحالية">📊 النتيجة</button>
 
-          <button class="subtle-link-btn" onclick="finishAndShowSessionResults()" title="عرض تقرير النتيجة والملاحظات للسيشن الحالية">📊 النتيجة</button>
+            <button class="subtle-link-btn" style="${isHintShown ? 'border-color:var(--hint); color:var(--hint); background:var(--hint-bg);' : ''}" onclick="triggerHint(${q.number})">
 
-          <button class="subtle-link-btn" style="${isHintShown ? 'border-color:var(--hint); color:var(--hint); background:var(--hint-bg);' : ''}" onclick="triggerHint(${q.number})">
-
-            💡 Hint
-
-          </button>
-
-          ${!isAnswered ? `
-
-            <button class="subtle-link-btn" onclick="revealQuizAnswer(${q.number})" title="Reveal the correct answer and explanation (counts as Incorrect)">
-
-              👁 Show Answer
+              💡 Hint
 
             </button>
 
-          ` : ''}
+            ${!isAnswered ? `
 
-          <button class="subtle-link-btn" style="${isFlagged ? 'border-color:var(--flag); color:var(--flag); background:var(--flag-bg);' : ''}" onclick="triggerFlag(${q.number})">
+              <button class="subtle-link-btn" onclick="revealQuizAnswer(${q.number})" title="Reveal the correct answer and explanation (counts as Incorrect)">
 
-            🚩 ${isFlagged ? 'Flagged' : 'Flag'}
+                👁 Show Answer
 
-          </button>
+              </button>
 
-          <button class="subtle-link-btn" onclick="openReportQuestionModal(${q.number})" title="إبلاغ عن خطأ أو ملاحظة في السؤال للمشرف">
+            ` : ''}
 
-            🚨 إبلاغ
+            <button class="subtle-link-btn" style="${isFlagged ? 'border-color:var(--flag); color:var(--flag); background:var(--flag-bg);' : ''}" onclick="triggerFlag(${q.number})">
 
-          </button>
+              🚩 ${isFlagged ? 'Flagged' : 'Flag'}
 
-          ${isAnswered ? `<button class="subtle-link-btn" onclick="retryQuestion(${q.number})">🔄 Retry</button>` : ''}
+            </button>
+
+            <button class="subtle-link-btn" onclick="openReportQuestionModal(${q.number})" title="إبلاغ عن خطأ أو ملاحظة في السؤال للمشرف">
+
+              🚨 إبلاغ
+
+            </button>
+
+            ${isAnswered ? `<button class="subtle-link-btn" onclick="retryQuestion(${q.number})">🔄 Retry</button>` : ''}
+
+          </div>
 
         </div>
+
+        ${tags.length > 0 ? `
+
+          <div class="qc-exam-tags-row">
+
+            <span class="exam-count-pill" title="عدد مرات تكرار السؤال في الامتحانات">&times;${countNum}</span>
+
+            ${allChipsHTML}
+
+          </div>
+
+        ` : ''}
 
       </div>
 
@@ -24954,7 +24990,7 @@ function finishAndShowSessionResults() {
 
         const pearlText = (q.explanation && q.explanation.pearl) ? q.explanation.pearl : "";
 
-        const origAmerBadge = isAdminAccount() ? ` <span class="admin-amer-pill" title="رقم د. عامر">📖 د. عامر #${q.number}</span>` : "";
+        const origAmerBadge = isAdminAccount() ? ` <span class="admin-amer-pill" title="رقم السؤال في مذكرة د. أحمد عامر (أدمن)">#${q.number}</span>` : "";
 
 
 
