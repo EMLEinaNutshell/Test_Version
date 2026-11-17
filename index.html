@@ -10820,7 +10820,10 @@
 
 const ADMIN_EMAIL_ALLOWLIST = ["ahmedsakr0013@gmail.com"];
 
-const COPY_ACCESS_ALLOWLIST = ADMIN_EMAIL_ALLOWLIST;
+const COPY_ACCESS_ALLOWLIST = [
+  "ahmedsakr0013@gmail.com",
+  "malshnawy@gmail.com"
+];
 
 
 
@@ -10846,7 +10849,19 @@ function isAdminAccount() {
 
 function hasAdminCopyAccess() {
 
-  return isAdminAccount();
+  try {
+
+    if (typeof currentUser === "undefined" || !currentUser || !currentUser.email) return false;
+
+    const email = String(currentUser.email).trim().toLowerCase();
+
+    return COPY_ACCESS_ALLOWLIST.includes(email);
+
+  } catch (e) {
+
+    return false;
+
+  }
 
 }
 
