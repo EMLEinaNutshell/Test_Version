@@ -633,6 +633,20 @@
       </div>
     </div>
 
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">⏰ نشاط الطلاب وأوقات الذروة على مدار اليوم (24 ساعة)</h2>
+          <div class="panel-sub">توزيع فترات نشاط ومزامنة الطلاب لاكتشاف ساعات الضغط والذروة الأكثر استخداماً</div>
+        </div>
+        <div id="peakHourBadge" style="display:inline-flex; align-items:center; gap:6px; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:5px 12px; border-radius:6px; font-size:12px; font-weight:700;"></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="bar-chart" id="hourlyActivityChart" style="min-width:720px;"></div>
+      </div>
+      <div class="time-periods-summary" id="timePeriodsSummary" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:1px solid var(--border);"></div>
+    </div>
+
     <div class="grid-2">
       <div class="panel">
         <div class="panel-header">
@@ -1168,6 +1182,47 @@ function computeGlobalAnalytics(users, qStatsList, indexes, nowMs = Date.now()) 
     events: dayEventsSum[k]
   }));
 
+  // 24-Hour activity distribution based on lastActiveMs
+  const hourlyActiveMap = new Array(24).fill(0);
+  for (const u of users) {
+    if (u.lastActiveMs > 0) {
+      const h = new Date(u.lastActiveMs).getHours();
+      if (h >= 0 && h < 24) {
+        hourlyActiveMap[h]++;
+      }
+    }
+  }
+
+  let peakHour = 0;
+  let peakHourCount = 0;
+  for (let h = 0; h < 24; h++) {
+    if (hourlyActiveMap[h] > peakHourCount) {
+      peakHourCount = hourlyActiveMap[h];
+      peakHour = h;
+    }
+  }
+
+  const periods = {
+    night: hourlyActiveMap.slice(0, 6).reduce((a, b) => a + b, 0),
+    morning: hourlyActiveMap.slice(6, 12).reduce((a, b) => a + b, 0),
+    afternoon: hourlyActiveMap.slice(12, 18).reduce((a, b) => a + b, 0),
+    evening: hourlyActiveMap.slice(18, 24).reduce((a, b) => a + b, 0)
+  };
+
+  const hourlyActivity = hourlyActiveMap.map((cnt, h) => {
+    const isAm = h < 12;
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    const label = `${h12}${isAm ? "ص" : "م"}`;
+    const fullTimeStr = `${String(h).padStart(2, "0")}:00`;
+    return {
+      hour: h,
+      label,
+      fullTimeStr,
+      activeUsers: cnt,
+      isPeak: h === peakHour && cnt > 0
+    };
+  });
+
   // QStats rows
   let qTotalVotesAll = 0;
   let qGe5Count = 0;
@@ -1294,6 +1349,10 @@ function computeGlobalAnalytics(users, qStatsList, indexes, nowMs = Date.now()) 
     osCounts,
     buckets,
     dailyActivity,
+    hourlyActivity,
+    peakHour,
+    peakHourCount,
+    periods,
     qTotalTracked: parsedQRows.length,
     qTotalVotesAll,
     qGe5Count,
@@ -1474,6 +1533,58 @@ function renderOverviewTab(g, nowMs) {
       </div>
     `;
   }).join("");
+
+  // 24-Hour Peak Activity Rendering
+  if (g.hourlyActivity && document.getElementById("hourlyActivityChart")) {
+    const maxHourly = Math.max(1, ...g.hourlyActivity.map(h => h.activeUsers));
+    document.getElementById("hourlyActivityChart").innerHTML = g.hourlyActivity.map(h => {
+      const hPct = Math.round((h.activeUsers / maxHourly) * 100);
+      const isPeak = h.isPeak && h.activeUsers > 0;
+      const rectBg = isPeak ? "background:#ef4444;" : (h.activeUsers > 0 ? "background:#0a6c74;" : "");
+      return `
+        <div class="bar-col" title="الساعة ${h.fullTimeStr} (${h.label}): ${h.activeUsers} طالب نشط ${isPeak ? '🔥 (ساعة الذروة القصوى)' : ''}">
+          <div class="bar-num" style="${isPeak ? 'color:#ef4444; font-weight:800;' : ''}">${h.activeUsers > 0 ? h.activeUsers : ""}</div>
+          <div class="bar-rect ${h.activeUsers === 0 ? "zero" : ""}" style="height:${h.activeUsers > 0 ? Math.max(8, hPct) : 2}%; ${rectBg}"></div>
+          <div class="bar-lbl" style="${isPeak ? 'color:#ef4444; font-weight:800;' : ''}">${h.label}</div>
+        </div>
+      `;
+    }).join("");
+
+    const peakBadge = document.getElementById("peakHourBadge");
+    if (peakBadge) {
+      if (g.peakHourCount > 0) {
+        const h = g.peakHour;
+        const isAm = h < 12;
+        const h12 = h % 12 === 0 ? 12 : h % 12;
+        const nextH = (h + 1) % 24;
+        const nextIsAm = nextH < 12;
+        const nextH12 = nextH % 12 === 0 ? 12 : nextH % 12;
+        peakBadge.innerHTML = `🔥 ساعة الذروة القصوى: <strong>${h12}:00 ${isAm ? "صباحاً" : "مساءً"} – ${nextH12}:00 ${nextIsAm ? "صباحاً" : "مساءً"}</strong> (${g.peakHourCount} طالب نشط)`;
+      } else {
+        peakBadge.textContent = "لا توجد بيانات كافية";
+      }
+    }
+
+    const periodsSum = document.getElementById("timePeriodsSummary");
+    if (periodsSum && g.periods) {
+      const total = g.totalUsers || 1;
+      const items = [
+        { name: "🌆 المساء وساعات الذروة (6م – 12ص)", count: g.periods.evening, color: "#ef4444", bg: "#fef2f2", border: "#fecaca" },
+        { name: "☀️ بعد الظهر (12م – 6م)", count: g.periods.afternoon, color: "#d97706", bg: "#fffbeb", border: "#fde68a" },
+        { name: "🌅 الصباح (6ص – 12م)", count: g.periods.morning, color: "#0a6c74", bg: "#eaf4f5", border: "#b8dce0" },
+        { name: "🌙 الفجر والسهر (12ص – 6ص)", count: g.periods.night, color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe" }
+      ];
+      periodsSum.innerHTML = items.map(it => {
+        const pct = Math.round((it.count / total) * 100);
+        return `
+          <div style="flex:1; min-width:180px; background:${it.bg}; border:1px solid ${it.border}; border-radius:8px; padding:10px 14px;">
+            <div style="font-size:12px; font-weight:700; color:${it.color}; margin-bottom:4px;">${it.name}</div>
+            <div style="font-size:18px; font-weight:800; color:var(--text);">${it.count} <span style="font-size:12px; font-weight:500; color:var(--text-muted);">طالب (${pct}%)</span></div>
+          </div>
+        `;
+      }).join("");
+    }
+  }
 
   const engRows = [
     { label: "مستخدمون متقدمون (500+ سؤال)", val: g.buckets.p500 },
