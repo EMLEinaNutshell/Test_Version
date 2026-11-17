@@ -665,6 +665,22 @@
       </div>
     </div>
 
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h2 class="panel-title">📍 توزيع ونسبة المستخدمين حسب المحافظات</h2>
+          <span class="panel-sub">الانتشار الجغرافي ونسبة الطلاب في كل محافظة من محافظات مصر</span>
+        </div>
+        <div id="govSummaryBadge" style="font-size:12px; font-weight:700; color:var(--teal); background:var(--teal-light); border:1px solid var(--teal-border); padding:4px 10px; border-radius:999px;">جاري الحساب...</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-top:12px;">
+        <div>
+          <div class="dist-list" id="governorateDistList" style="max-height:360px; overflow-y:auto; padding-left:4px;"></div>
+        </div>
+        <div id="govHighlights" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </div>
+
     <div class="grid-2">
       <div class="panel">
         <div class="panel-header">
@@ -709,7 +725,10 @@
           <button class="fpill" data-filter="zero_solved" onclick="setUserFilter('zero_solved')">بدون حلول (0)</button>
         </div>
         <div class="controls-right">
-          <input class="input" id="userSearchInput" type="search" placeholder="بحث بالاسم أو الإيميل..." oninput="renderUsersTable()">
+          <select class="select" id="userGovFilter" onchange="renderUsersTable()" title="فلترة حسب المحافظة">
+            <option value="all">كل المحافظات</option>
+          </select>
+          <input class="input" id="userSearchInput" type="search" placeholder="بحث بالاسم أو الإيميل أو المحافظة..." oninput="renderUsersTable()">
           <select class="select" id="userSortSelect" onchange="renderUsersTable()">
             <option value="recent">الأحدث نشاطاً</option>
             <option value="solved_desc">الأكثر حلاً للأسئلة</option>
@@ -722,7 +741,7 @@
       </div>
       <div class="meta-strip" style="margin-bottom:8px;">
         <span id="usersCountLabel"></span>
-        <span>اضغط على أي طالب لعرض تفاصيل نشاطه وشابتراته</span>
+        <span>اضغط على أي طالب لعرض تفاصيل نشاطه وتعديل محافظته</span>
       </div>
       <div class="table-wrap">
         <table>
@@ -730,6 +749,7 @@
             <tr>
               <th>#</th>
               <th>الطالب</th>
+              <th>المحافظة</th>
               <th>الحالة</th>
               <th>الأسئلة</th>
               <th>الدقة</th>
@@ -1036,10 +1056,13 @@ function computeUserRecord(uid, raw, nowMs = Date.now()) {
     : (daysSinceActive <= 7 ? "week" : (daysSinceActive <= 30 ? "month" : "dormant"));
 
   const device = parseDeviceInfo(data.userAgent);
+  const rawGov = String(data.governorate || data.gov || data.city || "").trim();
+  const governorate = rawGov || "غير محدد";
   return {
     uid,
     displayName,
     email,
+    governorate,
     solvedValid,
     revealedCount,
     totalAttempted,
@@ -1112,6 +1135,8 @@ function computeGlobalAnalytics(users, qStatsList, indexes, nowMs = Date.now()) 
   let totalTopicsReadAll = 0;
 
   const osCounts = { iOS: 0, Android: 0, Windows: 0, Mac: 0, Linux: 0, "غير معروف": 0, "أخرى": 0 };
+  const govCounts = {};
+  let usersWithGov = 0;
   const buckets = { p500: 0, p100: 0, p20: 0, p1: 0, zero: 0 };
   const solvedCountsForMedian = [];
 
@@ -1146,6 +1171,10 @@ function computeGlobalAnalytics(users, qStatsList, indexes, nowMs = Date.now()) 
 
     osCounts[u.os] = (osCounts[u.os] || 0) + 1;
 
+    const gName = u.governorate || "غير محدد";
+    govCounts[gName] = (govCounts[gName] || 0) + 1;
+    if (gName !== "غير محدد") usersWithGov++;
+
     if (u.totalAttempted >= 500) buckets.p500++;
     else if (u.totalAttempted >= 100) buckets.p100++;
     else if (u.totalAttempted >= 20) buckets.p20++;
@@ -1168,6 +1197,11 @@ function computeGlobalAnalytics(users, qStatsList, indexes, nowMs = Date.now()) 
   }
 
   solvedCountsForMedian.sort((a, b) => a - b);
+  const govSorted = Object.entries(govCounts).sort((a, b) => {
+    if (a[0] === "غير محدد" && b[0] !== "غير محدد") return 1;
+    if (b[0] === "غير محدد" && a[0] !== "غير محدد") return -1;
+    return b[1] - a[1];
+  });
   const mid = Math.floor(solvedCountsForMedian.length / 2);
   const medianAnswersActive = solvedCountsForMedian.length === 0
     ? 0
@@ -1347,6 +1381,9 @@ function computeGlobalAnalytics(users, qStatsList, indexes, nowMs = Date.now()) 
     medianAnswersActive,
     totalTopicsReadAll,
     osCounts,
+    govCounts,
+    govSorted,
+    usersWithGov,
     buckets,
     dailyActivity,
     hourlyActivity,
@@ -1614,6 +1651,82 @@ function renderOverviewTab(g, nowMs) {
     `;
   }).join("");
 
+  // Governorate Distribution Rendering
+  const govBadge = document.getElementById("govSummaryBadge");
+  if (govBadge) {
+    const knownGovs = (g.govSorted || []).filter(([k]) => k !== "غير محدد").length;
+    const knownPct = g.totalUsers > 0 ? Math.round(((g.usersWithGov || 0) / g.totalUsers) * 100) : 0;
+    govBadge.innerHTML = `تمثيل <strong>${knownGovs}</strong> محافظة • ${g.usersWithGov || 0} طالب محدد (${knownPct}%)`;
+  }
+
+  const govListEl = document.getElementById("governorateDistList");
+  if (govListEl) {
+    if (!g.govSorted || g.govSorted.length === 0) {
+      govListEl.innerHTML = `<div style="padding:16px; color:var(--text-muted); text-align:center;">لا توجد بيانات مستخدمين حالياً</div>`;
+    } else {
+      govListEl.innerHTML = g.govSorted.map(([gov, val]) => {
+        const pct = g.totalUsers > 0 ? Math.round((val / g.totalUsers) * 100) : 0;
+        const isUnknown = gov === "غير محدد";
+        const barColor = isUnknown ? "background:#94a3b8;" : "";
+        return `
+          <div class="dist-row" title="${escapeHtml(gov)}: ${val} طالب (${pct}% من إجمالي المسجلين)">
+            <div class="dist-meta">
+              <span style="${isUnknown ? 'color:var(--text-muted); font-style:italic;' : 'font-weight:600;'}">
+                ${isUnknown ? '⚪ ' : '📍 '}${escapeHtml(gov)}
+              </span>
+              <span class="num"><strong>${val}</strong> طالب (${pct}%)</span>
+            </div>
+            <div class="dist-track">
+              <div class="dist-fill" style="width:${Math.max(2, pct)}%; ${barColor}"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+  }
+
+  const govHighlightsEl = document.getElementById("govHighlights");
+  if (govHighlightsEl) {
+    const top3 = (g.govSorted || []).filter(([k]) => k !== "غير محدد").slice(0, 3);
+    const top1 = top3[0];
+    const topPct = top1 && g.totalUsers > 0 ? Math.round((top1[1] / g.totalUsers) * 100) : 0;
+
+    govHighlightsEl.innerHTML = `
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">🥇 المحافظة الأكثر حضوراً</div>
+        <div style="font-size:18px; font-weight:800; color:var(--teal);">
+          ${top1 ? `${escapeHtml(top1[0])} <span style="font-size:13px; font-weight:600; color:var(--text-secondary);">(${top1[1]} طالب • ${topPct}%)</span>` : "لا توجد بيانات كافية"}
+        </div>
+      </div>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🏆 أعلى 3 محافظات تسجيلاً</div>
+        ${top3.length ? `
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            ${top3.map(([k, v], i) => {
+              const p = Math.round((v / (g.totalUsers || 1)) * 100);
+              const medal = i === 0 ? "🥇" : (i === 1 ? "🥈" : "🥉");
+              return `
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px;">
+                  <span>${medal} <strong>${escapeHtml(k)}</strong></span>
+                  <span class="num">${v} طالب (${p}%)</span>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        ` : `<span style="font-size:12px; color:var(--text-muted);">لم يتم تحديد محافظات كافية بعد</span>`}
+      </div>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">📊 دقة التحديد الجغرافي</div>
+        <div style="font-size:13px; color:var(--text-secondary);">
+          <strong>${g.usersWithGov || 0}</strong> من <strong>${g.totalUsers || 0}</strong> طالب حددوا محافظتهم
+          (${g.totalUsers > 0 ? Math.round(((g.usersWithGov || 0) / g.totalUsers) * 100) : 0}% اكتمال)
+        </div>
+      </div>
+    `;
+  }
+
   const topSolvers = [...processedUsers].sort((a, b) => b.totalAttempted - a.totalAttempted).slice(0, 8);
   document.getElementById("topSolversBody").innerHTML = topSolvers.map(u => `
     <tr class="clickable" onclick="openStudentModal('${escapeHtml(u.uid)}')">
@@ -1644,6 +1757,7 @@ function renderOverviewTab(g, nowMs) {
 function getFilteredSortedUsers() {
   const q = String(document.getElementById("userSearchInput").value || "").trim().toLowerCase();
   const sortKey = document.getElementById("userSortSelect").value;
+  const govFilter = document.getElementById("userGovFilter") ? document.getElementById("userGovFilter").value : "all";
 
   const list = processedUsers.filter(u => {
     if (activeUserFilter === "active_1d" && u.recency !== "today") return false;
@@ -1652,8 +1766,9 @@ function getFilteredSortedUsers() {
     if (activeUserFilter === "dormant" && u.recency !== "dormant") return false;
     if (activeUserFilter === "has_solved" && u.totalAttempted === 0) return false;
     if (activeUserFilter === "zero_solved" && u.totalAttempted > 0) return false;
+    if (govFilter !== "all" && u.governorate !== govFilter) return false;
     if (q) {
-      return u.displayName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+      return u.displayName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.governorate.toLowerCase().includes(q);
     }
     return true;
   });
@@ -1668,14 +1783,40 @@ function getFilteredSortedUsers() {
   return list;
 }
 
+function populateGovFilterDropdown() {
+  const select = document.getElementById("userGovFilter");
+  if (!select) return;
+  const currentVal = select.value || "all";
+  const govs = new Set();
+  processedUsers.forEach(u => {
+    if (u.governorate) govs.add(u.governorate);
+  });
+  const sortedGovs = Array.from(govs).sort((a, b) => {
+    if (a === "غير محدد") return 1;
+    if (b === "غير محدد") return -1;
+    return a.localeCompare(b, "ar");
+  });
+
+  select.innerHTML = `<option value="all">كل المحافظات (${processedUsers.length})</option>` +
+    sortedGovs.map(g => {
+      const cnt = processedUsers.filter(u => u.governorate === g).length;
+      return `<option value="${escapeHtml(g)}">${escapeHtml(g)} (${cnt})</option>`;
+    }).join("");
+
+  if (Array.from(select.options).some(o => o.value === currentVal)) {
+    select.value = currentVal;
+  }
+}
+
 function renderUsersTable() {
+  populateGovFilterDropdown();
   const list = getFilteredSortedUsers();
   const nowMs = Date.now();
   document.getElementById("usersCountLabel").textContent = `عرض ${list.length} من إجمالي ${processedUsers.length} حساب`;
 
   const tbody = document.getElementById("usersTableBody");
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="loading-bar">لا توجد حسابات مطابقة للفلتر الحالي</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="loading-bar">لا توجد حسابات مطابقة للفلتر الحالي</td></tr>`;
     return;
   }
 
@@ -1690,6 +1831,7 @@ function renderUsersTable() {
           <div class="user-cell-name">${escapeHtml(u.displayName)}</div>
           <span class="user-cell-email">${escapeHtml(u.email)}</span>
         </td>
+        <td><span class="badge ${u.governorate && u.governorate !== 'غير محدد' ? 'b-teal' : 'b-gray'}">${escapeHtml(u.governorate)}</span></td>
         <td>${renderStatusBadge(u)}</td>
         <td class="num"><strong>${u.totalAttempted}</strong> <span style="color:var(--text-muted); font-size:11px;">(${u.correctCount}✓)</span></td>
         <td>${accBadge}</td>
@@ -1831,17 +1973,36 @@ function openStudentModal(uid) {
     }
   }
 
+  const EGYPT_GOVS = [
+    "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "الغربية", "المنوفية",
+    "القليوبية", "البحيرة", "كفر الشيخ", "دمياط", "بورسعيد", "الإسماعيلية", "السويس",
+    "الفيوم", "بني سويف", "المنيا", "أسيوط", "سوهاج", "قنا", "الأقصر", "أسوان",
+    "البحر الأحمر", "الوادي الجديد", "مطروح", "شمال سيناء", "جنوب سيناء", "خارج مصر"
+  ];
+
   document.getElementById("modalStudentBody").innerHTML = `
     <div class="mini-grid">
+      <div class="mini-stat"><div class="l">المحافظة</div><div class="v" style="font-size:13.5px; font-weight:700; color:var(--teal);">${escapeHtml(u.governorate)}</div></div>
       <div class="mini-stat"><div class="l">إجمالي الأسئلة</div><div class="v">${u.totalAttempted}</div></div>
       <div class="mini-stat"><div class="l">صحيح / خطأ</div><div class="v">${u.correctCount} / ${u.wrongCount}</div></div>
       <div class="mini-stat"><div class="l">الدقة</div><div class="v">${u.accuracy !== null ? u.accuracy + "%" : "—"}</div></div>
       <div class="mini-stat"><div class="l">Show Answer</div><div class="v">${u.revealedCount}</div></div>
       <div class="mini-stat"><div class="l">مواضيع مقروءة</div><div class="v">${u.topicsReadCount}</div></div>
       <div class="mini-stat"><div class="l">Streak (حالي / أفضل)</div><div class="v">${u.streakCurrent} / ${u.streakBest}</div></div>
-      <div class="mini-stat"><div class="l">Hints / Flagged</div><div class="v">${u.hintCount} / ${u.flaggedCount}</div></div>
       <div class="mini-stat"><div class="l">الجهاز</div><div class="v" style="font-size:14px;">${escapeHtml(u.os)}</div></div>
     </div>
+
+    <div style="margin:12px 0; padding:10px 14px; background:var(--surface-subtle); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <span style="font-size:12.5px; font-weight:700;">📍 تعديل محافظة الطالب:</span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <select class="select" id="studentGovSelect" style="padding:4px 10px; font-size:12.5px;">
+          <option value="">-- غير محدد --</option>
+          ${EGYPT_GOVS.map(g => `<option value="${escapeHtml(g)}" ${u.governorate === g ? "selected" : ""}>${escapeHtml(g)}</option>`).join("")}
+        </select>
+        <button class="btn btn-primary" id="saveGovBtn" style="padding:4px 12px; font-size:12px;" onclick="saveStudentGovernorate('${escapeHtml(u.uid)}')">💾 حفظ</button>
+      </div>
+    </div>
+
     <div style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
       آخر نشاط مسجل: <strong>${escapeHtml(formatExactDateTime(u.lastActiveMs))}</strong> • أيام النشاط المسجلة: <strong class="num">${u.activeDaysCount}</strong> يوم
     </div>
@@ -1856,6 +2017,45 @@ function openStudentModal(uid) {
   document.getElementById("studentModal").classList.add("show");
 }
 
+async function saveStudentGovernorate(uid) {
+  if (!uid || !fbDb) return;
+  const sel = document.getElementById("studentGovSelect");
+  const btn = document.getElementById("saveGovBtn");
+  if (!sel) return;
+  const newGov = sel.value.trim() || "غير محدد";
+  try {
+    sel.disabled = true;
+    if (btn) { btn.disabled = true; btn.textContent = "⏳..."; }
+
+    await fbDb.collection("users").doc(uid).set({
+      governorate: newGov === "غير محدد" ? "" : newGov
+    }, { merge: true });
+
+    const u = processedUsers.find(x => x.uid === uid);
+    if (u) {
+      u.governorate = newGov;
+    }
+
+    if (globalAnalytics) {
+      globalAnalytics = computeGlobalAnalytics(processedUsers, qStatsRows.map(r => ({ id: r.qnum, data: {} })), catalogIndexes);
+      renderOverviewTab(globalAnalytics, Date.now());
+    }
+
+    // Reset dropdown populated flag to refresh counts
+    const govFilterEl = document.getElementById("userGovFilter");
+    if (govFilterEl) delete govFilterEl.dataset.populated;
+    populateGovFilterDropdown();
+    renderUsersTable();
+    openStudentModal(uid);
+  } catch(e) {
+    console.error("Save gov error:", e);
+    alert("حدث خطأ أثناء حفظ المحافظة: " + (e.message || e));
+  } finally {
+    if (sel) sel.disabled = false;
+    if (btn) { btn.disabled = false; btn.textContent = "💾 حفظ"; }
+  }
+}
+
 function closeStudentModal() {
   document.getElementById("studentModal").classList.remove("show");
 }
@@ -1868,12 +2068,13 @@ function formatCsvCell(val) {
 }
 
 function buildUsersCsv(list) {
-  const header = ["Name", "Email", "Status", "TotalAttempted", "SolvedValid", "Revealed", "Correct", "Wrong", "AccuracyPct", "TopicsRead", "StreakCurrent", "StreakBest", "ActiveDays", "DeviceOS", "LastActiveISO"];
+  const header = ["Name", "Email", "Governorate", "Status", "TotalAttempted", "SolvedValid", "Revealed", "Correct", "Wrong", "AccuracyPct", "TopicsRead", "StreakCurrent", "StreakBest", "ActiveDays", "DeviceOS", "LastActiveISO"];
   const lines = [header.map(formatCsvCell).join(",")];
   for (const u of list) {
     lines.push([
       u.displayName,
       u.email,
+      u.governorate,
       u.recency,
       u.totalAttempted,
       u.solvedValid,
