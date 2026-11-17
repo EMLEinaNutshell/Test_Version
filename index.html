@@ -8,6 +8,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Start the large local payload early, without blocking HTML parsing. -->
+<link rel="preload" href="data-enc.js" as="script">
+
 <title>EMLE in a Nutshell — Clinical Library &amp; QBank</title>
 
 <style>
@@ -8121,11 +8124,8 @@
 
   <!-- Firebase SDKs (Compat for pure browser CDN) -->
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 
 
@@ -13489,7 +13489,7 @@ function syncAdminCopyAccess() {
 
 
 
-<script src="data-enc.js"></script>
+<script defer src="data-enc.js"></script>
 <script>
 
 let DATA = {"tree":[],"topics":[],"questions":[]};
@@ -14599,6 +14599,19 @@ const CLINICAL_TERMS = {
 
 // High-Performance Memoized Annotator with Pre-Compiled Regexes
 const _medAnnotCache = new Map();
+let _medAnnotCacheChars = 0;
+const MED_ANNOT_CACHE_MAX_CHARS = 2 * 1024 * 1024;
+function cacheMedicalAnnotation(source, result) {
+  const size = source.length + result.length;
+  if (size > MED_ANNOT_CACHE_MAX_CHARS) return;
+  while (_medAnnotCache.size && (_medAnnotCache.size >= 512 || _medAnnotCacheChars + size > MED_ANNOT_CACHE_MAX_CHARS)) {
+    const oldest = _medAnnotCache.keys().next().value;
+    _medAnnotCacheChars -= oldest.length + _medAnnotCache.get(oldest).length;
+    _medAnnotCache.delete(oldest);
+  }
+  _medAnnotCache.set(source, result);
+  _medAnnotCacheChars += size;
+}
 let _precompiledTerms = null;
 let _precompiledAbbrevs = null;
 
@@ -14609,7 +14622,8 @@ function _getPrecompiledGlossaries() {
       const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       return {
         rx: new RegExp(`(^|[^\\w>@])(${escaped})(?![\\w<@])`, "gi"),
-        entry: CLINICAL_TERMS[term]
+        entry: CLINICAL_TERMS[term],
+        literal: term.toLowerCase()
       };
     });
   }
@@ -14629,7 +14643,12 @@ function _getPrecompiledGlossaries() {
 
 function annotateMedicalHTML(htmlStr) {
   if (!htmlStr) return "";
-  if (_medAnnotCache.has(htmlStr)) return _medAnnotCache.get(htmlStr);
+  if (_medAnnotCache.has(htmlStr)) {
+    const cached = _medAnnotCache.get(htmlStr);
+    _medAnnotCache.delete(htmlStr);
+    _medAnnotCache.set(htmlStr, cached);
+    return cached;
+  }
 
   const container = document.createElement("div");
   container.innerHTML = htmlStr;
@@ -14672,8 +14691,10 @@ function annotateMedicalHTML(htmlStr) {
     });
 
     // 2. Replace Clinical Terms with placeholders
+    const lowerText = safeHtml.toLowerCase();
     for (let i = 0; i < terms.length; i++) {
       const item = terms[i];
+      if (!lowerText.includes(item.literal)) continue;
       safeHtml = safeHtml.replace(item.rx, (_, prefix, m) => {
         return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(item.entry[0])}" data-title="${escapeAttr(item.entry[1])}" data-body="${escapeAttr(item.entry[2])}">${m}</span>`);
       });
@@ -14682,6 +14703,7 @@ function annotateMedicalHTML(htmlStr) {
     // 3. Replace Abbreviations with placeholders
     for (let i = 0; i < abbrevs.length; i++) {
       const item = abbrevs[i];
+      if (!safeHtml.includes(item.abbr)) continue;
       safeHtml = safeHtml.replace(item.rx, (_, prefix, m) => {
         return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(item.entry[0])}" data-title="${escapeAttr(item.abbr + ' — ' + item.entry[1])}" data-body="${escapeAttr(item.entry[2])}">${m}</span>`);
       });
@@ -14696,8 +14718,7 @@ function annotateMedicalHTML(htmlStr) {
   });
 
   const res = container.innerHTML;
-  if (_medAnnotCache.size > 2500) _medAnnotCache.clear();
-  _medAnnotCache.set(htmlStr, res);
+  cacheMedicalAnnotation(htmlStr, res);
   return res;
 }
 
@@ -15124,6 +15145,12 @@ function playWarningBeep() {
       osc.start(ctx.currentTime + i * 0.14);
 
       osc.stop(ctx.currentTime + i * 0.14 + 0.14);
+
+      osc.onended = () => {
+        osc.disconnect();
+        g.disconnect();
+        if (i === 1) ctx.close().catch(() => {});
+      };
 
     });
 
@@ -21531,18 +21558,21 @@ function toggleExpandExamTags() {
 
 
 
+let _lastTopbarH = 0;
+let _topbarRafId = null;
+
 function syncTopbarHeight() {
-
-  const bar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
-
-  if (!bar) return;
-
-  const rect = bar.getBoundingClientRect();
-
-  const h = Math.max(46, Math.ceil(rect.height || bar.offsetHeight || 54));
-
-  document.documentElement.style.setProperty("--topbar-h", h + "px");
-
+  if (_topbarRafId) cancelAnimationFrame(_topbarRafId);
+  _topbarRafId = requestAnimationFrame(() => {
+    _topbarRafId = null;
+    const bar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
+    if (!bar) return;
+    const h = Math.max(46, Math.ceil(bar.offsetHeight || 54));
+    if (Math.abs(h - _lastTopbarH) >= 2) {
+      _lastTopbarH = h;
+      document.documentElement.style.setProperty("--topbar-h", h + "px");
+    }
+  });
 }
 
 
@@ -21617,7 +21647,8 @@ function renderSplitNotesPane() {
 
   state.currentQuizTopicId = t.id;
 
-  let snpNotesBody = annotateMedicalHTML(t.vip_html);
+  let notesSource = t.vip_html;
+  let hasSavedHighlights = false;
 
   try {
 
@@ -21631,7 +21662,8 @@ function renderSplitNotesPane() {
 
       } else {
 
-        snpNotesBody = savedHl;
+        notesSource = savedHl;
+        hasSavedHighlights = true;
 
       }
 
@@ -21640,6 +21672,12 @@ function renderSplitNotesPane() {
   } catch(e) {}
 
 
+
+  // Reuse the notes DOM while answering questions from the same topic.
+  if (pane._notesTopic === t && pane._notesSource === notesSource) return;
+  const snpNotesBody = hasSavedHighlights ? notesSource : annotateMedicalHTML(notesSource);
+  pane._notesTopic = t;
+  pane._notesSource = notesSource;
 
   pane.innerHTML = `
 
@@ -23454,6 +23492,47 @@ function formatFirebaseAuthError(err) {
 
 
 
+// Cloud SDKs must never hold up the library or question bank.
+// Keep one shared attempt; failed downloads can be retried from Sign In.
+let _firebaseSdkPromise = null;
+const _firebaseScriptLoads = new Map();
+function loadFirebaseSDKs() {
+  if (_firebaseSdkPromise) return _firebaseSdkPromise;
+  const base = "https://www.gstatic.com/firebasejs/10.8.0/";
+  const load = (name, ready) => {
+    if (ready()) return Promise.resolve();
+    if (_firebaseScriptLoads.has(name)) return _firebaseScriptLoads.get(name);
+    const pending = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = base + name;
+      script.async = true;
+      script.onload = () => ready() ? resolve() : reject(new Error("SDK unavailable: " + name));
+      script.onerror = () => {
+        script.remove();
+        reject(new Error("SDK download failed: " + name));
+      };
+      document.head.appendChild(script);
+    }).catch(err => { _firebaseScriptLoads.delete(name); throw err; });
+    _firebaseScriptLoads.set(name, pending);
+    return pending;
+  };
+  _firebaseSdkPromise = load("firebase-app-compat.js", () => typeof firebase !== "undefined")
+    .then(() => Promise.all([
+      load("firebase-auth-compat.js", () => typeof firebase.auth === "function"),
+      load("firebase-firestore-compat.js", () => typeof firebase.firestore === "function")
+    ]))
+    .catch(err => { _firebaseSdkPromise = null; throw err; });
+  return _firebaseSdkPromise;
+}
+
+function startCloudServices() {
+  return loadFirebaseSDKs().then(() => initFirebase()).catch(err => {
+    console.warn("Cloud services unavailable; local study remains available:", err);
+    updateSyncIndicator("local");
+    return false;
+  });
+}
+
 function initFirebase() {
 
   if (!isFirebaseConfigured()) {
@@ -23741,7 +23820,7 @@ function updateAuthTopBar() {
 
 
 async function syncProgressFromCloud(user) {
-  if (!user || !fbDb) return;
+  if (!user || !fbDb) return false;
   try {
     updateSyncIndicator("syncing");
     const docRef = fbDb.collection("users").doc(user.uid);
@@ -23754,6 +23833,7 @@ async function syncProgressFromCloud(user) {
       snap = await docRef.get();
     }
 
+    if (!currentUser || currentUser.uid !== user.uid) return false;
     if (snap && snap.exists) {
       const data = snap.data() || {};
 
@@ -23824,38 +23904,65 @@ async function syncProgressFromCloud(user) {
       // 5. Save locally
       saveState(true);
 
-      // 6. CRUCIAL TWO-WAY SYNC: Immediately upload merged progress back to cloud
-      // Guarantees all questions from all browsers are consolidated in cloud
-      await syncProgressToCloud(true);
+      // Render downloaded progress before waiting for the upload acknowledgment.
+      // The upload queue owns pending changes, including answers made while offline.
 
-      if (typeof navigateTo === "function" && state.currentView && DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
-        navigateTo(state.currentView, state.currentTopicId);
+      if (DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
+        if (state.currentView === "quizzes") {
+          if (typeof renderQuizzesHub === "function") renderQuizzesHub();
+        } else if (state.currentView === "library") {
+          if (typeof renderLibrary === "function") renderLibrary();
+        } else if (state.currentView === "quiz") {
+          if (typeof renderQuizPage === "function") renderQuizPage(false);
+        } else if (typeof navigateTo === "function" && state.currentView) {
+          navigateTo(state.currentView, state.currentTopicId);
+        }
       }
       if (typeof renderStreakWidget === "function") {
         renderStreakWidget();
       }
-      updateSyncIndicator("synced");
+      if (!await syncProgressToCloud(true)) return false;
       showToast("Cloud progress loaded & synchronized successfully!");
     } else {
       // First time signing in on this account: push local progress to cloud
-      await syncProgressToCloud(true);
+      if (!await syncProgressToCloud(true)) return false;
       if (state.currentView === "quiz" && typeof renderQuizPage === "function") {
         renderQuizPage(false);
       }
       showToast("Account linked & local progress uploaded to cloud!");
     }
+    return true;
   } catch (err) {
     console.error("Cloud fetch error:", err);
     updateSyncIndicator("error");
+    return false;
   }
 }
 
 
+let _cloudUploadJob = null;
+
 async function syncProgressToCloud(isImmediate = false) {
 
-  if (!currentUser || !fbDb) return;
+  if (!currentUser || !fbDb) return false;
+
+  _hasPendingCloudSync = true;
+  clearTimeout(_cloudSyncTimer);
+  const user = currentUser;
+  if (_cloudUploadJob && _cloudUploadJob.uid === user.uid) {
+    return _cloudUploadJob.promise;
+  }
+  const job = { uid: user.uid, promise: null };
+  _cloudUploadJob = job;
+  job.promise = (async () => {
 
   try {
+
+    // Coalesce changes made during a slow/offline write into one latest snapshot.
+    // Never queue a new full progress document for each answer while one is pending.
+    while (_cloudUploadJob === job && currentUser && currentUser.uid === user.uid) {
+
+    clearTimeout(_cloudSyncTimer);
 
     _hasPendingCloudSync = false;
 
@@ -23863,7 +23970,7 @@ async function syncProgressToCloud(isImmediate = false) {
 
 
 
-    const docRef = fbDb.collection("users").doc(currentUser.uid);
+    const docRef = fbDb.collection("users").doc(user.uid);
 
     const payload = {
 
@@ -23879,9 +23986,9 @@ async function syncProgressToCloud(isImmediate = false) {
 
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
 
-      userEmail: currentUser.email || "",
+      userEmail: user.email || "",
 
-      displayName: currentUser.displayName || "",
+      displayName: user.displayName || "",
 
       userAgent: navigator.userAgent.substring(0, 100)
 
@@ -23891,18 +23998,33 @@ async function syncProgressToCloud(isImmediate = false) {
 
     await docRef.set(payload, { merge: true });
 
-    updateSyncIndicator("synced");
+    if (_cloudUploadJob !== job || !currentUser || currentUser.uid !== user.uid) return false;
+    if (!_hasPendingCloudSync) {
+      updateSyncIndicator("synced");
+      return true;
+    }
+
+    }
+    return false;
 
   } catch (err) {
 
     console.error("Cloud upload error:", err);
 
-    _hasPendingCloudSync = true;
+    if (_cloudUploadJob === job && currentUser && currentUser.uid === user.uid) {
+      _hasPendingCloudSync = true;
 
-    updateSyncIndicator("error");
+      updateSyncIndicator("error");
+    }
+    return false;
+
+  } finally {
+    if (_cloudUploadJob === job) _cloudUploadJob = null;
 
   }
 
+  })();
+  return job.promise;
 }
 
 
@@ -24015,9 +24137,13 @@ async function signInWithGoogle() {
 
   }
 
-  if (typeof firebase === "undefined") {
+  if (typeof firebase === "undefined" || typeof firebase.auth !== "function" || typeof firebase.firestore !== "function") {
 
-    const msg = "⚠️ تعذر تحميل مكتبة Google Sign-In. يرجى التأكد من اتصالك بالإنترنت أو فتح الرابط في متصفح Chrome أو Safari.";
+    startCloudServices();
+
+    const msg = "جاري تحميل تسجيل الدخول. تقدر تذاكر الآن، وجرّب تسجيل الدخول مرة تانية بعد لحظات. لو التأخير مستمر تأكد من اتصال الإنترنت.";
+
+    showToast(msg);
 
     const errBox = document.getElementById("authErrorMsg");
 
@@ -24248,11 +24374,9 @@ async function manualForceSync() {
 
     showToast("Syncing with cloud...");
 
-    await syncProgressToCloud(true);
-
-    await syncProgressFromCloud(currentUser);
-
-    showToast("Cloud sync complete!");
+    if (await syncProgressToCloud(true) && await syncProgressFromCloud(currentUser)) {
+      showToast("Cloud sync complete!");
+    }
 
   }
 
@@ -24854,7 +24978,8 @@ async function bootCompressedPortal() {
   }
 
   // 2. Initialize Firebase after DATA is 100% loaded and home is active
-  try { initFirebase(); } catch(e) { console.warn("initFirebase error:", e); }
+  // Start in a separate task so the local home page can render first.
+  setTimeout(startCloudServices, 0);
 
   try { checkUpdateAnnouncement(); } catch(e) {}
 
@@ -24862,24 +24987,15 @@ async function bootCompressedPortal() {
 
 
 
-window.addEventListener("resize", syncTopbarHeight);
-
-
+let _resizeDebounceTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(_resizeDebounceTimer);
+  _resizeDebounceTimer = setTimeout(syncTopbarHeight, 100);
+}, { passive: true });
 
 function _startPortalBoot() {
-
   syncTopbarHeight();
-
-  const mainTopbar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
-
-  if (mainTopbar && typeof ResizeObserver !== "undefined") {
-
-    new ResizeObserver(syncTopbarHeight).observe(mainTopbar);
-
-  }
-
   bootCompressedPortal();
-
 }
 
 
@@ -26852,6 +26968,10 @@ function applyReaderTypography() {
     if (incBtn) {
       incBtn.disabled = (_currentFontScaleIndex === FONT_SCALE_LEVELS.length - 1);
       incBtn.style.opacity = (_currentFontScaleIndex === FONT_SCALE_LEVELS.length - 1) ? "0.35" : "1";
+    }
+
+    if (typeof syncTopbarHeight === "function") {
+      syncTopbarHeight();
     }
   } catch (e) {
     console.error("applyReaderTypography error:", e);
