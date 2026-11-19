@@ -22339,12 +22339,7 @@ function computeQuestionsForFilter(filter) {
 
   }
 
-  if (filter === "my_solved_changed" ||
-    filter === "pred_top100" ||
-    filter === "pred_top500" ||
-    filter === "pred_all1054" ||
-    filter === "pred_all" ||
-    (typeof filter === "string" && filter.startsWith("pred_chapter_"))) {
+  if (filter === "my_solved_changed") {
 
     return DATA.questions.filter(isMySolvedChangedQuestion);
 
@@ -22622,27 +22617,6 @@ function executeStartQuizSession(filter, qs, mode) {
   state.activeQuizQs = qs.slice();
   state.quizChapterFilter = null;
 
-    if (filter === "pred_top100") {
-    const analysis = computePredictionsAnalysis();
-    return analysis.top100.slice();
-  }
-
-  if (filter === "pred_top500") {
-    const analysis = computePredictionsAnalysis();
-    return analysis.top500.slice();
-  }
-
-  if (filter === "pred_all1054" || filter === "pred_all") {
-    const analysis = computePredictionsAnalysis();
-    return analysis.all.slice();
-  }
-
-  if (filter && filter.startsWith("pred_chapter_")) {
-    const cid = filter.replace("pred_chapter_", "");
-    const analysis = computePredictionsAnalysis();
-    return analysis.all.filter(q => q.chapter_id === cid);
-  }
-
   if (filter === "custom_exam") {
 
     state.customQs = qs.slice();
@@ -22707,12 +22681,7 @@ function startQuiz(filter) {
 
   if (qs.length === 0) {
 
-    if (filter === "my_solved_changed" ||
-    filter === "pred_top100" ||
-    filter === "pred_top500" ||
-    filter === "pred_all1054" ||
-    filter === "pred_all" ||
-    (typeof filter === "string" && filter.startsWith("pred_chapter_"))) {
+    if (filter === "my_solved_changed") {
 
       showToast("أنت لم تقم بحل أي من الأسئلة المعدلة سابقاً بعد.");
 
