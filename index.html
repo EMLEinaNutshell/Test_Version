@@ -8,6 +8,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
+
 <title>EMLE in a Nutshell — Clinical Library &amp; QBank</title>
 
 <style>
@@ -1466,7 +1468,7 @@
 
   .topbar-hl-tool {
 
-    display: none;
+    display: inline-flex;
 
     align-items: center;
 
@@ -1485,12 +1487,6 @@
     transition: all 0.15s ease;
 
     user-select: none;
-
-  }
-
-  body.study-reader-active .topbar-hl-tool {
-
-    display: inline-flex;
 
   }
 
@@ -1654,7 +1650,7 @@
 
   /* ================= TOPBAR FONT & TYPOGRAPHY CONTROLLER ================= */
   .font-ctrl-pill {
-    display: none;
+    display: inline-flex;
     align-items: center;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1664,10 +1660,6 @@
     height: 30px;
     box-sizing: border-box;
     flex-shrink: 0;
-  }
-
-  body.study-reader-active .font-ctrl-pill {
-    display: inline-flex;
   }
   body.dark-mode .font-ctrl-pill {
     background: #1e1e2e;
@@ -8127,155 +8119,334 @@
 
 
 
-  /* ================= DATA BOOT LOADER (Web Worker) ================= */
 
-  #dataBootLoader {
 
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 99999;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: var(--bg);
-
-    transition: opacity 0.25s ease;
-
-  }
-
-  #dataBootLoader.hidden {
-
-    display: none;
-
-  }
-
-  #dataBootLoader.is-fading {
-
-    opacity: 0;
-
-    pointer-events: none;
-
-  }
-
-  .data-boot-card {
-
-    width: min(360px, calc(100vw - 32px));
-
-    background: var(--surface);
-
-    border: 1.5px solid var(--teal-border);
-
-    border-radius: 14px;
-
-    padding: 28px 24px;
-
-    text-align: center;
-
-    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
-
-  }
-
-  .data-boot-spinner {
-
-    width: 40px;
-
-    height: 40px;
-
-    margin: 0 auto 16px;
-
-    border: 3px solid var(--teal-border);
-
-    border-top-color: var(--teal);
-
-    border-radius: 50%;
-
-    animation: dataBootSpin 0.75s linear infinite;
-
-  }
-
-  #dataBootLoader.is-error .data-boot-spinner {
-
-    display: none;
-
-  }
-
-  @keyframes dataBootSpin {
-
-    to { transform: rotate(360deg); }
-
-  }
-
-  .data-boot-title {
-
-    font-size: 16px;
-
-    font-weight: 800;
-
-    color: var(--text);
-
-    margin-bottom: 6px;
-
-  }
-
-  .data-boot-status {
-
-    font-size: 13px;
-
-    color: var(--text-muted);
-
-    line-height: 1.45;
-
-    min-height: 1.45em;
-
-  }
-
-  .data-boot-retry {
-
-    display: none;
-
-    margin-top: 16px;
-
-    background: var(--teal);
-
-    color: #fff;
-
-    border: none;
-
-    border-radius: 8px;
-
-    padding: 10px 18px;
-
-    font-size: 13px;
-
-    font-weight: 700;
-
-    cursor: pointer;
-
-  }
-
-  .data-boot-retry:hover {
-
-    background: var(--teal-hover);
-
-  }
-
-  #dataBootLoader.is-error .data-boot-retry {
-
-    display: inline-block;
-
-  }
-
-
+/* ================= PREDICTIONS 2025-2026 INTEGRATED STYLES ================= */
+:root {
+  --gold-primary: #d97706;
+  --gold-light: #fffbeb;
+  --gold-border: #fde68a;
+  --silver-primary: #0284c7;
+  --silver-light: #f0f9ff;
+  --silver-border: #bae6fd;
+}
+
+body.dark-mode {
+  --gold-primary: #fbbf24;
+  --gold-light: #451a0344;
+  --gold-border: #78350f;
+  --silver-primary: #38bdf8;
+  --silver-light: #0c4a6e44;
+  --silver-border: #0369a1;
+}
+
+/* Featured Dashboard Banner */
+.pred-featured-dash-banner {
+  background: linear-gradient(135deg, var(--surface), var(--gold-light));
+  border: 2px solid var(--gold-border);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(217,119,6,0.08);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pred-featured-dash-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217,119,6,0.15);
+  border-color: var(--gold-primary);
+}
+
+/* 4-column nav cards grid adaptation */
+.nav-cards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+}
+
+/* Predictions Intro / Landing */
+.pred-intro-wrap {
+  padding: 10px 0 36px 0;
+}
+.pred-hero-banner {
+  text-align: center;
+  padding: 28px 24px;
+  background: linear-gradient(180deg, var(--teal-light), var(--surface));
+  border-radius: 18px;
+  border: 1px solid var(--teal-border);
+  margin-bottom: 28px;
+}
+.pred-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--teal);
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1px solid var(--teal-border);
+  margin-bottom: 12px;
+}
+.pred-hero-banner h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 10px 0;
+}
+.pred-hero-banner p {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* Facts Grid */
+.pred-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.pred-fact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  transition: transform 0.15s ease;
+}
+.pred-fact-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--teal-border);
+}
+.pred-fact-num {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--teal);
+  margin-bottom: 4px;
+}
+.pred-fact-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.pred-fact-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 3 Main Action Cards */
+.pred-target-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.pred-target-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.pred-target-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+.pred-card-top100 {
+  border-color: var(--gold-primary);
+  background: linear-gradient(180deg, var(--gold-light), var(--surface));
+}
+.pred-card-top500 {
+  border-color: var(--silver-primary);
+  background: linear-gradient(180deg, var(--silver-light), var(--surface));
+}
+.pred-card-all1054 {
+  border-color: var(--teal);
+  background: linear-gradient(180deg, var(--teal-light), var(--surface));
+}
+
+.pred-target-card h4 {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 6px 0;
+}
+.pred-prob-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+.tag-gold { background: var(--gold-primary); color: white; }
+.tag-silver { background: var(--silver-primary); color: white; }
+.tag-teal { background: var(--teal); color: white; }
+
+.pred-target-desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+.pred-target-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  font-size: 13px;
+  color: var(--text);
+}
+.pred-target-features li {
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pred-target-features li span {
+  color: var(--teal);
+  font-weight: bold;
+}
+.btn-pred-target-action {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+/* 3-Way Trio Toggle Bar */
+.pred-trio-toggle-bar {
+  display: flex;
+  align-items: center;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.pred-trio-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.pred-trio-btn:hover {
+  color: var(--text);
+  background: rgba(0,0,0,0.04);
+}
+.pred-trio-btn.active-top100 {
+  background: var(--gold-primary);
+  color: white;
+  box-shadow: 0 1px 4px rgba(217,119,6,0.3);
+}
+.pred-trio-btn.active-top500 {
+  background: var(--silver-primary);
+  color: white;
+  box-shadow: 0 1px 4px rgba(2,132,199,0.3);
+}
+.pred-trio-btn.active-all1054 {
+  background: var(--teal);
+  color: white;
+  box-shadow: 0 1px 4px rgba(10,108,116,0.3);
+}
+.pred-trio-badge {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.08);
+}
+.pred-trio-btn.active-top100 .pred-trio-badge,
+.pred-trio-btn.active-top500 .pred-trio-badge,
+.pred-trio-btn.active-all1054 .pred-trio-badge {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+
+/* Question Cards in Predictions */
+.pred-student-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  transition: all 0.15s ease;
+}
+.pred-student-card:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  border-color: var(--border-hover);
+}
+.card-border-gold { border-right: 4px solid var(--gold-primary); }
+.card-border-silver { border-right: 4px solid var(--silver-primary); }
+.card-border-teal { border-right: 4px solid var(--teal); }
+
+.pred-opt-btn-simple {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.pred-opt-btn-simple:hover {
+  background: var(--surface-subtle);
+  border-color: var(--border-hover);
+}
+.pred-opt-btn-simple.is-correct {
+  background: var(--correct-bg);
+  border-color: var(--correct-border);
+  color: var(--correct);
+  font-weight: 600;
+}
+.pred-opt-btn-simple.is-wrong {
+  background: var(--wrong-bg);
+  border-color: var(--wrong-border);
+  color: var(--wrong);
+}
 
 </style>
 
-  <!-- Firebase SDKs loaded lazily via loadFirebaseSdk() after vault boot -->
+  <!-- Firebase SDKs (Compat for pure browser CDN) -->
+
+
+
 
 
 
@@ -8601,12 +8772,6 @@
 
       gap: 6px 8px;
 
-      flex-wrap: nowrap;
-
-      overflow-x: auto;
-
-      -webkit-overflow-scrolling: touch;
-
     }
 
     .topbar-left {
@@ -8629,8 +8794,6 @@
 
       justify-content: flex-end;
 
-      flex-wrap: nowrap;
-
     }
 
     .pomo-pill {
@@ -8640,25 +8803,6 @@
       font-size: 11.5px;
 
       gap: 4px;
-
-    }
-
-    .pomo-pill .pomo-label {
-
-      display: none;
-
-    }
-
-    /* Reader tools already gated by .study-reader-active; keep palette compact on phones */
-    body.study-reader-active .topbar-hl-palette {
-
-      display: none;
-
-    }
-
-    body.study-reader-active .topbar-hl-tool.pen-active .topbar-hl-palette {
-
-      display: inline-flex;
 
     }
 
@@ -11401,23 +11545,8 @@ function syncAdminCopyAccess() {
 </head>
 
 <body>
-
-
-
-<div id="dataBootLoader" role="status" aria-live="polite" aria-busy="true">
-
-  <div class="data-boot-card">
-
-    <div class="data-boot-spinner" aria-hidden="true"></div>
-
-    <div class="data-boot-title" id="dataBootTitle">Loading EMLE library…</div>
-
-    <div class="data-boot-status" id="dataBootStatus">Preparing secure vault</div>
-
-    <button type="button" class="data-boot-retry" id="dataBootRetryBtn" onclick="retryDataBoot()">Retry</button>
-
-  </div>
-
+<div id="portalBootStatus" role="status" aria-live="polite" style="position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text);padding:24px;text-align:center;" dir="rtl">
+  <div><p id="portalBootMessage">جاري تجهيز المحتوى…</p><button id="portalBootRetry" type="button" class="btn-teal" hidden onclick="bootCompressedPortal()">إعادة المحاولة</button></div>
 </div>
 
 
@@ -11605,6 +11734,10 @@ function syncAdminCopyAccess() {
 
     <span>📊 Exam Analytics</span>
 
+  </div>
+
+  <div class="sb-home-link" id="sbPredictionsLink" onclick="navigateTo('predictions')">
+    <span>🎯 توقعات وتكرارات 2025-2026</span>
   </div>
 
   <div class="sb-home-link" id="sbStudyPlanLink" onclick="navigateTo('studyplan')">
@@ -11814,6 +11947,31 @@ function syncAdminCopyAccess() {
 
       <!-- 1. Library & QBank Entry Cards (With RTL Arabic Attribution & Pricing) -->
 
+      <!-- FEATURED PREDICTIONS 2025-2026 HERO BANNER -->
+      <div class="pred-featured-dash-banner" onclick="navigateTo('predictions')" dir="rtl">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--gold-primary), #b45309); color: white; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 12px rgba(217,119,6,0.3); flex-shrink: 0;">
+              🎯
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="background: var(--gold-primary); color: white; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px;">جديد ومحدث 2026 🔥</span>
+                <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text);">توقعات وتكرارات امتحانات EMLE (2025 - 2026)</h2>
+              </div>
+              <p style="margin: 0; font-size: 13.5px; color: var(--text-secondary);">
+                تحليل إحصائي شامل لأكثر الأسئلة ترجيحاً مرتبة في 3 باقات: <strong>الـ 100 الأكثر احتمالية</strong> • <strong>بنك الـ 500 (نطاق الأمان)</strong> • <strong>البنك الكامل (1,054)</strong> مع نوتس الشباتر المركزة.
+              </p>
+            </div>
+          </div>
+          <div>
+            <button class="btn-teal" style="background: var(--gold-primary); border-color: var(--gold-primary); font-weight: 700; padding: 10px 20px; font-size: 14px; cursor: pointer;">
+              استعراض التوقعات الآن &larr;
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="nav-cards-grid" style="margin-bottom: 20px;">
 
         <div class="nav-portal-card" onclick="navigateTo('library')">
@@ -11874,7 +12032,20 @@ function syncAdminCopyAccess() {
 
             <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">حل امتحانات <strong>EMLE</strong> السابقة كاملة على بعضها (<strong>49 امتحان</strong>) بنظام <strong>Tutor Mode</strong> مع تحليل اختياري.</p>
 
+            <div class="nav-portal-card" style="border: 2px solid var(--gold-border); background: linear-gradient(135deg, var(--surface), var(--gold-light));" onclick="navigateTo('predictions')">
+          <div>
+            <span class="npc-tag" style="background:var(--gold-primary); color:white; font-weight:800;">🔥 حصري 2026</span>
+            <h2 class="npc-title" style="color:var(--text); font-weight:800;">🎯 توقعات وتكرارات 2025-2026</h2>
+            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">
+              الأسئلة الأكثر ترجيحاً بناءً على إحصائيات الامتحانات الفعلية مقسمة لـ <strong>3 باقات</strong>: (الـ 100 الأكثر احتمالية • بنك الـ 500 • البنك الشامل 1,054) مع نوتس الشباتر.
+            </p>
           </div>
+          <div class="npc-footer" style="color:var(--gold-primary); font-weight:700;">
+            <span>فتح التوقعات والنوتس</span>
+            <span>&larr;</span>
+          </div>
+        </div>
+      </div>
 
           <div class="npc-footer">
 
@@ -12612,6 +12783,12 @@ function syncAdminCopyAccess() {
 
     </section>
 
+    <!-- ================= PAGE: PREDICTIONS 2025-2026 ================= -->
+    <section class="view-page" id="page-predictions">
+      <div id="predictionsPageContainer"></div>
+    </section>
+
+
 
 
     <!-- GLOBAL SITE FOOTER: TELEGRAM CHANNELS -->
@@ -12766,7 +12943,7 @@ function syncAdminCopyAccess() {
 
     </div>
 
-    <input type="text" class="search-input-box" id="globalSearchInput" placeholder="Type any disease, drug, sign, lab, or question # (e.g. Parkland, MgSO4, Boerhaave, 812)..." oninput="onGlobalSearchInput(this.value)" />
+    <input type="text" class="search-input-box" id="globalSearchInput" placeholder="Type any disease, drug, sign, lab, or question # (e.g. Parkland, MgSO4, Boerhaave, 812)..." oninput="runGlobalSearch(this.value)" />
 
     <div class="search-results-list" id="globalSearchResults">
 
@@ -13719,86 +13896,12 @@ function syncAdminCopyAccess() {
 
 
 
+
 <script>
 
 let DATA = {"tree":[],"topics":[],"questions":[]};
 
-let DATA_INDEX = null;
-let _sidebarTreeDirty = true;
-let _statsCache = null;
-let _globalSearchTimer = null;
-let _firebaseSdkPromise = null;
-
-function invalidateStatsCache() {
-  _statsCache = null;
-}
-
-function markSidebarTreeDirty() {
-  _sidebarTreeDirty = true;
-}
-
-function buildDataIndexes(data) {
-  const topicById = Object.create(null);
-  const questionByNumber = Object.create(null);
-  const topicsByChapter = Object.create(null);
-  const questionsByChapter = Object.create(null);
-  const questionsByTopic = Object.create(null);
-  const topics = (data && data.topics) || [];
-  const questions = (data && data.questions) || [];
-  for (let i = 0; i < topics.length; i++) {
-    const t = topics[i];
-    topicById[t.id] = t;
-    if (!topicsByChapter[t.chapter_id]) topicsByChapter[t.chapter_id] = [];
-    topicsByChapter[t.chapter_id].push(t);
-  }
-  for (let i = 0; i < questions.length; i++) {
-    const q = questions[i];
-    questionByNumber[q.number] = q;
-    if (!questionsByChapter[q.chapter_id]) questionsByChapter[q.chapter_id] = [];
-    questionsByChapter[q.chapter_id].push(q);
-    if (!questionsByTopic[q.topic_id]) questionsByTopic[q.topic_id] = [];
-    questionsByTopic[q.topic_id].push(q);
-  }
-  DATA_INDEX = { topicById, questionByNumber, topicsByChapter, questionsByChapter, questionsByTopic };
-  invalidateStatsCache();
-  markSidebarTreeDirty();
-  return DATA_INDEX;
-}
-
-function getTopicsForChapter(chapId) {
-  if (DATA_INDEX && DATA_INDEX.topicsByChapter[chapId]) return DATA_INDEX.topicsByChapter[chapId];
-  return (DATA.topics || []).filter(t => t.chapter_id === chapId);
-}
-
-function getQuestionsForChapter(chapId) {
-  if (DATA_INDEX && DATA_INDEX.questionsByChapter[chapId]) return DATA_INDEX.questionsByChapter[chapId];
-  return (DATA.questions || []).filter(q => q.chapter_id === chapId);
-}
-
-function getQuestionsForTopic(topicId) {
-  if (DATA_INDEX && DATA_INDEX.questionsByTopic[topicId]) return DATA_INDEX.questionsByTopic[topicId];
-  return (DATA.questions || []).filter(q => q.topic_id === topicId);
-}
-
-function findTopicById(topicId) {
-  if (DATA_INDEX && DATA_INDEX.topicById[topicId]) return DATA_INDEX.topicById[topicId];
-  return (DATA.topics || []).find(x => x.id === topicId);
-}
-
-function findQuestionByNumber(qnum) {
-  if (DATA_INDEX && Object.prototype.hasOwnProperty.call(DATA_INDEX.questionByNumber, qnum)) {
-    return DATA_INDEX.questionByNumber[qnum];
-  }
-  return (DATA.questions || []).find(x => x.number === qnum);
-}
-
-function collapseChaptersForMobile() {
-  if (window.innerWidth > 820) return;
-  const keys = Object.keys(state.openChaps || {});
-  for (let i = 0; i < keys.length; i++) state.openChaps[keys[i]] = false;
-  markSidebarTreeDirty();
-}
-
+// DATA is supplied once by the background data worker.
 
 const STORAGE_KEY = "emle_amboss_portal_v16";
 
@@ -14004,7 +14107,6 @@ function saveState(immediate = false) {
 }
 
 function _doSaveState() {
-  invalidateStatsCache();
   try {
     safeLocalStorageSet(STORAGE_KEY, JSON.stringify({
       governorate: state.governorate,
@@ -14909,6 +15011,19 @@ const CLINICAL_TERMS = {
 
 // High-Performance Memoized Annotator with Pre-Compiled Regexes
 const _medAnnotCache = new Map();
+let _medAnnotCacheChars = 0;
+const MED_ANNOT_CACHE_MAX_CHARS = 2 * 1024 * 1024;
+function cacheMedicalAnnotation(source, result) {
+  const size = source.length + result.length;
+  if (size > MED_ANNOT_CACHE_MAX_CHARS) return;
+  while (_medAnnotCache.size && (_medAnnotCache.size >= 512 || _medAnnotCacheChars + size > MED_ANNOT_CACHE_MAX_CHARS)) {
+    const oldest = _medAnnotCache.keys().next().value;
+    _medAnnotCacheChars -= oldest.length + _medAnnotCache.get(oldest).length;
+    _medAnnotCache.delete(oldest);
+  }
+  _medAnnotCache.set(source, result);
+  _medAnnotCacheChars += size;
+}
 let _precompiledTerms = null;
 let _precompiledAbbrevs = null;
 
@@ -14919,7 +15034,8 @@ function _getPrecompiledGlossaries() {
       const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       return {
         rx: new RegExp(`(^|[^\\w>@])(${escaped})(?![\\w<@])`, "gi"),
-        entry: CLINICAL_TERMS[term]
+        entry: CLINICAL_TERMS[term],
+        literal: term.toLowerCase()
       };
     });
   }
@@ -14939,7 +15055,12 @@ function _getPrecompiledGlossaries() {
 
 function annotateMedicalHTML(htmlStr) {
   if (!htmlStr) return "";
-  if (_medAnnotCache.has(htmlStr)) return _medAnnotCache.get(htmlStr);
+  if (_medAnnotCache.has(htmlStr)) {
+    const cached = _medAnnotCache.get(htmlStr);
+    _medAnnotCache.delete(htmlStr);
+    _medAnnotCache.set(htmlStr, cached);
+    return cached;
+  }
 
   const container = document.createElement("div");
   container.innerHTML = htmlStr;
@@ -14982,8 +15103,10 @@ function annotateMedicalHTML(htmlStr) {
     });
 
     // 2. Replace Clinical Terms with placeholders
+    const lowerText = safeHtml.toLowerCase();
     for (let i = 0; i < terms.length; i++) {
       const item = terms[i];
+      if (!lowerText.includes(item.literal)) continue;
       safeHtml = safeHtml.replace(item.rx, (_, prefix, m) => {
         return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(item.entry[0])}" data-title="${escapeAttr(item.entry[1])}" data-body="${escapeAttr(item.entry[2])}">${m}</span>`);
       });
@@ -14992,6 +15115,7 @@ function annotateMedicalHTML(htmlStr) {
     // 3. Replace Abbreviations with placeholders
     for (let i = 0; i < abbrevs.length; i++) {
       const item = abbrevs[i];
+      if (!safeHtml.includes(item.abbr)) continue;
       safeHtml = safeHtml.replace(item.rx, (_, prefix, m) => {
         return prefix + storeToken(`<span class="med-tip" data-cat="${escapeAttr(item.entry[0])}" data-title="${escapeAttr(item.abbr + ' — ' + item.entry[1])}" data-body="${escapeAttr(item.entry[2])}">${m}</span>`);
       });
@@ -15006,8 +15130,7 @@ function annotateMedicalHTML(htmlStr) {
   });
 
   const res = container.innerHTML;
-  if (_medAnnotCache.size > 2500) _medAnnotCache.clear();
-  _medAnnotCache.set(htmlStr, res);
+  cacheMedicalAnnotation(htmlStr, res);
   return res;
 }
 
@@ -15435,6 +15558,12 @@ function playWarningBeep() {
 
       osc.stop(ctx.currentTime + i * 0.14 + 0.14);
 
+      osc.onended = () => {
+        osc.disconnect();
+        g.disconnect();
+        if (i === 1) ctx.close().catch(() => {});
+      };
+
     });
 
   } catch (e) {}
@@ -15659,9 +15788,7 @@ function toggleDivNode(divId) {
 
   state.openDivs[divId] = !state.openDivs[divId];
 
-  markSidebarTreeDirty();
-
-  renderSidebarTree(true);
+  renderSidebarTree();
 
 }
 
@@ -15673,9 +15800,7 @@ function toggleChapNode(chapId, event) {
 
   state.openChaps[chapId] = !state.openChaps[chapId];
 
-  markSidebarTreeDirty();
-
-  renderSidebarTree(true);
+  renderSidebarTree();
 
 }
 
@@ -15686,8 +15811,6 @@ function openChapter(chapId) {
   state.currentChapterId = chapId;
 
   state.openDivs["div_im"] = true;
-
-  if (!state.openChaps[chapId]) markSidebarTreeDirty();
 
   state.openChaps[chapId] = true;
 
@@ -15713,15 +15836,11 @@ function handleChapClick(chapId, available) {
 
 
 
-function updateSidebarNavHighlights() {
+function renderSidebarTree() {
 
-  const home = document.getElementById("sbHomeLink");
+  document.getElementById("sbHomeLink").classList.toggle("active-nav", state.currentView === "home");
 
-  if (home) home.classList.toggle("active-nav", state.currentView === "home");
-
-  const quizzes = document.getElementById("sbQuizzesLink");
-
-  if (quizzes) quizzes.classList.toggle("active-nav", state.currentView === "quizzes");
+  document.getElementById("sbQuizzesLink").classList.toggle("active-nav", state.currentView === "quizzes");
 
   const sbEx = document.getElementById("sbExamsLink");
 
@@ -15734,48 +15853,7 @@ function updateSidebarNavHighlights() {
   const sbSp = document.getElementById("sbStudyPlanLink");
 
   if (sbSp) sbSp.classList.toggle("active-nav", state.currentView === "studyplan");
-
-  const container = document.getElementById("sidebarTreeContainer");
-
-  if (!container) return;
-
-  container.querySelectorAll(".active-chap").forEach(el => el.classList.remove("active-chap"));
-
-  container.querySelectorAll(".active-topic").forEach(el => el.classList.remove("active-topic"));
-
-  if (state.currentView === "chapter" && state.currentChapterId) {
-
-    const chapRow = container.querySelector('.tree-chap-row[onclick*="\'' + state.currentChapterId + '\'"]');
-
-    if (chapRow) chapRow.classList.add("active-chap");
-
-  }
-
-  if (state.currentView === "topic" && state.currentTopicId) {
-
-    const topicRow = container.querySelector('.tree-topic-row[onclick*="\'' + state.currentTopicId + '\'"]');
-
-    if (topicRow) topicRow.classList.add("active-topic");
-
-    const tObj = findTopicById(state.currentTopicId);
-
-    if (tObj) {
-
-      const chapRow = container.querySelector('.tree-chap-row[onclick*="\'' + tObj.chapter_id + '\'"]');
-
-      if (chapRow) chapRow.classList.add("active-chap");
-
-    }
-
-  }
-
-}
-
-
-
-function renderSidebarTree(forceFull) {
-
-  updateSidebarNavHighlights();
+  const sbPred = document.getElementById("sbPredictionsLink"); if (sbPred) sbPred.classList.toggle("active-nav", state.currentView === "predictions");
 
   const sbYf = document.getElementById("sidebarYieldFilterBar");
 
@@ -15783,21 +15861,7 @@ function renderSidebarTree(forceFull) {
 
 
 
-  if (!forceFull && !_sidebarTreeDirty) {
-
-    updateSidebarNavHighlights();
-
-    return;
-
-  }
-
-
-
   const container = document.getElementById("sidebarTreeContainer");
-
-  if (!container) return;
-
-
 
   container.innerHTML = DATA.tree.map(div => {
 
@@ -15845,19 +15909,15 @@ function renderSidebarTree(forceFull) {
 
       if (ch.has_topics) {
 
-        let topicsHTML = "";
+        const chapTopics = DATA.topics.filter(t => t.chapter_id === ch.id && topicMatchesYieldFilter(t));
 
-        if (isChapOpen) {
+        const topicsHTML = chapTopics.map(t => {
 
-          const chapTopics = getTopicsForChapter(ch.id).filter(t => topicMatchesYieldFilter(t));
+          const isTopicActive = (state.currentView === "topic" && state.currentTopicId === t.id);
 
-          topicsHTML = chapTopics.map(t => {
+          const isRead = !!state.topicsRead[t.id];
 
-            const isTopicActive = (state.currentView === "topic" && state.currentTopicId === t.id);
-
-            const isRead = !!state.topicsRead[t.id];
-
-            return `
+          return `
 
             <div class="tree-topic-row ${isTopicActive ? 'active-topic' : ''}" onclick="navigateTo('topic', '${t.id}')">
 
@@ -15871,9 +15931,7 @@ function renderSidebarTree(forceFull) {
 
           `;
 
-          }).join("");
-
-        }
+        }).join("");
 
 
 
@@ -15961,12 +16019,7 @@ function renderSidebarTree(forceFull) {
 
   }).join("");
 
-
-
-  _sidebarTreeDirty = false;
-
 }
-
 
 
 
@@ -16350,11 +16403,6 @@ function navigateTo(view, param, navOpts) {
 
   }
 
-  // Close blocking session-start overlay when navigating anywhere except staying in quiz flow setup
-  if (view !== "quiz") {
-    try { closeSessionChoiceModal(); } catch (e) {}
-  }
-
   state.attemptsDropdownOpen = false;
 
 
@@ -16365,13 +16413,11 @@ function navigateTo(view, param, navOpts) {
 
     state.currentTopicId = param;
 
-    const tObj = findTopicById(param);
+    const tObj = DATA.topics.find(x => x.id === param);
 
     if (tObj) {
 
       state.currentChapterId = tObj.chapter_id;
-
-      if (!state.openChaps[tObj.chapter_id]) markSidebarTreeDirty();
 
       state.openChaps[tObj.chapter_id] = true;
 
@@ -16419,8 +16465,6 @@ function navigateTo(view, param, navOpts) {
 
   }
 
-  try { updateStudyReaderChrome(view); } catch (e) {}
-
   syncTopbarHeight();
 
   requestAnimationFrame(syncTopbarHeight);
@@ -16452,12 +16496,13 @@ function navigateTo(view, param, navOpts) {
     else if (view === "exams") renderExamsPage();
     else if (view === "analytics") renderAnalyticsPage();
     else if (view === "studyplan") renderStudyPlanPage();
+    else if (view === "predictions") renderPredictionsPage(param);
   } catch (err) {
     console.error("View rendering error for " + view + ":", err);
   }
 
   try { renderBreadcrumbs(); } catch(e) {}
-  try { renderSidebarTree(false); } catch(e) {}
+  try { renderSidebarTree(); } catch(e) {}
 
   if (window.innerWidth <= 820) {
 
@@ -16481,6 +16526,10 @@ function renderBreadcrumbs() {
 
 
 
+  if (v === "predictions") {
+    nav.innerHTML = <span class="crumb-link" onclick="navigateTo('home')">Dashboard</span><span class="crumb-sep">&rsaquo;</span><span class="crumb-current">توقعات وتكرارات 2025-2026</span>;
+    return;
+  }
   if (v === "home") {
 
     nav.innerHTML = `<span class="crumb-current">Dashboard</span>`;
@@ -16563,7 +16612,7 @@ function renderBreadcrumbs() {
 
   } else if (v === "topic") {
 
-    const t = findTopicById(state.currentTopicId);
+    const t = DATA.topics.find(x => x.id === state.currentTopicId);
 
     const tChName = t ? getChapterTitle(t.chapter_id) : chName;
 
@@ -16595,7 +16644,7 @@ function renderBreadcrumbs() {
 
       const tid = state.quizFilter.replace("topic_", "");
 
-      const t = findTopicById(tid);
+      const t = DATA.topics.find(x => x.id === tid);
 
       quizTitle = t ? `${t.title} Quiz` : "Topic Quiz";
 
@@ -16649,8 +16698,6 @@ function renderBreadcrumbs() {
 
 function getStats() {
 
-  if (_statsCache) return _statsCache;
-
   let readCount = 0;
 
   DATA.topics.forEach(t => { if (state.topicsRead[t.id]) readCount++; });
@@ -16681,9 +16728,7 @@ function getStats() {
 
   });
 
-  _statsCache = { readCount, totalTopics: DATA.topics.length, correct, hint, wrong, flagged, answered, totalQs: DATA.questions.length };
-
-  return _statsCache;
+  return { readCount, totalTopics: DATA.topics.length, correct, hint, wrong, flagged, answered, totalQs: DATA.questions.length };
 
 }
 
@@ -16691,9 +16736,9 @@ function getStats() {
 
 function getChapterStats(chapId) {
 
-  const cTopics = getTopicsForChapter(chapId);
+  const cTopics = DATA.topics.filter(t => t.chapter_id === chapId);
 
-  const cQs = getQuestionsForChapter(chapId);
+  const cQs = DATA.questions.filter(q => q.chapter_id === chapId);
 
   let readCount = 0;
 
@@ -16982,20 +17027,6 @@ document.addEventListener("keydown", e => {
 
 
 
-function onGlobalSearchInput(query) {
-  const q = (query || "").trim();
-  if (q.length < 2) {
-    if (_globalSearchTimer) { clearTimeout(_globalSearchTimer); _globalSearchTimer = null; }
-    runGlobalSearch(query);
-    return;
-  }
-  if (_globalSearchTimer) clearTimeout(_globalSearchTimer);
-  _globalSearchTimer = setTimeout(() => {
-    _globalSearchTimer = null;
-    runGlobalSearch(query);
-  }, 250);
-}
-
 function runGlobalSearch(query) {
 
   const box = document.getElementById("globalSearchResults");
@@ -17014,13 +17045,11 @@ function runGlobalSearch(query) {
 
 
 
-  const matchedTopics = DATA.topics.filter(t => {
+  const matchedTopics = DATA.topics.filter(t =>
 
-    if (t.title.toLowerCase().includes(q)) return true;
+    t.title.toLowerCase().includes(q) || (t.vip_html && t.vip_html.toLowerCase().includes(q))
 
-    return !!(t.vip_html && t.vip_html.toLowerCase().includes(q));
-
-  }).slice(0, 12);
+  ).slice(0, 12);
 
 
 
@@ -17100,7 +17129,7 @@ function openSearchedQuestion(qnum) {
 
   closeSearchModal();
 
-  const q = findQuestionByNumber(qnum);
+  const q = DATA.questions.find(x => x.number === qnum);
 
   if (!q) return;
 
@@ -19540,7 +19569,7 @@ function renderAnalyticsPage() {
 
       if (ch.available) {
 
-        const cTopics = getTopicsForChapter(ch.id);
+        const cTopics = DATA.topics.filter(t => t.chapter_id === ch.id);
 
         const wSum = cTopics.reduce((a, t) => a + (t.weighted_freq || t.q_count || 0), 0);
 
@@ -20346,27 +20375,27 @@ function applyPresetChapterOrder(mode) {
 
     // Sort chapters by total weighted exam appearances descending
 
-    const weightByChap = Object.create(null);
+    state.chapterOrder = def.slice().sort((a, b) => {
 
-    def.forEach(cid => {
+      const wA = DATA.topics.filter(t => t.chapter_id === a).reduce((s, t) => s + (t.weighted_freq || 0), 0);
 
-      weightByChap[cid] = getTopicsForChapter(cid).reduce((s, t) => s + (t.weighted_freq || 0), 0);
+      const wB = DATA.topics.filter(t => t.chapter_id === b).reduce((s, t) => s + (t.weighted_freq || 0), 0);
+
+      return wB - wA;
 
     });
-
-    state.chapterOrder = def.slice().sort((a, b) => weightByChap[b] - weightByChap[a]);
 
   } else if (mode === "shortest") {
 
-    const qCountByChap = Object.create(null);
+    state.chapterOrder = def.slice().sort((a, b) => {
 
-    def.forEach(cid => {
+      const qA = DATA.questions.filter(q => q.chapter_id === a).length;
 
-      qCountByChap[cid] = getQuestionsForChapter(cid).length;
+      const qB = DATA.questions.filter(q => q.chapter_id === b).length;
+
+      return qA - qB;
 
     });
-
-    state.chapterOrder = def.slice().sort((a, b) => qCountByChap[a] - qCountByChap[b]);
 
   }
 
@@ -20978,9 +21007,7 @@ function toggleYieldFilter(tierId, targetView) {
 
   state.yieldFilters = Array.from(s);
 
-  markSidebarTreeDirty();
-
-  renderSidebarTree(true);
+  renderSidebarTree();
 
   if (state.currentView === "library") renderLibrary();
 
@@ -21038,7 +21065,7 @@ function renderLibrary() {
 
       if (ch.available) {
 
-        const matchingTopics = getTopicsForChapter(ch.id).filter(t => topicMatchesYieldFilter(t));
+        const matchingTopics = DATA.topics.filter(t => t.chapter_id === ch.id && topicMatchesYieldFilter(t));
 
         if (matchingTopics.length === 0) return "";
 
@@ -21182,7 +21209,7 @@ function renderQuizzesHub() {
 
       if (ch.available) {
 
-        const matchingTopics = getTopicsForChapter(ch.id).filter(t => topicMatchesYieldFilter(t));
+        const matchingTopics = DATA.topics.filter(t => t.chapter_id === ch.id && topicMatchesYieldFilter(t));
 
         if (matchingTopics.length === 0) return "";
 
@@ -21288,9 +21315,9 @@ function renderChapter() {
 
   const chapId = state.currentChapterId || "cardiology";
 
-  const chapTopics = getTopicsForChapter(chapId).filter(t => topicMatchesYieldFilter(t));
+  const chapTopics = DATA.topics.filter(t => t.chapter_id === chapId && topicMatchesYieldFilter(t));
 
-  const chapQs = getQuestionsForChapter(chapId);
+  const chapQs = DATA.questions.filter(q => q.chapter_id === chapId);
 
   const chTitle = getChapterTitle(chapId);
 
@@ -21360,7 +21387,7 @@ function renderTopicPage(topicId) {
 
   if (!DATA || !Array.isArray(DATA.topics) || DATA.topics.length === 0) return;
 
-  let t = findTopicById(topicId);
+  let t = DATA.topics.find(x => x.id === topicId);
 
   if (!t) {
     t = DATA.topics[0];
@@ -21477,17 +21504,13 @@ function toggleTopicRead(topicId) {
 
   state.topicsRead[topicId] = !state.topicsRead[topicId];
 
-  markSidebarTreeDirty();
-
-  invalidateStatsCache();
-
   if (state.topicsRead[topicId]) recordStudyActivity(false);
 
   saveState();
 
   renderTopicPage(topicId);
 
-  renderSidebarTree(true);
+  renderSidebarTree();
 
 }
 
@@ -21503,7 +21526,7 @@ function computeQuestionsForFilter(filter) {
 
     const tid = filter.replace("topic_", "");
 
-    return getQuestionsForTopic(tid).slice();
+    return DATA.questions.filter(q => q.topic_id === tid);
 
   }
 
@@ -21511,9 +21534,9 @@ function computeQuestionsForFilter(filter) {
 
     const cid = filter.replace("chapter_", "");
 
-    const allowedTids = new Set(getTopicsForChapter(cid).filter(t => topicMatchesYieldFilter(t)).map(t => t.id));
+    const allowedTids = new Set(DATA.topics.filter(t => t.chapter_id === cid && topicMatchesYieldFilter(t)).map(t => t.id));
 
-    return getQuestionsForChapter(cid).filter(q => allowedTids.has(q.topic_id));
+    return DATA.questions.filter(q => q.chapter_id === cid && allowedTids.has(q.topic_id));
 
   }
 
@@ -21607,7 +21630,7 @@ function getQuizSessionDisplayName(filter) {
 
     const tid = filter.replace("topic_", "");
 
-    const t = findTopicById(tid);
+    const t = DATA.topics.find(x => x.id === tid);
 
     return t ? `${t.num}. ${t.title}` : "Topic Quiz";
 
@@ -21953,55 +21976,21 @@ function toggleExpandExamTags() {
 
 
 
-function updateStudyReaderChrome(view) {
-
-  const readerViews = (view === "topic" || view === "quiz");
-
-  document.body.classList.toggle("study-reader-active", readerViews);
-
-  const hlTool = document.getElementById("topbarHlTool");
-
-  const fontPill = document.getElementById("fontCtrlPill");
-
-  if (hlTool) {
-
-    hlTool.setAttribute("aria-hidden", readerViews ? "false" : "true");
-
-    if (!readerViews) {
-
-      try {
-
-        // Turn off auto-highlight pen outside reader contexts so home clicks don't feel "broken"
-        if (hlTool.classList.contains("pen-active") && typeof toggleHighlightPen === "function") {
-
-          toggleHighlightPen();
-
-        }
-
-      } catch (e) {}
-
-    }
-
-  }
-
-  if (fontPill) fontPill.setAttribute("aria-hidden", readerViews ? "false" : "true");
-
-}
-
-
+let _lastTopbarH = 0;
+let _topbarRafId = null;
 
 function syncTopbarHeight() {
-
-  const bar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
-
-  if (!bar) return;
-
-  const rect = bar.getBoundingClientRect();
-
-  const h = Math.max(46, Math.ceil(rect.height || bar.offsetHeight || 54));
-
-  document.documentElement.style.setProperty("--topbar-h", h + "px");
-
+  if (_topbarRafId) cancelAnimationFrame(_topbarRafId);
+  _topbarRafId = requestAnimationFrame(() => {
+    _topbarRafId = null;
+    const bar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
+    if (!bar) return;
+    const h = Math.max(46, Math.ceil(bar.offsetHeight || 54));
+    if (Math.abs(h - _lastTopbarH) >= 2) {
+      _lastTopbarH = h;
+      document.documentElement.style.setProperty("--topbar-h", h + "px");
+    }
+  });
 }
 
 
@@ -22068,7 +22057,7 @@ function renderSplitNotesPane() {
 
   const q = qs[state.quizIndex];
 
-  const t = findTopicById(q.topic_id);
+  const t = DATA.topics.find(x => x.id === q.topic_id);
 
   if (!t) return;
 
@@ -22076,7 +22065,8 @@ function renderSplitNotesPane() {
 
   state.currentQuizTopicId = t.id;
 
-  let snpNotesBody = annotateMedicalHTML(t.vip_html);
+  let notesSource = t.vip_html;
+  let hasSavedHighlights = false;
 
   try {
 
@@ -22090,7 +22080,8 @@ function renderSplitNotesPane() {
 
       } else {
 
-        snpNotesBody = savedHl;
+        notesSource = savedHl;
+        hasSavedHighlights = true;
 
       }
 
@@ -22099,6 +22090,12 @@ function renderSplitNotesPane() {
   } catch(e) {}
 
 
+
+  // Reuse the notes DOM while answering questions from the same topic.
+  if (pane._notesTopic === t && pane._notesSource === notesSource) return;
+  const snpNotesBody = hasSavedHighlights ? notesSource : annotateMedicalHTML(notesSource);
+  pane._notesTopic = t;
+  pane._notesSource = notesSource;
 
   pane.innerHTML = `
 
@@ -23707,7 +23704,7 @@ function selectQuizOption(qnum, optIdx) {
 
   }
 
-  const q = findQuestionByNumber(qnum);
+  const q = DATA.questions.find(x => x.number === qnum);
 
   if (!q) return;
 
@@ -23913,31 +23910,48 @@ function formatFirebaseAuthError(err) {
 
 
 
-function loadFirebaseSdk() {
-  if (typeof firebase !== "undefined") return Promise.resolve(true);
+// Cloud SDKs must never hold up the library or question bank.
+// Keep one shared attempt; failed downloads can be retried from Sign In.
+let _firebaseSdkPromise = null;
+const _firebaseScriptLoads = new Map();
+function loadFirebaseSDKs() {
   if (_firebaseSdkPromise) return _firebaseSdkPromise;
-  const urls = [
-    "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js",
-    "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js",
-    "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"
-  ];
-  _firebaseSdkPromise = urls.reduce((chain, src) => {
-    return chain.then(() => new Promise((resolve, reject) => {
-      const s = document.createElement("script");
-      s.src = src;
-      s.async = false;
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error("Failed to load " + src));
-      document.head.appendChild(s);
-    }));
-  }, Promise.resolve()).catch(err => {
-    _firebaseSdkPromise = null;
-    throw err;
-  });
+  const base = "https://www.gstatic.com/firebasejs/10.8.0/";
+  const load = (name, ready) => {
+    if (ready()) return Promise.resolve();
+    if (_firebaseScriptLoads.has(name)) return _firebaseScriptLoads.get(name);
+    const pending = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = base + name;
+      script.async = true;
+      script.onload = () => ready() ? resolve() : reject(new Error("SDK unavailable: " + name));
+      script.onerror = () => {
+        script.remove();
+        reject(new Error("SDK download failed: " + name));
+      };
+      document.head.appendChild(script);
+    }).catch(err => { _firebaseScriptLoads.delete(name); throw err; });
+    _firebaseScriptLoads.set(name, pending);
+    return pending;
+  };
+  _firebaseSdkPromise = load("firebase-app-compat.js", () => typeof firebase !== "undefined")
+    .then(() => Promise.all([
+      load("firebase-auth-compat.js", () => typeof firebase.auth === "function"),
+      load("firebase-firestore-compat.js", () => typeof firebase.firestore === "function")
+    ]))
+    .catch(err => { _firebaseSdkPromise = null; throw err; });
   return _firebaseSdkPromise;
 }
 
-async function initFirebase() {
+function startCloudServices() {
+  return loadFirebaseSDKs().then(() => initFirebase()).catch(err => {
+    console.warn("Cloud services unavailable; local study remains available:", err);
+    updateSyncIndicator("local");
+    return false;
+  });
+}
+
+function initFirebase() {
 
   if (!isFirebaseConfigured()) {
 
@@ -23950,12 +23964,6 @@ async function initFirebase() {
   }
 
   try {
-
-    try { await loadFirebaseSdk(); } catch (sdkErr) {
-      console.warn("Firebase SDK load failed:", sdkErr);
-      updateSyncIndicator("error");
-      return false;
-    }
 
     if (typeof firebase !== "undefined") {
 
@@ -24231,7 +24239,7 @@ function updateAuthTopBar() {
 
 
 async function syncProgressFromCloud(user) {
-  if (!user || !fbDb) return;
+  if (!user || !fbDb) return false;
   try {
     updateSyncIndicator("syncing");
     const docRef = fbDb.collection("users").doc(user.uid);
@@ -24244,6 +24252,7 @@ async function syncProgressFromCloud(user) {
       snap = await docRef.get();
     }
 
+    if (!currentUser || currentUser.uid !== user.uid) return false;
     if (snap && snap.exists) {
       const data = snap.data() || {};
 
@@ -24318,38 +24327,65 @@ async function syncProgressFromCloud(user) {
       // 5. Save locally
       saveState(true);
 
-      // 6. CRUCIAL TWO-WAY SYNC: Immediately upload merged progress back to cloud
-      // Guarantees all questions from all browsers are consolidated in cloud
-      await syncProgressToCloud(true);
+      // Render downloaded progress before waiting for the upload acknowledgment.
+      // The upload queue owns pending changes, including answers made while offline.
 
-      if (typeof navigateTo === "function" && state.currentView && DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
-        navigateTo(state.currentView, state.currentTopicId);
+      if (DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
+        if (state.currentView === "quizzes") {
+          if (typeof renderQuizzesHub === "function") renderQuizzesHub();
+        } else if (state.currentView === "library") {
+          if (typeof renderLibrary === "function") renderLibrary();
+        } else if (state.currentView === "quiz") {
+          if (typeof renderQuizPage === "function") renderQuizPage(false);
+        } else if (typeof navigateTo === "function" && state.currentView) {
+          navigateTo(state.currentView, state.currentTopicId);
+        }
       }
       if (typeof renderStreakWidget === "function") {
         renderStreakWidget();
       }
-      updateSyncIndicator("synced");
+      if (!await syncProgressToCloud(true)) return false;
       showToast("Cloud progress loaded & synchronized successfully!");
     } else {
       // First time signing in on this account: push local progress to cloud
-      await syncProgressToCloud(true);
+      if (!await syncProgressToCloud(true)) return false;
       if (state.currentView === "quiz" && typeof renderQuizPage === "function") {
         renderQuizPage(false);
       }
       showToast("Account linked & local progress uploaded to cloud!");
     }
+    return true;
   } catch (err) {
     console.error("Cloud fetch error:", err);
     updateSyncIndicator("error");
+    return false;
   }
 }
 
 
+let _cloudUploadJob = null;
+
 async function syncProgressToCloud(isImmediate = false) {
 
-  if (!currentUser || !fbDb) return;
+  if (!currentUser || !fbDb) return false;
+
+  _hasPendingCloudSync = true;
+  clearTimeout(_cloudSyncTimer);
+  const user = currentUser;
+  if (_cloudUploadJob && _cloudUploadJob.uid === user.uid) {
+    return _cloudUploadJob.promise;
+  }
+  const job = { uid: user.uid, promise: null };
+  _cloudUploadJob = job;
+  job.promise = (async () => {
 
   try {
+
+    // Coalesce changes made during a slow/offline write into one latest snapshot.
+    // Never queue a new full progress document for each answer while one is pending.
+    while (_cloudUploadJob === job && currentUser && currentUser.uid === user.uid) {
+
+    clearTimeout(_cloudSyncTimer);
 
     _hasPendingCloudSync = false;
 
@@ -24357,7 +24393,7 @@ async function syncProgressToCloud(isImmediate = false) {
 
 
 
-    const docRef = fbDb.collection("users").doc(currentUser.uid);
+    const docRef = fbDb.collection("users").doc(user.uid);
 
     const payload = {
 
@@ -24373,11 +24409,11 @@ async function syncProgressToCloud(isImmediate = false) {
 
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
 
-      userEmail: currentUser.email || "",
+      userEmail: user.email || "",
 
       governorate: state.governorate || "",
 
-      displayName: currentUser.displayName || "",
+      displayName: user.displayName || "",
 
       userAgent: navigator.userAgent.substring(0, 100)
 
@@ -24387,18 +24423,33 @@ async function syncProgressToCloud(isImmediate = false) {
 
     await docRef.set(payload, { merge: true });
 
-    updateSyncIndicator("synced");
+    if (_cloudUploadJob !== job || !currentUser || currentUser.uid !== user.uid) return false;
+    if (!_hasPendingCloudSync) {
+      updateSyncIndicator("synced");
+      return true;
+    }
+
+    }
+    return false;
 
   } catch (err) {
 
     console.error("Cloud upload error:", err);
 
-    _hasPendingCloudSync = true;
+    if (_cloudUploadJob === job && currentUser && currentUser.uid === user.uid) {
+      _hasPendingCloudSync = true;
 
-    updateSyncIndicator("error");
+      updateSyncIndicator("error");
+    }
+    return false;
+
+  } finally {
+    if (_cloudUploadJob === job) _cloudUploadJob = null;
 
   }
 
+  })();
+  return job.promise;
 }
 
 
@@ -24648,18 +24699,13 @@ async function signInWithGoogle() {
 
   }
 
-  try {
-    await loadFirebaseSdk();
-  } catch (sdkErr) {
-    const msg = "⚠️ تعذر تحميل مكتبة Google Sign-In. يرجى التأكد من اتصالك بالإنترنت أو فتح الرابط في متصفح Chrome أو Safari.";
-    const errBox = document.getElementById("authErrorMsg");
-    if (errBox) { errBox.textContent = msg; errBox.style.display = "block"; }
-    return;
-  }
+  if (typeof firebase === "undefined" || typeof firebase.auth !== "function" || typeof firebase.firestore !== "function") {
 
-  if (typeof firebase === "undefined") {
+    startCloudServices();
 
-    const msg = "⚠️ تعذر تحميل مكتبة Google Sign-In. يرجى التأكد من اتصالك بالإنترنت أو فتح الرابط في متصفح Chrome أو Safari.";
+    const msg = "جاري تحميل تسجيل الدخول. تقدر تذاكر الآن، وجرّب تسجيل الدخول مرة تانية بعد لحظات. لو التأخير مستمر تأكد من اتصال الإنترنت.";
+
+    showToast(msg);
 
     const errBox = document.getElementById("authErrorMsg");
 
@@ -24671,7 +24717,7 @@ async function signInWithGoogle() {
 
   if (!firebase.apps || !firebase.apps.length) {
 
-    await initFirebase();
+    initFirebase();
 
   }
 
@@ -24894,11 +24940,9 @@ async function manualForceSync() {
 
     showToast("Syncing with cloud...");
 
-    await syncProgressToCloud(true);
-
-    await syncProgressFromCloud(currentUser);
-
-    showToast("Cloud sync complete!");
+    if (await syncProgressToCloud(true) && await syncProgressFromCloud(currentUser)) {
+      showToast("Cloud sync complete!");
+    }
 
   }
 
@@ -24969,6 +25013,39 @@ document.addEventListener("click", function(e) {
   }
 
 });
+
+// One data load per page, with decoding and JSON parsing isolated from the UI.
+const PORTAL_WORKER_URL = "data-worker.js?v=48512966720bbe09";
+let _portalDataPromise = null;
+function loadPortalData() {
+  if (_portalDataPromise) return _portalDataPromise;
+  _portalDataPromise = new Promise((resolve, reject) => {
+    if (typeof Worker === "undefined") {
+      reject(new Error("This browser does not support Web Workers."));
+      return;
+    }
+    const worker = new Worker(PORTAL_WORKER_URL);
+    const finish = (error, data) => {
+      worker.terminate();
+      error ? reject(error) : resolve(data);
+    };
+    worker.onmessage = event => {
+      const message = event.data || {};
+      if (message.type === "ready") finish(null, message.data);
+      else if (message.type === "error") finish(new Error(message.message));
+    };
+    worker.onerror = event => {
+      event.preventDefault();
+      finish(new Error("Unable to load the data worker."));
+    };
+    worker.onmessageerror = () => finish(new Error("Unable to receive portal data."));
+    worker.postMessage({ type: "load" });
+  }).catch(error => {
+    _portalDataPromise = null;
+    throw error;
+  });
+  return _portalDataPromise;
+}
 
 // ================= UPDATE ANNOUNCEMENT MODAL LOGIC =================
 
@@ -25104,203 +25181,78 @@ function resetTopicHighlights(topicId) {
 
 
 
-const DATA_BOOT_STAGE_LABELS = {
-  fetch: "Fetching encrypted library…",
-  decrypt: "Decrypting vault…",
-  inflate: "Expanding compressed data…",
-  parse: "Parsing library…",
-  cache: "Loading cached library…"
-};
-
-const VAULT_IDB_NAME = "emle_vault_cache";
-const VAULT_IDB_STORE = "vault";
-const VAULT_IDB_KEY = "current";
-
-function setDataBootUI(mode, title, status) {
-  const loader = document.getElementById("dataBootLoader");
-  const titleEl = document.getElementById("dataBootTitle");
-  const statusEl = document.getElementById("dataBootStatus");
-  if (!loader) return;
-  loader.classList.toggle("is-error", mode === "error");
-  loader.classList.remove("hidden", "is-fading");
-  loader.setAttribute("aria-busy", mode === "loading" ? "true" : "false");
-  if (titleEl && title) titleEl.textContent = title;
-  if (statusEl && status !== undefined) statusEl.textContent = status;
-}
-
-function hideDataBootLoader() {
-  const loader = document.getElementById("dataBootLoader");
-  if (!loader) return;
-  loader.classList.add("is-fading");
-  loader.setAttribute("aria-busy", "false");
-  setTimeout(() => {
-    loader.classList.add("hidden");
-    loader.classList.remove("is-fading", "is-error");
-  }, 250);
-}
-
-function openVaultIdb() {
-  return new Promise((resolve) => {
-    if (typeof indexedDB === "undefined") {
-      resolve(null);
-      return;
-    }
-    const req = indexedDB.open(VAULT_IDB_NAME, 1);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(VAULT_IDB_STORE)) db.createObjectStore(VAULT_IDB_STORE);
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => resolve(null);
-  });
-}
-
-function idbGetVault(db) {
-  return new Promise((resolve) => {
-    if (!db) { resolve(null); return; }
-    try {
-      const tx = db.transaction(VAULT_IDB_STORE, "readonly");
-      const req = tx.objectStore(VAULT_IDB_STORE).get(VAULT_IDB_KEY);
-      req.onsuccess = () => resolve(req.result || null);
-      req.onerror = () => resolve(null);
-    } catch (e) {
-      resolve(null);
-    }
-  });
-}
-
-function idbPutVault(db, record) {
-  return new Promise((resolve) => {
-    if (!db) { resolve(false); return; }
-    try {
-      const tx = db.transaction(VAULT_IDB_STORE, "readwrite");
-      tx.objectStore(VAULT_IDB_STORE).put(record, VAULT_IDB_KEY);
-      tx.oncomplete = () => resolve(true);
-      tx.onerror = () => resolve(false);
-    } catch (e) {
-      resolve(false);
-    }
-  });
-}
-
-async function loadDataViaWorker() {
-  const db = await openVaultIdb();
-  const cached = await idbGetVault(db);
-  const cachedFingerprint = cached && cached.fingerprint ? cached.fingerprint : null;
-
-  return new Promise((resolve, reject) => {
-    let settled = false;
-    let worker;
-    try {
-      worker = new Worker("./data-worker.js");
-    } catch (err) {
-      reject(err);
-      return;
-    }
-
-    const finish = (fn, value) => {
-      if (settled) return;
-      settled = true;
-      try { worker.terminate(); } catch (e) {}
-      fn(value);
-    };
-
-    worker.onmessage = (e) => {
-      const msg = e.data || {};
-      if (msg.type === "progress") {
-        const label = DATA_BOOT_STAGE_LABELS[msg.stage] || "Loading…";
-        setDataBootUI("loading", "Loading EMLE library…", label);
-        return;
-      }
-      if (msg.type === "cache-hit") {
-        if (cached && cached.data) {
-          setDataBootUI("loading", "Loading EMLE library…", DATA_BOOT_STAGE_LABELS.cache);
-          finish(resolve, { data: cached.data, fingerprint: cached.fingerprint, fromCache: true });
-        } else {
-          finish(reject, new Error("Cache hit but no cached data"));
-        }
-        return;
-      }
-      if (msg.type === "ready") {
-        const payload = { data: msg.data, fingerprint: msg.fingerprint, fromCache: false };
-        idbPutVault(db, { fingerprint: msg.fingerprint, data: msg.data }).finally(() => {
-          finish(resolve, payload);
-        });
-        return;
-      }
-      if (msg.type === "error") {
-        finish(reject, new Error(msg.message || "Data load failed"));
-      }
-    };
-
-    worker.onerror = (err) => {
-      finish(reject, new Error((err && err.message) || "Worker failed to load"));
-    };
-
-    worker.postMessage({ type: "load", cachedFingerprint: cachedFingerprint });
-  });
-}
-
+let _portalBootRunning = false;
+let _portalBootReady = false;
 async function bootCompressedPortal() {
-  try { loadState(); } catch (e) { console.warn("loadState error:", e); }
-  try { collapseChaptersForMobile(); } catch (e) {}
-  try { renderPomo(); } catch (e) { console.warn("renderPomo error:", e); }
+  if (_portalBootRunning || _portalBootReady) return;
+  _portalBootRunning = true;
+  const loading = document.getElementById("portalBootStatus");
+  const retry = document.getElementById("portalBootRetry");
+  const message = document.getElementById("portalBootMessage");
+  if (retry) retry.hidden = true;
+  if (message) message.textContent = "جاري تجهيز المحتوى…";
 
-  setDataBootUI("loading", "Loading EMLE library…", "Starting background decrypt…");
+  try { loadState(); } catch(e) { console.warn("loadState error:", e); }
 
+  try { renderPomo(); } catch(e) { console.warn("renderPomo error:", e); }
+
+  // 1. Decrypt and initialize DATA first to guarantee data readiness
   try {
-    const result = await loadDataViaWorker();
-    DATA = result.data;
-    buildDataIndexes(DATA);
-    hideDataBootLoader();
+
+    DATA = await loadPortalData();
+
   } catch (err) {
+
     console.error("Portal data boot error:", err);
-    setDataBootUI(
-      "error",
-      "Could not load library",
-      (err && err.message) || "Data load failed"
-    );
+    _portalBootRunning = false;
+    if (message) message.textContent = location.protocol === "file:"
+      ? "افتح الموقع من رابطه على الإنترنت أو من خادم محلي لتجهيز المحتوى."
+      : "تعذر تجهيز المحتوى. تأكد من اتصال الإنترنت ثم أعد المحاولة.";
+    if (retry) retry.hidden = false;
     return;
+
   }
 
-  try { initBrowserHistoryGuard(); } catch (e) {}
+  try { initBrowserHistoryGuard(); } catch(e) {}
 
   try {
+
     navigateTo("home", null, { isInitialBoot: true });
-  } catch (e) {
+
+  } catch(e) {
+
     console.error("Initial navigateTo error:", e);
-    try { renderHome(); } catch (err) {}
-    try { renderSidebarTree(true); } catch (err) {}
+
+    try { renderHome(); } catch(err) {}
+
+    try { renderSidebarTree(); } catch(err) {}
+
   }
 
-  try { await initFirebase(); } catch (e) { console.warn("initFirebase error:", e); }
-  try { checkUpdateAnnouncement(); } catch (e) {}
+  _portalBootReady = true;
+  _portalBootRunning = false;
+  if (loading) loading.remove();
+
+  // 2. Initialize Firebase after DATA is 100% loaded and home is active
+  // Start in a separate task so the local home page can render first.
+  setTimeout(startCloudServices, 0);
+
+  try { checkUpdateAnnouncement(); } catch(e) {}
+
 }
 
-function retryDataBoot() {
-  bootCompressedPortal();
-  setTimeout(autoDetectUserGovernorateSilently, 1000);
-}
-
-window.addEventListener("resize", syncTopbarHeight);
 
 
+let _resizeDebounceTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(_resizeDebounceTimer);
+  _resizeDebounceTimer = setTimeout(syncTopbarHeight, 100);
+}, { passive: true });
 
 function _startPortalBoot() {
-
   syncTopbarHeight();
-
-  const mainTopbar = document.getElementById("mainTopbar") || document.querySelector(".topbar");
-
-  if (mainTopbar && typeof ResizeObserver !== "undefined") {
-
-    new ResizeObserver(syncTopbarHeight).observe(mainTopbar);
-
-  }
-
   bootCompressedPortal();
   setTimeout(autoDetectUserGovernorateSilently, 1000);
-
 }
 
 
@@ -25789,7 +25741,7 @@ function openReportQuestionModal(qNum) {
 
   _currentReportQNum = qNum;
 
-  const q = findQuestionByNumber(qNum);
+  const q = DATA.questions.find(x => x.number === qNum);
 
   const modal = document.getElementById("reportQuestionModal");
 
@@ -25841,7 +25793,7 @@ async function submitQuestionReport() {
 
   const qnum = _currentReportQNum;
 
-  const q = findQuestionByNumber(qnum);
+  const q = DATA.questions.find(x => x.number === qnum);
 
   const catEl = document.getElementById("reportCategorySelect");
 
@@ -27274,6 +27226,10 @@ function applyReaderTypography() {
       incBtn.disabled = (_currentFontScaleIndex === FONT_SCALE_LEVELS.length - 1);
       incBtn.style.opacity = (_currentFontScaleIndex === FONT_SCALE_LEVELS.length - 1) ? "0.35" : "1";
     }
+
+    if (typeof syncTopbarHeight === "function") {
+      syncTopbarHeight();
+    }
   } catch (e) {
     console.error("applyReaderTypography error:", e);
   }
@@ -27324,6 +27280,886 @@ if (typeof document !== "undefined") {
     initReaderTypography();
   }
 }
+
+
+
+// ================= PREDICTIONS 2025-2026 INTEGRATED MODULE =================
+
+let _scoredPredictionsCache = null;
+
+const predState = {
+  subView: 'intro',       // 'intro' | 'questions' | 'notes'
+  selectedSet: 'top100',  // 'top100' | 'top500' | 'all1054'
+  selectedChapter: 'all', // 'all' | chapter_id
+  searchQuery: '',
+  sortBy: 'prob_desc',    // 'prob_desc' | 'qnum_asc' | 'f2026_desc'
+  studyMode: true,        // true = show answers directly for studying
+  currentPage: 1,
+  pageSize: 25,
+  flaggedOnly: false,
+  notesSelectedChapter: 'pediatrics'
+};
+
+const PRED_CHAPTER_METADATA = {
+  'pediatrics': { icon: '👶', name: 'Pediatrics (الأطفال)' },
+  'obstetrics': { icon: '🤰', name: 'Obstetrics (التوليد)' },
+  'git': { icon: '🥗', name: 'GIT & Liver (الجهاز الهضمي والكبد)' },
+  'gynecology': { icon: '🌸', name: 'Gynecology (النساء)' },
+  'general_surgery': { icon: '🔪', name: 'General Surgery (الجراحة العامة)' },
+  'cardiology': { icon: '❤️', name: 'Cardiology (القلب)' },
+  'chest': { icon: '🫁', name: 'Chest (الصدرية)' },
+  'epidemiology': { icon: '⚖️', name: 'Ethics & Epidemiology (الوبائيات والأخلاقيات)' },
+  'nephrology': { icon: '🧪', name: 'Nephrology (الكلى والمسالك)' },
+  'endocrine': { icon: '🩸', name: 'Endocrine (الغدد الصماء)' },
+  'neurology': { icon: '🧠', name: 'Neurology (المخ والأعصاب)' },
+  'hematology': { icon: '🩸', name: 'Hematology (أمراض الدم)' },
+  'orthopedics': { icon: '🦴', name: 'Orthopedics (العظام)' },
+  'rheumatology': { icon: '🧬', name: 'Rheumatology (الروماتيزم)' },
+  'emergency': { icon: '🚑', name: 'Emergency (الطوارئ)' },
+  'geriatrics': { icon: '👴', name: 'Geriatrics (طب المسنين)' },
+  'psychiatry': { icon: '🧘', name: 'Psychiatry (الطب النفسي)' },
+  'ophthalmology': { icon: '👁️', name: 'Ophthalmology (الرمد)' }
+};
+
+function getScoredPredictions() {
+  if (_scoredPredictionsCache && _scoredPredictionsCache.length > 0) {
+    return _scoredPredictionsCache;
+  }
+  if (!DATA || !DATA.questions || DATA.questions.length === 0) return [];
+
+  // Calculate topic density in 2025/2026
+  const topicDensity = {};
+  DATA.questions.forEach(q => {
+    let c = 0;
+    (q.exam_tags || []).forEach(t => {
+      if (t.includes('2025') || t.includes('2026')) c++;
+    });
+    topicDensity[q.topic_id] = (topicDensity[q.topic_id] || 0) + c;
+  });
+
+  const scored = [];
+  DATA.questions.forEach(q => {
+    let f2026 = 0, f2025 = 0, fPre = 0;
+    (q.exam_tags || []).forEach(t => {
+      if (t.includes('2026')) f2026++;
+      else if (t.includes('2025')) f2025++;
+      else fPre++;
+    });
+
+    // Only include questions tested in 2025 or 2026
+    if (f2026 === 0 && f2025 === 0) return;
+
+    const fTotal = f2026 + f2025 + fPre;
+    const appearedBoth = (f2026 > 0 && f2025 > 0);
+    const tDens = topicDensity[q.topic_id] || 0;
+    const bothBonus = appearedBoth ? 6.0 : 0.0;
+    const rawScore = (f2026 * 4.5) + (f2025 * 3.0) + bothBonus + (fTotal * 0.7) + (tDens * 0.05);
+    const prob = Math.min(98, Math.round(42 + (rawScore * 2.2)));
+
+    scored.push({
+      ...q,
+      f2026,
+      f2025,
+      fPre,
+      fTotal,
+      appearedBoth,
+      rawScore: Math.round(rawScore * 100) / 100,
+      prob
+    });
+  });
+
+  // Sort descending by rawScore
+  scored.sort((a, b) => b.rawScore - a.rawScore);
+  scored.forEach((q, idx) => { q.rank = idx + 1; });
+
+  _scoredPredictionsCache = scored;
+  return _scoredPredictionsCache;
+}
+
+function getPredActivePool() {
+  const all = getScoredPredictions();
+  if (predState.selectedSet === 'top100') return all.filter(q => q.rank <= 100);
+  if (predState.selectedSet === 'top500') return all.filter(q => q.rank <= 500);
+  return all;
+}
+
+function getPredFilteredQuestions() {
+  let list = getPredActivePool();
+
+  if (predState.selectedChapter !== 'all') {
+    list = list.filter(q => q.chapter_id === predState.selectedChapter);
+  }
+
+  if (predState.flaggedOnly) {
+    list = list.filter(q => (state.qStatus[q.number] && state.qStatus[q.number].flagged));
+  }
+
+  if (predState.searchQuery) {
+    const qLower = predState.searchQuery.toLowerCase().trim();
+    list = list.filter(q => {
+      if (('' + q.number).includes(qLower)) return true;
+      if (q.stem && q.stem.toLowerCase().includes(qLower)) return true;
+      if (q.options && q.options.some(opt => opt && opt.toLowerCase().includes(qLower))) return true;
+      if (q.explanation && q.explanation.scientific && q.explanation.scientific.toLowerCase().includes(qLower)) return true;
+      if (q.hint && q.hint.toLowerCase().includes(qLower)) return true;
+      const topic = DATA.topics.find(t => t.id === q.topic_id);
+      if (topic && topic.title && topic.title.toLowerCase().includes(qLower)) return true;
+      return false;
+    });
+  }
+
+  list = list.slice().sort((a, b) => {
+    if (predState.sortBy === 'prob_desc') {
+      if (b.rawScore !== a.rawScore) return b.rawScore - a.rawScore;
+      return a.rank - b.rank;
+    } else if (predState.sortBy === 'qnum_asc') {
+      return a.number - b.number;
+    } else if (predState.sortBy === 'f2026_desc') {
+      if (b.f2026 !== a.f2026) return b.f2026 - a.f2026;
+      return b.rawScore - a.rawScore;
+    }
+    return a.rank - b.rank;
+  });
+
+  return list;
+}
+
+// Master Router for Predictions Page
+function renderPredictionsPage(navParam) {
+  const container = document.getElementById("predictionsPageContainer");
+  if (!container) return;
+
+  if (navParam === 'top100' || navParam === 'top500' || navParam === 'all1054') {
+    predState.selectedSet = navParam;
+    predState.subView = 'questions';
+  }
+
+  if (predState.subView === 'intro') {
+    container.innerHTML = renderPredictionsIntroHTML();
+  } else if (predState.subView === 'questions') {
+    container.innerHTML = renderPredictionsQuestionsLayoutHTML();
+    renderPredChapterStrip();
+    renderPredQuestionsList();
+  } else if (predState.subView === 'notes') {
+    container.innerHTML = renderPredictionsNotesLayoutHTML();
+    renderPredNotesView();
+  }
+}
+
+// View 1: Intro HTML
+function renderPredictionsIntroHTML() {
+  const allQs = getScoredPredictions();
+  const bothCount = allQs.filter(q => q.appearedBoth).length;
+
+  return `
+    <div class="pred-intro-wrap" dir="rtl">
+      <!-- Hero Banner -->
+      <div class="pred-hero-banner">
+        <div class="pred-hero-tag">📊 إحصائيات دقيقة ومحدثة لدورات 2026</div>
+        <h2>🎯 دليل التوقعات الإحصائية وتكرارات امتحانات EMLE (2025 - 2026)</h2>
+        <p>
+          تم تحليل كافة أسئلة الامتحانات الفعلية لدورات <strong>2025</strong> و <strong>2026</strong> ورصد نمط التكرار الحرفي والمفهومي في بنك الأسئلة. رتبنا لك الأسئلة حسب أعلى احتمالية ورود في الامتحان القادم، وقسمناها إلى <strong>3 خيارات بسيطة</strong> مع إتاحة النوتس السريرية المركزة لكل سؤال وشابتر.
+        </p>
+      </div>
+
+      <!-- 3 Quick Facts -->
+      <div class="pred-facts-grid">
+        <div class="pred-fact-card">
+          <div style="font-size:26px; margin-bottom:4px;">🔍</div>
+          <div class="pred-fact-num">${allQs.length}</div>
+          <div class="pred-fact-title">سؤالاً فعلياً تم تحليله</div>
+          <p class="pred-fact-desc">كل سؤال ورد في امتحانات 2025 و2026 تم حسابه وترتيبه إحصائياً بدقة.</p>
+        </div>
+        <div class="pred-fact-card" style="border-color:#fbcfe8;">
+          <div style="font-size:26px; margin-bottom:4px;">🔄</div>
+          <div class="pred-fact-num" style="color:#db2777;">${bothCount}</div>
+          <div class="pred-fact-title">سؤالاً ارتكازياً (Core Anchors)</div>
+          <p class="pred-fact-desc">أسئلة تكررت في 2025 و2026 معاً بنمط شبه حتمي وتعتبر ركائز أساسية.</p>
+        </div>
+        <div class="pred-fact-card" style="border-color:var(--gold-border);">
+          <div style="font-size:26px; margin-bottom:4px;">📚</div>
+          <div class="pred-fact-num" style="color:var(--gold-primary);">132</div>
+          <div class="pred-fact-title">موضوعاً بنوتس سريرية مركزة</div>
+          <p class="pred-fact-desc">تم ربط كل سؤال بملخص الـ VIP Notes وجداول المقارنة لمذاكرة الفكرة مباشرة.</p>
+        </div>
+      </div>
+
+      <!-- 3 Action Cards Heading -->
+      <div style="text-align:center; margin-bottom:20px;">
+        <h3 style="font-size:20px; font-weight:800; color:var(--text); margin:0 0 4px 0;">اختر خطة المذاكرة الأنسب لوقتك:</h3>
+        <p style="font-size:13.5px; color:var(--text-muted); margin:0;">يمكنك البدء بالـ 100 الذهبية، أو التوسع إلى نطاق الأمان (500 سؤال)، أو تصفح البنك بالكامل.</p>
+      </div>
+
+      <!-- The 3 Target Cards Grid -->
+      <div class="pred-target-grid">
+        <!-- Card 1: Top 100 -->
+        <div class="pred-target-card pred-card-top100">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:28px;">🏆</span>
+              <span style="background:var(--gold-primary); color:white; font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px;">⭐ أولوية قصوى</span>
+            </div>
+            <h4>الـ 100 الأكثر احتمالية</h4>
+            <span class="pred-prob-tag tag-gold">احتمالية التكرار: 94% – 98%</span>
+            <p class="pred-target-desc">
+              الدفعة الذهبية الأكثر تكراراً عبر تاريخ الامتحان مع حضور مؤكد في دورات 2025 و 2026. أنسب خيار للبدء الفوري إذا كان وقتك ضيقاً وتريد ضمان أهم الأسئلة المحورية.
+            </p>
+            <ul class="pred-target-features">
+              <li><span>✓</span> أعلى 100 سؤال مرجح تكراره في الامتحان</li>
+              <li><span>✓</span> تشمل أسئلة الأطفال، الجراحة، النساء، والباطنة المحورية</li>
+              <li><span>✓</span> نوتس الموضوع والدرر السريرية (Pearls) متاحة لكل سؤال</li>
+            </ul>
+          </div>
+          <button class="btn-pred-target-action" style="background:var(--gold-primary); color:white;" onclick="predSelectSet('top100')">
+            ابدأ بمراجعة الـ 100 سؤال الذهبية ←
+          </button>
+        </div>
+
+        <!-- Card 2: Top 500 -->
+        <div class="pred-target-card pred-card-top500">
+          <div>
+            <div style="margin-bottom:8px;"><span style="font-size:28px;">🛡️</span></div>
+            <h4>بنك الـ 500 سؤال</h4>
+            <span class="pred-prob-tag tag-silver">نطاق الأمان المثالي: 65% – 98%</span>
+            <p class="pred-target-desc">
+              الخيار الموصى به لغالبية الأطباء: يجمع بين الـ 100 الذهبية مع 400 سؤال إضافي عالي التكرار ليوفر لك نطاق أمان متين وشامل يغطي كل شباتر وتخصصات الامتحان.
+            </p>
+            <ul class="pred-target-features">
+              <li><span>✓</span> أفضل توازن بين الشمول وسرعة المراجعة</li>
+              <li><span>✓</span> تغطية واسعة لكافة الشباتر الـ 18</li>
+              <li><span>✓</span> تصفية بحسب الشابتر وبحث فوري وسريع</li>
+            </ul>
+          </div>
+          <button class="btn-pred-target-action" style="background:var(--silver-primary); color:white;" onclick="predSelectSet('top500')">
+            استعراض بنك الـ 500 سؤال ←
+          </button>
+        </div>
+
+        <!-- Card 3: All 1054 -->
+        <div class="pred-target-card pred-card-all1054">
+          <div>
+            <div style="margin-bottom:8px;"><span style="font-size:28px;">🌐</span></div>
+            <h4>البنك الكامل (1,054 سؤال)</h4>
+            <span class="pred-prob-tag tag-teal">تغطية شاملة 100% لامتحانات 2025-2026</span>
+            <p class="pred-target-desc">
+              الأرشيف الكامل لكل سؤال ورد في أي دورة من دورات عامي 2025 و 2026، للأطباء الراغبين في التدرب الشامل على جميع أفكار بنك الأسئلة الدوار دون ترك أي احتمال.
+            </p>
+            <ul class="pred-target-features">
+              <li><span>✓</span> كل أسئلة 2025 و 2026 كاملة بدون استثناء</li>
+              <li><span>✓</span> حل تفاعلي مع تصحيح فوري أو مذاكرة مباشرة</li>
+              <li><span>✓</span> فهرس كامل لنوتس جميع الشباتر الـ 18</li>
+            </ul>
+          </div>
+          <button class="btn-pred-target-action" style="background:var(--teal); color:white;" onclick="predSelectSet('all1054')">
+            تصفح البنك الشامل (1,054 سؤال) ←
+          </button>
+        </div>
+      </div>
+
+      <!-- Notes Shortcut Banner -->
+      <div style="background:var(--surface); border:1px dashed var(--border); border-radius:14px; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h5 style="margin:0 0 4px 0; font-size:15px; color:var(--text); font-weight:700;">هل تفضل مراجعة الشرح والجداول الإكلينيكية أولاً؟ 📚</h5>
+          <p style="margin:0; font-size:13px; color:var(--text-muted);">يمكنك الانتقال مباشرة لقسم نوتس الشباتر المركزة للاطلاع على الجداول المقارنة لكل شابتر قبل الحل.</p>
+        </div>
+        <button class="btn-teal" onclick="predSwitchSubView('notes')" style="padding:8px 16px; font-size:13.5px;">
+          تصفح نوتس الشباتر الآن ←
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// View 2: Questions Layout HTML
+function renderPredictionsQuestionsLayoutHTML() {
+  return `
+    <div dir="rtl">
+      <!-- 3-Way Trio Toggle Bar -->
+      <div class="pred-trio-toggle-bar">
+        <button class="pred-trio-btn ${predState.selectedSet === 'top100' ? 'active-top100' : ''}" id="predTrioBtn-top100" onclick="predSelectSet('top100')">
+          <span>🏆 الـ 100 الأكثر احتمالية</span>
+          <span class="pred-trio-badge">100 سؤال</span>
+        </button>
+        <button class="pred-trio-btn ${predState.selectedSet === 'top500' ? 'active-top500' : ''}" id="predTrioBtn-top500" onclick="predSelectSet('top500')">
+          <span>🛡️ بنك الـ 500 (نطاق الأمان)</span>
+          <span class="pred-trio-badge">500 سؤال</span>
+        </button>
+        <button class="pred-trio-btn ${predState.selectedSet === 'all1054' ? 'active-all1054' : ''}" id="predTrioBtn-all1054" onclick="predSelectSet('all1054')">
+          <span>🌐 البنك الكامل</span>
+          <span class="pred-trio-badge">1,054 سؤال</span>
+        </button>
+
+        <div style="margin-right:auto; display:flex; align-items:center; gap:8px;">
+          <button class="pred-pill-btn" onclick="predToggleStudyMode()" id="predBtnStudyToggle" style="font-weight:700;">
+            ${predState.studyMode ? '💡 وضع المذاكرة (الحل ظاهر)' : '🎯 وضع الاختبار (حل بنفسك)'}
+          </button>
+          <button class="pred-pill-btn" onclick="predSwitchSubView('intro')">
+            🏠 رجوع للدليل
+          </button>
+          <button class="pred-pill-btn" onclick="predSwitchSubView('notes')">
+            📚 نوتس الشباتر
+          </button>
+        </div>
+      </div>
+
+      <!-- Search & Filters Strip -->
+      <div style="background:var(--surface-subtle); border:1px solid var(--border); border-radius:12px; padding:10px 16px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div style="position:relative; flex:1; min-width:240px;">
+          <input type="text" id="predSearchInput" oninput="predHandleSearch(this.value)" placeholder="ابحث برقم السؤال، اسم المرض، الدواء، أو الكلمة المفتاحية..." style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; outline:none;">
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <select class="clean-select" id="predSortSelect" onchange="predHandleSort(this.value)">
+            <option value="prob_desc">⚡ ترتيب بحسب أعلى احتمالية تكرار</option>
+            <option value="qnum_asc">🔢 ترتيب بحسب رقم السؤال</option>
+            <option value="f2026_desc">📅 أسئلة دورات 2026 أولاً</option>
+          </select>
+          <select class="clean-select" id="predPageSizeSelect" onchange="predHandlePageSize(this.value)">
+            <option value="25">25 سؤال في الصفحة</option>
+            <option value="50">50 سؤال في الصفحة</option>
+            <option value="100">100 سؤال في الصفحة</option>
+            <option value="all">عرض متواصل (الكل)</option>
+          </select>
+          <button class="pred-pill-btn" id="predFlaggedFilterBtn" onclick="predToggleFlagFilter()">
+            🚩 المميزة فقط
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal Chapter Pills -->
+      <div style="overflow-x:auto; padding:6px 0; margin-bottom:18px; scrollbar-width:thin;">
+        <div id="predChapterStripInner" style="display:flex; align-items:center; gap:6px;"></div>
+      </div>
+
+      <!-- Summary Bar -->
+      <div id="predSummaryBar" style="margin-bottom:16px;"></div>
+
+      <!-- Questions List Area -->
+      <div id="predQuestionsListContainer" dir="ltr"></div>
+
+      <!-- Pagination -->
+      <div id="predPaginationContainer" class="pred-pagination"></div>
+    </div>
+  `;
+}
+
+// Render Chapter Strip
+function renderPredChapterStrip() {
+  const container = document.getElementById("predChapterStripInner");
+  if (!container) return;
+
+  const pool = getPredActivePool();
+  const counts = {};
+  pool.forEach(q => { counts[q.chapter_id] = (counts[q.chapter_id] || 0) + 1; });
+
+  const chs = Object.keys(PRED_CHAPTER_METADATA).filter(ch => (counts[ch] || 0) > 0);
+  chs.sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+
+  let html = `
+    <button class="ch-pill ${predState.selectedChapter === 'all' ? 'active' : ''}" onclick="predSelectChapter('all')">
+      <span>🌐 كل الشباتر</span>
+      <span class="ch-pill-count">(${pool.length})</span>
+    </button>
+  `;
+
+  chs.forEach(ch => {
+    const c = counts[ch] || 0;
+    const meta = PRED_CHAPTER_METADATA[ch];
+    const isActive = predState.selectedChapter === ch;
+    html += `
+      <button class="ch-pill ${isActive ? 'active' : ''}" onclick="predSelectChapter('${ch}')">
+        <span>${meta.icon} ${meta.name.split(' ')[0]}</span>
+        <span class="ch-pill-count">(${c})</span>
+      </button>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+// Render Questions List
+function renderPredQuestionsList() {
+  const container = document.getElementById("predQuestionsListContainer");
+  const summaryEl = document.getElementById("predSummaryBar");
+  if (!container) return;
+
+  const filtered = getPredFilteredQuestions();
+  const totalCount = filtered.length;
+
+  if (summaryEl) {
+    let setLabel = 'الـ 100 الأكثر احتمالية 🏆';
+    if (predState.selectedSet === 'top500') setLabel = 'بنك الـ 500 سؤال (نطاق الأمان) 🛡️';
+    else if (predState.selectedSet === 'all1054') setLabel = 'البنك الكامل (1,054 سؤال) 🌐';
+
+    const chMeta = PRED_CHAPTER_METADATA[predState.selectedChapter];
+    const chLabel = predState.selectedChapter === 'all' ? 'كل الشباتر' : (chMeta ? (chMeta.icon + ' ' + chMeta.name) : predState.selectedChapter);
+    summaryEl.innerHTML = `
+      <div style="font-size:14px; font-weight:700; color:var(--text-secondary); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <div>
+          أنت الآن تتصفح: <span style="color:var(--teal); font-weight:800;">${setLabel}</span> • <span style="color:var(--text);">${chLabel}</span>
+          <span style="font-size:12.5px; opacity:0.8; margin-right:6px;">(معروض ${totalCount} سؤال)</span>
+        </div>
+        <div style="font-size:12.5px; color:var(--text-muted); font-weight:600;">
+          ${predState.studyMode ? '💡 الإجابات والشرح ظاهر للمذاكرة المباشرة' : '🎯 وضع الاختبار الذاتي (اضغط على الخيار للحل)'}
+        </div>
+      </div>
+    `;
+  }
+
+  if (totalCount === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 48px 24px; background: var(--surface); border-radius: 16px; border: 1px dashed var(--border);" dir="rtl">
+        <div style="font-size: 40px; margin-bottom: 12px;">🔍</div>
+        <h3 style="margin: 0 0 8px 0; color: var(--text);">لا توجد أسئلة تطابق هذا الفلتر</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 16px 0;">جرب تغيير الشابتر أو إفراغ خانة البحث.</p>
+        <button class="btn-teal" onclick="predResetFilters()" style="margin: 0 auto;">إعادة ضبط الفلاتر</button>
+      </div>
+    `;
+    renderPredPagination(0);
+    return;
+  }
+
+  let pageItems = filtered;
+  if (predState.pageSize !== 'all') {
+    const ps = parseInt(predState.pageSize, 10);
+    const totalPages = Math.ceil(totalCount / ps);
+    if (predState.currentPage > totalPages) predState.currentPage = 1;
+    const start = (predState.currentPage - 1) * ps;
+    pageItems = filtered.slice(start, start + ps);
+  }
+
+  const letters = ['A', 'B', 'C', 'D', 'E'];
+
+  let html = '';
+  pageItems.forEach(q => {
+    const topic = DATA.topics.find(t => t.id === q.topic_id) || { title: q.topic_id };
+    const chMeta = PRED_CHAPTER_METADATA[q.chapter_id] || { icon: '📁', name: q.chapter_id };
+    const st = state.qStatus[q.number] || {};
+    const isFlagged = !!st.flagged;
+    const userSel = st.selected;
+    const hasAnswered = typeof userSel === 'number';
+
+    let borderClass = 'card-border-teal';
+    let rankBadgeClass = 'rank-teal';
+    let tierText = 'البنك الكامل';
+    if (q.rank <= 100) {
+      borderClass = 'card-border-gold';
+      rankBadgeClass = 'rank-gold';
+      tierText = 'الـ 100 الذهبية';
+    } else if (q.rank <= 500) {
+      borderClass = 'card-border-silver';
+      rankBadgeClass = 'rank-silver';
+      tierText = 'نطاق الأمان 500';
+    }
+
+    html += `
+      <div class="pred-student-card ${borderClass}" id="pred-qcard-${q.number}">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="rank-badge-clean ${rankBadgeClass}">🏆 #${q.rank} • ${tierText}</span>
+            <span class="qnum-badge-clean">Q#${q.number}</span>
+            <span class="ch-badge-clean">${chMeta.icon} ${chMeta.name.split(' ')[0]}</span>
+            <span class="topic-badge-clean">${topic.title}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="prob-pill-clean" title="احتمالية تكرار هذا السؤال">⚡ احتمالية ${q.prob}%</span>
+            ${q.appearedBoth ? '<span class="anchor-tag-clean" title="تكرر في 2025 و 2026 معاً">🔄 2025+2026 Anchor</span>' : ''}
+            <button class="btn-open-topic-notes" onclick="predOpenTopicNotes('${q.topic_id}')" title="فتح نوتس الموضوع">
+              📖 نوتس الموضوع
+            </button>
+            <button class="btn-flag-q ${isFlagged ? 'flagged' : ''}" onclick="predToggleFlag(${q.number})" title="${isFlagged ? 'إلغاء التمييز' : 'تمييز للمراجعة'}">
+              🚩
+            </button>
+          </div>
+        </div>
+
+        <div class="clean-stem">${q.stem}</div>
+
+        <div style="margin-bottom:16px;">
+    `;
+
+    q.options.forEach((optText, optIdx) => {
+      let optClass = '';
+      if (predState.studyMode) {
+        if (optIdx === q.verified_answer) optClass = 'is-correct';
+      } else {
+        if (hasAnswered) {
+          if (optIdx === q.verified_answer) optClass = 'is-correct';
+          else if (optIdx === userSel) optClass = 'is-wrong';
+        }
+      }
+
+      html += `
+        <button class="pred-opt-btn-simple ${optClass}" onclick="predSelectOption(${q.number}, ${optIdx})">
+          <span class="clean-opt-letter">${letters[optIdx]}</span>
+          <span style="flex:1;">${optText}</span>
+        </button>
+      `;
+    });
+
+    html += `</div>`;
+
+    const showExp = predState.studyMode || hasAnswered;
+    if (showExp) {
+      html += `
+        <div class="clean-exp-box">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; font-weight:800; color:var(--correct); font-size:14px;">
+            <span>✓ الإجابة المعتمدة:</span>
+            <span>${letters[q.verified_answer]}. ${q.options[q.verified_answer]}</span>
+          </div>
+
+          ${q.hint ? `
+            <div class="clean-pearl-box">
+              <span style="font-size:20px;">💡</span>
+              <div><strong>الدرة الإكلينيكية (Pearl):</strong> ${q.hint}</div>
+            </div>
+          ` : ''}
+
+          ${q.explanation && q.explanation.scientific ? `
+            <div class="clean-sci-exp">
+              <strong style="color:var(--teal);">Scientific Explanation:</strong><br>
+              ${q.explanation.scientific}
+            </div>
+          ` : ''}
+
+          ${q.explanation && q.explanation.wrong && q.explanation.wrong.length > 0 ? `
+            <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); font-size:13px; color:var(--text-secondary);">
+              <strong style="color:var(--text-muted); font-size:12px;">Incorrect Options Breakdown:</strong>
+              ${q.explanation.wrong.map(w => `<div style="margin-top:4px;">• ${w}</div>`).join('')}
+            </div>
+          ` : ''}
+
+          ${q.exam_tags && q.exam_tags.length > 0 ? `
+            <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <span style="font-size:11.5px; color:var(--text-muted);">Historical Tags:</span>
+              ${q.exam_tags.map(t => {
+                let cls = '';
+                if (t.includes('2026')) cls = 'tag-2026';
+                else if (t.includes('2025')) cls = 'tag-2025';
+                return `<span class="pred-tag-pill ${cls}">${t}</span>`;
+              }).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+  renderPredPagination(totalCount);
+}
+
+// Pagination
+function renderPredPagination(totalCount) {
+  const container = document.getElementById("predPaginationContainer");
+  if (!container) return;
+
+  if (totalCount === 0 || predState.pageSize === 'all') {
+    container.innerHTML = '';
+    return;
+  }
+
+  const ps = parseInt(predState.pageSize, 10);
+  const totalPages = Math.ceil(totalCount / ps);
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = `
+    <button class="pred-page-btn" ${predState.currentPage === 1 ? 'disabled' : ''} onclick="predSetPage(${predState.currentPage - 1})">
+      ← السابق
+    </button>
+  `;
+
+  let start = Math.max(1, predState.currentPage - 2);
+  let end = Math.min(totalPages, predState.currentPage + 2);
+
+  if (start > 1) {
+    html += `<button class="pred-page-btn" onclick="predSetPage(1)">1</button>`;
+    if (start > 2) html += `<span style="padding:4px;">...</span>`;
+  }
+
+  for (let p = start; p <= end; p++) {
+    html += `
+      <button class="pred-page-btn ${p === predState.currentPage ? 'active' : ''}" onclick="predSetPage(${p})">
+        ${p}
+      </button>
+    `;
+  }
+
+  if (end < totalPages) {
+    if (end < totalPages - 1) html += `<span style="padding:4px;">...</span>`;
+    html += `<button class="pred-page-btn" onclick="predSetPage(${totalPages})">${totalPages}</button>`;
+  }
+
+  html += `
+    <button class="pred-page-btn" ${predState.currentPage === totalPages ? 'disabled' : ''} onclick="predSetPage(${predState.currentPage + 1})">
+      التالي →
+    </button>
+  `;
+
+  container.innerHTML = html;
+}
+
+// View 3: Notes Layout HTML
+function renderPredictionsNotesLayoutHTML() {
+  return `
+    <div dir="rtl">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <div>
+          <h2 style="margin:0 0 4px 0; font-size:20px; color:var(--text);">📚 نوتس الشباتر السريرية المركزة (VIP Notes)</h2>
+          <p style="margin:0; font-size:13px; color:var(--text-muted);">الملخصات السريرية وجداول المقارنة المرتبطة بأسئلة الامتحانات المتوقعة.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="pred-pill-btn active" onclick="predSwitchSubView('questions')">
+            📝 الانتقال لبنك الأسئلة
+          </button>
+          <button class="pred-pill-btn" onclick="predSwitchSubView('intro')">
+            🏠 رجوع للدليل
+          </button>
+        </div>
+      </div>
+
+      <div class="pred-notes-layout">
+        <aside class="pred-notes-sidebar" id="predNotesSidebar"></aside>
+        <div id="predNotesContent"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPredNotesView() {
+  const sidebarEl = document.getElementById("predNotesSidebar");
+  const contentEl = document.getElementById("predNotesContent");
+  if (!sidebarEl || !contentEl) return;
+
+  const allQs = getScoredPredictions();
+  const chTopicsMap = {};
+  DATA.topics.forEach(t => {
+    if (!chTopicsMap[t.chapter_id]) chTopicsMap[t.chapter_id] = [];
+    chTopicsMap[t.chapter_id].push(t);
+  });
+
+  const chapters = Object.keys(chTopicsMap).sort((a, b) => {
+    const qA = allQs.filter(q => q.chapter_id === a).length;
+    const qB = allQs.filter(q => q.chapter_id === b).length;
+    return qB - qA;
+  });
+
+  let sidebarHtml = '';
+  chapters.forEach(ch => {
+    const meta = PRED_CHAPTER_METADATA[ch] || { icon: '📁', name: ch };
+    const qCount = allQs.filter(q => q.chapter_id === ch).length;
+    const tCount = chTopicsMap[ch].length;
+    const isActive = predState.notesSelectedChapter === ch;
+
+    sidebarHtml += `
+      <button class="pred-notes-ch-btn ${isActive ? 'active' : ''}" onclick="predSelectNotesChapter('${ch}')">
+        <span>${meta.icon} ${meta.name.split(' ')[0]}</span>
+        <span style="font-size:11.5px; opacity:0.8;">${tCount} مواضيع • ${qCount} Qs</span>
+      </button>
+    `;
+  });
+  sidebarEl.innerHTML = sidebarHtml;
+
+  const currentCh = predState.notesSelectedChapter || chapters[0];
+  const currentMeta = PRED_CHAPTER_METADATA[currentCh] || { icon: '📁', name: currentCh };
+  const topics = chTopicsMap[currentCh] || [];
+  const chQs = allQs.filter(q => q.chapter_id === currentCh);
+
+  let contentHtml = `
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+      <div>
+        <h3 style="margin:0 0 4px 0; font-size:19px; color:var(--text);">${currentMeta.icon} ${currentMeta.name} — النوتس المركزة</h3>
+        <p style="margin:0; font-size:13px; color:var(--text-muted);">
+          تتضمن <strong>${topics.length}</strong> موضوعاً سريرياً محورياً تشمل <strong>${chQs.length}</strong> سؤالاً متوقعاً.
+        </p>
+      </div>
+      <button class="btn-teal" onclick="predViewChapterQuestions('${currentCh}')" style="padding:6px 14px; font-size:13px;">
+        📝 حل أسئلة هذا الشابتر (${chQs.length})
+      </button>
+    </div>
+  `;
+
+  topics.forEach((t, idx) => {
+    const qCount = allQs.filter(q => q.topic_id === t.id).length;
+    contentHtml += `
+      <div class="pred-topic-card" id="pred-topic-card-${t.id}">
+        <div class="pred-topic-header">
+          <div>
+            <span class="freq-badge freq-high" style="margin-left:8px;">${t.yield_label || '🔥 High Yield'}</span>
+            <h4 style="display:inline; margin:0; font-size:16px; color:var(--text);">${idx + 1}. ${t.title}</h4>
+          </div>
+          <button class="pred-pill-btn" onclick="predFilterByTopic('${t.id}')">
+            📝 ${qCount} أسئلة متوقعة
+          </button>
+        </div>
+        <div class="pred-vip-html-render" dir="ltr">
+          ${t.vip_html || '<p style="color:var(--text-muted);">لا توجد نوتس متاحة لهذا الموضوع.</p>'}
+        </div>
+      </div>
+    `;
+  });
+
+  contentEl.innerHTML = contentHtml;
+}
+
+// Handlers & Helpers
+function predSelectSet(setName) {
+  predState.selectedSet = setName;
+  predState.selectedChapter = 'all';
+  predState.currentPage = 1;
+  predState.subView = 'questions';
+  renderPredictionsPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function predSwitchSubView(subViewName) {
+  predState.subView = subViewName;
+  renderPredictionsPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function predSelectChapter(chId) {
+  predState.selectedChapter = chId;
+  predState.currentPage = 1;
+  renderPredChapterStrip();
+  renderPredQuestionsList();
+}
+
+function predSelectNotesChapter(chId) {
+  predState.notesSelectedChapter = chId;
+  renderPredNotesView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function predViewChapterQuestions(chId) {
+  predState.selectedChapter = chId;
+  predState.selectedSet = 'all1054';
+  predState.subView = 'questions';
+  renderPredictionsPage();
+}
+
+function predFilterByTopic(topicId) {
+  const topic = DATA.topics.find(t => t.id === topicId);
+  if (topic) {
+    predState.selectedChapter = topic.chapter_id;
+    predState.selectedSet = 'all1054';
+    predState.searchQuery = topic.title;
+  }
+  predState.subView = 'questions';
+  renderPredictionsPage();
+}
+
+function predHandleSearch(val) {
+  predState.searchQuery = val;
+  predState.currentPage = 1;
+  renderPredQuestionsList();
+}
+
+function predHandleSort(val) {
+  predState.sortBy = val;
+  renderPredQuestionsList();
+}
+
+function predHandlePageSize(val) {
+  predState.pageSize = val;
+  predState.currentPage = 1;
+  renderPredQuestionsList();
+}
+
+function predSetPage(p) {
+  predState.currentPage = p;
+  renderPredQuestionsList();
+  window.scrollTo({ top: 120, behavior: 'smooth' });
+}
+
+function predToggleStudyMode() {
+  predState.studyMode = !predState.studyMode;
+  const btn = document.getElementById("predBtnStudyToggle");
+  if (btn) {
+    btn.textContent = predState.studyMode ? '💡 وضع المذاكرة (الحل ظاهر)' : '🎯 وضع الاختبار (حل بنفسك)';
+  }
+  renderPredQuestionsList();
+}
+
+function predToggleFlag(qNum) {
+  if (typeof toggleFlagQuestion === 'function') {
+    toggleFlagQuestion(qNum);
+  } else {
+    const cur = state.qStatus[qNum] || {};
+    cur.flagged = !cur.flagged;
+    state.qStatus[qNum] = cur;
+    saveState();
+  }
+  const card = document.getElementById("pred-qcard-" + qNum);
+  if (card) {
+    const flagBtn = card.querySelector(".btn-flag-q");
+    if (flagBtn) {
+      flagBtn.classList.toggle("flagged", !!(state.qStatus[qNum] && state.qStatus[qNum].flagged));
+    }
+  }
+  if (predState.flaggedOnly) renderPredQuestionsList();
+}
+
+function predToggleFlagFilter() {
+  predState.flaggedOnly = !predState.flaggedOnly;
+  const btn = document.getElementById("predFlaggedFilterBtn");
+  if (btn) btn.classList.toggle("active", predState.flaggedOnly);
+  predState.currentPage = 1;
+  renderPredQuestionsList();
+}
+
+function predResetFilters() {
+  predState.selectedChapter = 'all';
+  predState.searchQuery = '';
+  predState.flaggedOnly = false;
+  predState.currentPage = 1;
+  const input = document.getElementById("predSearchInput");
+  if (input) input.value = '';
+  renderPredChapterStrip();
+  renderPredQuestionsList();
+}
+
+function predSelectOption(qNum, optIdx) {
+  if (predState.studyMode) return;
+  const q = DATA.questions.find(x => x.number === qNum);
+  if (!q) return;
+
+  const cur = state.qStatus[qNum] || { selected: null, status: null, hintUsed: false, flagged: false };
+  cur.selected = optIdx;
+  cur.status = (optIdx === q.verified_answer) ? 'correct' : 'wrong';
+  state.qStatus[qNum] = cur;
+  saveState();
+
+  const card = document.getElementById("pred-qcard-" + qNum);
+  if (!card) {
+    renderPredQuestionsList();
+    return;
+  }
+
+  const btns = card.querySelectorAll(".pred-opt-btn-simple");
+  btns.forEach((btn, idx) => {
+    btn.classList.remove("is-correct", "is-wrong");
+    if (idx === q.verified_answer) btn.classList.add("is-correct");
+    else if (idx === optIdx) btn.classList.add("is-wrong");
+  });
+
+  const expBox = card.querySelector(".clean-exp-box");
+  if (!expBox) {
+    renderPredQuestionsList();
+  }
+}
+
+function predOpenTopicNotes(topicId) {
+  // If the native split notes or topic navigation exists
+  if (typeof navigateTo === 'function') {
+    navigateTo('topic', topicId);
+  }
+}
+
 
 </script>
 
