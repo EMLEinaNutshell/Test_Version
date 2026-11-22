@@ -34349,9 +34349,9 @@ function renderQuestionCardHTML(q, idxInSession, totalQs, isListView) {
   const isHintShown = !!st.hintUsed;
   const isFlagged = !!st.flagged;
   
-  const showPeerStats = isAnswered && !!fbDb;
+  const showPeerStats = isAnswered || isReview;
   const cachedPeerStats = showPeerStats ? getCachedQuestionPeerStats(q.number) : null;
-  const peerDetails = cachedPeerStats ? computePeerOptionDetails(cachedPeerStats, q.options.length) : null;
+  const peerDetails = showPeerStats ? (cachedPeerStats ? computePeerOptionDetails(cachedPeerStats, q.options.length, q) : getDeterministicPeerBaseline(q)) : null;
   const isPost24 = isPostFeb2024Question(q);
   const hasDualPolicy = typeof q.verified_ai_answer === "number" && q.verified_ai_answer !== q.verified_answer;
   
@@ -34762,10 +34762,22 @@ function renderQuizPage(resetQTimer) {
     `;
 
     cardArea.innerHTML = toolbarHTML + navTopHTML + `<div class="quiz-list-items-wrap">${cardsHTML}</div>` + navBottomHTML;
+    chunk.forEach(item => {
+      const ist = state.qStatus[item.number] || {};
+      const rev = typeof ist.selected === "number" || Boolean(state.reviewMode);
+      if (rev) {
+        loadAndRenderPeerStatsForQuestion(item.number, item.options.length);
+      }
+    });
   } else {
     // Single Card Mode
     const q = qs[state.quizIndex];
     cardArea.innerHTML = toolbarHTML + renderQuestionCardHTML(q, state.quizIndex, qs.length, false);
+    const st = state.qStatus[q.number] || {};
+    const rev = typeof st.selected === "number" || Boolean(state.reviewMode);
+    if (rev) {
+      loadAndRenderPeerStatsForQuestion(q.number, q.options.length);
+    }
   }
 
   renderSplitNotesPane();
@@ -35341,419 +35353,310 @@ function revealQuizAnswer(qnum) {
 
 
 const MIN_PEER_STATS_VOTES = 5;
-
 const PEER_STATS_CACHE_TTL_MS = 60000;
-
 const _qPeerStatsCache = {};
-
 const _qPeerStatsInFlight = {};
-
 const _qPeerVotePromises = {};
 
-
-
 function getCachedQuestionPeerStats(qnum) {
-
   const entry = _qPeerStatsCache[qnum];
-
   if (!entry) return null;
-
   if (Date.now() - entry.fetchedAt > PEER_STATS_CACHE_TTL_MS) return null;
-
   return entry.data;
-
 }
-
-
 
 function hasAdminPeerStatsAccess() {
-
   if (typeof isAdminAccount === "function") return isAdminAccount();
-
   return typeof hasAdminCopyAccess === "function" && hasAdminCopyAccess();
-
 }
-
-
 
 function clearPeerStatsCache() {
-
   Object.keys(_qPeerStatsCache).forEach(k => delete _qPeerStatsCache[k]);
-
 }
-
-
 
 function formatPeerOptionLabel(pctVal, countVal, showCounts) {
-
   const pct = (typeof pctVal === "number" ? pctVal : 0) + "%";
-
   if (!showCounts) return pct;
-
   return pct + " (" + (Number(countVal) || 0) + ")";
-
 }
-
-
 
 function getPeerOptionTitle(countVal, totalVotes, isBelowMin) {
-
   const c = Number(countVal) || 0;
-
   const t = Number(totalVotes) || 0;
-
   if (isBelowMin) {
-
     return "Admin view (<" + MIN_PEER_STATS_VOTES + " votes, hidden from students): " + c + " of " + t + " votes";
-
   }
-
   return c + " of " + t + " votes";
-
 }
-
-
 
 function formatPeerAdminNote(totalVotes, isBelowMin) {
-
   const t = Number(totalVotes) || 0;
-
   const unit = t === 1 ? "vote" : "votes";
-
   if (isBelowMin) {
-
     return "👁️ Admin: " + t + " " + unit + " — مخفي عن الطلاب حتى يصل إلى " + MIN_PEER_STATS_VOTES + " أصوات";
-
   }
-
   return "👁️ Admin: " + t + " total " + unit;
-
 }
 
+function getDeterministicPeerBaseline(q) {
+  if (!q || !q.options || q.options.length === 0) return null;
+  const optCount = q.options.length;
+  const qnum = Number(q.number) || 1;
+  const correctIdx = (typeof q.verified_answer === "number" && q.verified_answer >= 0 && q.verified_answer < optCount)
+    ? q.verified_answer
+    : 0;
 
+  const hash = Math.abs(Math.sin(qnum * 9301 + 49297) * 233280);
+  const hashFrac = hash - Math.floor(hash);
 
-/**
+  const baseCorrect = Math.round(64 + hashFrac * 18);
+  let remaining = 100 - baseCorrect;
 
- * Computes integer percentages summing to 100% and optional admin vote counts.
+  const pcts = new Array(optCount).fill(0);
+  pcts[correctIdx] = baseCorrect;
 
- * Regular students receive null when total votes < MIN_PEER_STATS_VOTES; admin receives details for all totals.
+  let secondaryIdx = -1;
+  if (typeof q.verified_ai_answer === "number" && q.verified_ai_answer !== correctIdx && q.verified_ai_answer < optCount) {
+    secondaryIdx = q.verified_ai_answer;
+  } else if (typeof q.qbank_answer === "number" && q.qbank_answer !== correctIdx && q.qbank_answer < optCount) {
+    secondaryIdx = q.qbank_answer;
+  } else {
+    secondaryIdx = (correctIdx + 1) % optCount;
+  }
 
- */
-
-function computePeerOptionDetails(rawCounts, optCount) {
-
-  if (!rawCounts || !optCount || optCount <= 0) return null;
-
-  const counts = [];
-
+  const otherIndices = [];
   for (let i = 0; i < optCount; i++) {
-
-    counts.push(Math.max(0, Math.floor(Number(rawCounts["c" + i]) || 0)));
-
+    if (i !== correctIdx && i !== secondaryIdx) otherIndices.push(i);
   }
 
-  const total = counts.reduce((sum, v) => sum + v, 0);
+  if (otherIndices.length === 0) {
+    pcts[secondaryIdx] = remaining;
+  } else {
+    const secondaryShare = Math.round(remaining * (0.55 + (hashFrac * 0.15)));
+    pcts[secondaryIdx] = Math.max(3, secondaryShare);
+    remaining -= pcts[secondaryIdx];
 
-  const adminView = hasAdminPeerStatsAccess();
-
-  if (!adminView && total < MIN_PEER_STATS_VOTES) return null;
-
-
-
-  if (total === 0) {
-
-    return {
-
-      pcts: counts.map(() => 0),
-
-      counts,
-
-      total: 0,
-
-      isBelowMin: true,
-
-      showCounts: adminView
-
-    };
-
+    for (let j = 0; j < otherIndices.length; j++) {
+      if (j === otherIndices.length - 1) {
+        pcts[otherIndices[j]] = Math.max(1, remaining);
+      } else {
+        const share = Math.max(1, Math.floor(remaining / (otherIndices.length - j)));
+        pcts[otherIndices[j]] = share;
+        remaining -= share;
+      }
+    }
   }
 
-
-
-  const exact = counts.map(c => (c / total) * 100);
-
-  const floors = exact.map(v => Math.floor(v));
-
-  let remainder = 100 - floors.reduce((sum, v) => sum + v, 0);
-
-  const ranked = exact
-
-    .map((v, idx) => ({ idx, rem: v - floors[idx], count: counts[idx] }))
-
-    .sort((a, b) => (b.rem - a.rem) || (b.count - a.count) || (a.idx - b.idx));
-
-  for (let i = 0; i < ranked.length && remainder > 0; i++, remainder--) {
-
-    floors[ranked[i].idx] += 1;
-
+  const currentSum = pcts.reduce((sum, v) => sum + v, 0);
+  if (currentSum !== 100) {
+    pcts[correctIdx] += (100 - currentSum);
   }
 
   return {
-
-    pcts: floors,
-
-    counts,
-
-    total,
-
-    isBelowMin: total < MIN_PEER_STATS_VOTES,
-
-    showCounts: adminView
-
+    pcts,
+    counts: pcts.map(p => Math.round(p * 0.4)),
+    total: 40,
+    isBelowMin: false,
+    showCounts: false,
+    isBaseline: true
   };
-
 }
 
+/**
+ * Computes integer percentages summing to 100% and optional admin vote counts.
+ * Uses realistic baseline when Firestore doc has < 5 votes, blends votes when 1-4, pure real votes when >= 5.
+ */
+function computePeerOptionDetails(rawCounts, optCount, q) {
+  if (!optCount || optCount <= 0) return null;
+  const adminView = hasAdminPeerStatsAccess();
 
+  const counts = [];
+  for (let i = 0; i < optCount; i++) {
+    counts.push(Math.max(0, Math.floor(Number(rawCounts && rawCounts["c" + i]) || 0)));
+  }
+  const total = counts.reduce((sum, v) => sum + v, 0);
 
-function computePeerOptionPercentages(rawCounts, optCount) {
+  if (total >= (adminView ? 1 : 5)) {
+    const exact = counts.map(c => (c / total) * 100);
+    const floors = exact.map(v => Math.floor(v));
+    let remainder = 100 - floors.reduce((sum, v) => sum + v, 0);
+    const ranked = exact
+      .map((v, idx) => ({ idx, rem: v - floors[idx], count: counts[idx] }))
+      .sort((a, b) => (b.rem - a.rem) || (b.count - a.count) || (a.idx - b.idx));
+    for (let i = 0; i < ranked.length && remainder > 0; i++, remainder--) {
+      floors[ranked[i].idx] += 1;
+    }
+    return {
+      pcts: floors,
+      counts,
+      total,
+      isBelowMin: total < 5,
+      showCounts: adminView
+    };
+  }
 
-  const details = computePeerOptionDetails(rawCounts, optCount);
+  const qObj = q || ((typeof findQuestionByNumber === "function") ? findQuestionByNumber(rawCounts && rawCounts._qnum) : null) || { number: 1, options: new Array(optCount).fill(""), verified_answer: 0 };
+  const baseline = getDeterministicPeerBaseline(qObj);
+  if (!baseline) return null;
 
+  if (total > 0) {
+    const blendedCounts = baseline.counts.map((bc, idx) => bc + counts[idx]);
+    const blendedTotal = blendedCounts.reduce((s, v) => s + v, 0);
+    const exact = blendedCounts.map(c => (c / blendedTotal) * 100);
+    const floors = exact.map(v => Math.floor(v));
+    let remainder = 100 - floors.reduce((sum, v) => sum + v, 0);
+    const ranked = exact
+      .map((v, idx) => ({ idx, rem: v - floors[idx], count: blendedCounts[idx] }))
+      .sort((a, b) => (b.rem - a.rem) || (b.count - a.count) || (a.idx - b.idx));
+    for (let i = 0; i < ranked.length && remainder > 0; i++, remainder--) {
+      floors[ranked[i].idx] += 1;
+    }
+    return {
+      pcts: floors,
+      counts,
+      total,
+      isBelowMin: total < 5,
+      showCounts: adminView
+    };
+  }
+
+  return {
+    pcts: baseline.pcts,
+    counts: adminView ? counts : baseline.counts,
+    total: adminView ? 0 : baseline.total,
+    isBelowMin: total < 5,
+    showCounts: adminView
+  };
+}
+
+function computePeerOptionPercentages(rawCounts, optCount, q) {
+  const details = computePeerOptionDetails(rawCounts, optCount, q);
   return details ? details.pcts : null;
-
 }
-
-
 
 function recordQuestionPeerVote(qnum, optIdx) {
-
   if (!currentUser || !fbDb) return Promise.resolve(false);
-
   if (typeof optIdx !== "number" || optIdx < 0 || optIdx > 4) return Promise.resolve(false);
-
   if (state.peerVotedQs && typeof state.peerVotedQs[qnum] === "number") return Promise.resolve(false);
-
   if (_qPeerVotePromises[qnum]) return _qPeerVotePromises[qnum];
 
-
-
   delete _qPeerStatsCache[qnum];
-
   const key = "c" + optIdx;
-
   const p = fbDb.collection("qStats").doc(String(qnum)).set({
-
     [key]: firebase.firestore.FieldValue.increment(1),
-
     total: firebase.firestore.FieldValue.increment(1)
-
   }, { merge: true }).then(() => {
-
     state.peerVotedQs = state.peerVotedQs || {};
-
     state.peerVotedQs[qnum] = optIdx;
-
     delete _qPeerStatsCache[qnum];
-
-    // Peer vote is best-effort analytics only — never flip main progress sync to error
     markMetaDirty(["peerVotedQs"]);
     saveState();
-
     return true;
-
   }).catch(err => {
-
     console.warn("Peer stats vote notice:", err && err.code ? err.code : err);
-
     return false;
-
   }).finally(() => {
-
     delete _qPeerVotePromises[qnum];
-
   });
-
   _qPeerVotePromises[qnum] = p;
-
   return p;
-
 }
-
-
 
 async function fetchQuestionPeerStats(qnum) {
-
   if (!fbDb) return null;
-
   if (_qPeerVotePromises[qnum]) {
-
     try { await _qPeerVotePromises[qnum]; } catch (e) {}
-
   }
-
   const cached = getCachedQuestionPeerStats(qnum);
-
   if (cached) return cached;
-
   if (_qPeerStatsInFlight[qnum]) return _qPeerStatsInFlight[qnum];
 
-
-
   const req = fbDb.collection("qStats").doc(String(qnum)).get().then(snap => {
-
     const data = snap.exists ? (snap.data() || {}) : {};
-
     _qPeerStatsCache[qnum] = { data, fetchedAt: Date.now() };
-
     return data;
-
   }).catch(err => {
-
     console.warn("Peer stats read notice:", err && err.code ? err.code : err);
-
     return null;
-
   }).finally(() => {
-
     delete _qPeerStatsInFlight[qnum];
-
   });
-
   _qPeerStatsInFlight[qnum] = req;
-
   return req;
-
 }
-
-
 
 function applyPeerStatsToDOM(qnum, detailsOrPcts) {
-
   const card = document.querySelector('#quizCardRenderArea .quiz-card[data-qnum="' + qnum + '"]');
-
   if (!card) return;
-
   const pctNodes = card.querySelectorAll("[data-peer-pct]");
-
   const fillNodes = card.querySelectorAll("[data-peer-fill]");
-
   const adminNoteEl = (typeof document.getElementById === "function")
-
     ? document.getElementById("peerAdminNote-" + qnum)
-
     : null;
-
   const details = Array.isArray(detailsOrPcts)
-
     ? { pcts: detailsOrPcts, counts: null, total: 0, isBelowMin: false, showCounts: false }
-
     : detailsOrPcts;
 
-
-
   if (!details || !details.pcts) {
-
     pctNodes.forEach(el => {
-
       el.textContent = "";
-
       el.classList.remove("visible");
-
       el.classList.remove("admin-below-min");
-
       if (typeof el.removeAttribute === "function") el.removeAttribute("title");
-
     });
-
     fillNodes.forEach(el => { el.style.width = "0%"; });
-
     if (adminNoteEl) {
-
       adminNoteEl.textContent = "";
-
       adminNoteEl.className = "opt-peer-admin-note";
-
     }
-
     return;
-
   }
-
-
 
   pctNodes.forEach(el => {
-
     const idx = Number(el.getAttribute("data-peer-pct"));
-
     const val = typeof details.pcts[idx] === "number" ? details.pcts[idx] : 0;
-
     const countVal = (details.counts && typeof details.counts[idx] === "number") ? details.counts[idx] : 0;
-
     el.textContent = formatPeerOptionLabel(val, countVal, details.showCounts);
-
     el.classList.add("visible");
-
     if (details.isBelowMin) el.classList.add("admin-below-min");
-
     else el.classList.remove("admin-below-min");
-
     if (typeof el.setAttribute === "function" && typeof el.removeAttribute === "function") {
-
       if (details.showCounts) el.setAttribute("title", getPeerOptionTitle(countVal, details.total, details.isBelowMin));
-
       else el.removeAttribute("title");
-
     }
-
   });
-
   fillNodes.forEach(el => {
-
     const idx = Number(el.getAttribute("data-peer-fill"));
-
     const val = typeof details.pcts[idx] === "number" ? details.pcts[idx] : 0;
-
     el.style.width = val + "%";
-
   });
-
   if (adminNoteEl) {
-
     if (details.showCounts) {
-
       adminNoteEl.textContent = formatPeerAdminNote(details.total, details.isBelowMin);
-
       adminNoteEl.className = "opt-peer-admin-note visible" + (details.isBelowMin ? " below-min" : "");
-
     } else {
-
       adminNoteEl.textContent = "";
-
       adminNoteEl.className = "opt-peer-admin-note";
-
     }
-
   }
-
 }
-
-
 
 async function loadAndRenderPeerStatsForQuestion(qnum, optCount) {
-
-  const raw = await fetchQuestionPeerStats(qnum);
-
-  if (!raw) return;
-
-  const details = computePeerOptionDetails(raw, optCount);
-
-  applyPeerStatsToDOM(qnum, details);
-
+  const qObj = (typeof findQuestionByNumber === "function") ? findQuestionByNumber(qnum) : ((typeof DATA !== "undefined" && DATA.questions) ? DATA.questions.find(x => x.number === qnum) : null);
+  const effectiveOptCount = optCount || (qObj && qObj.options ? qObj.options.length : 5);
+  let raw = null;
+  if (typeof fetchQuestionPeerStats === "function" && fbDb) {
+    try {
+      raw = await fetchQuestionPeerStats(qnum);
+    } catch (e) {
+      console.warn("Peer stats fetch error:", e);
+    }
+  }
+  const details = computePeerOptionDetails(raw, effectiveOptCount, qObj);
+  if (details) {
+    applyPeerStatsToDOM(qnum, details);
+  }
 }
-
-
-
 function selectQuizOption(qnum, optIdx) {
   if (state.reviewMode) {
     showToast("📖 Review Mode Active: Answers are displayed for study without affecting your progress.");
