@@ -8485,6 +8485,164 @@
   align-self: center;
   opacity: 0.7;
 }
+
+
+/* --- Review Mode & List View CSS --- */
+/* --- Review Mode & List View CSS --- */
+.quiz-mode-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(11, 35, 53, 0.04);
+}
+.qmt-left, .qmt-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.btn-toggle-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+.btn-toggle-review:hover {
+  background: #f1f5f9;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+.btn-toggle-review.is-active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border-color: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+.btn-toggle-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+.btn-toggle-view:hover {
+  background: #f1f5f9;
+  border-color: #0a6c74;
+  color: #0a6c74;
+}
+.btn-toggle-view.is-active {
+  background: linear-gradient(135deg, #0a6c74 0%, #0d9488 100%);
+  border-color: #0a6c74;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(10, 108, 116, 0.25);
+}
+.review-status-tag {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.qmt-page-info {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* List View Accordion Toggle */
+.list-exp-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdfa;
+  border: 1.5px solid #0a6c74;
+  color: #0a6c74;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 10px 0 6px 0;
+  transition: all 0.15s ease;
+}
+.list-exp-toggle-btn:hover {
+  background: #0a6c74;
+  color: #ffffff;
+}
+
+/* List View Navigation Bars */
+.quiz-list-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(11, 35, 53, 0.04);
+}
+.ql-info {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.list-qcard-item {
+  margin-bottom: 20px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 10px rgba(11, 35, 53, 0.06) !important;
+  border: 1.5px solid #e2e8f0 !important;
+}
+.list-card-concept-pill {
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  border-left: 3.5px solid #0a6c74;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.lc-badge {
+  color: #0a6c74;
+  font-weight: 800;
+}
+.lc-title {
+  color: #0f172a;
+  font-weight: 700;
+}
+
 </style>
 
   <!-- Firebase SDKs loaded lazily via loadFirebaseSdk() after vault boot -->
@@ -33571,6 +33729,9 @@ function executeStartQuizSession(filter, qs, mode) {
 
 
   state.quizFilter = filter;
+  state.quizViewMode = 'card';
+  state.quizListPage = 0;
+  state.listExpandedExps = {};
   state.baseSessionQs = qs.slice();
   state.quizPredictionTier = "all";
   const _isShuffledSession = (typeof isShuffle !== "undefined" && isShuffle);
@@ -33956,70 +34117,421 @@ function isPostFeb2024Question(q) {
 
 
 
+// =============================================================================
+// REVIEW MODE & LIST VIEW (10 QS / PAGE) ENGINE
+// =============================================================================
+
+// =============================================================================
+// REVIEW MODE & LIST VIEW (10 QS / PAGE) ENGINE
+// =============================================================================
+
+function toggleQuizReviewMode() {
+  state.reviewMode = !state.reviewMode;
+  renderQuizPage(false);
+  if (state.reviewMode) {
+    showToast("📖 Review Mode Active: Answers & Exam Pearls revealed for study without affecting progress!");
+  } else {
+    showToast("🎯 Normal Quiz Mode: Answer questions to record your progress.");
+  }
+}
+
+function toggleQuizViewMode() {
+  state.quizViewMode = (state.quizViewMode === "list") ? "card" : "list";
+  if (state.quizViewMode === "list") {
+    state.quizListPage = Math.floor((state.quizIndex || 0) / 10);
+  }
+  renderQuizPage(false);
+  if (state.quizViewMode === "list") {
+    showToast("📄 Switched to List View (10 questions per page).");
+  } else {
+    showToast("🎴 Switched to Single Card View.");
+  }
+}
+
+function changeQuizListPage(delta) {
+  const qs = getQuestionsForFilter(state.quizFilter);
+  if (!qs || qs.length === 0) return;
+  const totalPages = Math.ceil(qs.length / 10);
+  let newPage = (state.quizListPage || 0) + delta;
+  if (newPage < 0) newPage = 0;
+  if (newPage >= totalPages) newPage = Math.max(0, totalPages - 1);
+  state.quizListPage = newPage;
+  state.quizIndex = newPage * 10;
+  
+  const dBox = document.getElementById("quizDotsStrip");
+  if (dBox) delete dBox._lastSig;
+  
+  renderQuizPage(false);
+  const cardArea = document.getElementById("quizCardRenderArea");
+  if (cardArea) {
+    cardArea.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function toggleListQuestionExp(qnum) {
+  if (!state.listExpandedExps) state.listExpandedExps = {};
+  state.listExpandedExps[qnum] = !state.listExpandedExps[qnum];
+  const isOpen = state.listExpandedExps[qnum];
+  const box = document.getElementById("listExpBox-" + qnum);
+  const btn = document.getElementById("btnExpToggle-" + qnum);
+  if (box) box.style.display = isOpen ? "block" : "none";
+  if (btn) btn.innerHTML = isOpen ? "🙈 Hide Explanation & Exam Pearl" : "👁️ Show Explanation & Exam Pearl";
+}
+
+function toggleAllListExplanations() {
+  if (!state.listExpandedExps) state.listExpandedExps = {};
+  const qs = getQuestionsForFilter(state.quizFilter);
+  if (!qs || qs.length === 0) return;
+  const curPage = state.quizListPage || 0;
+  const startIdx = curPage * 10;
+  const endIdx = Math.min(startIdx + 10, qs.length);
+  const chunk = qs.slice(startIdx, endIdx);
+  
+  const allOpen = chunk.every(q => Boolean(state.listExpandedExps[q.number]));
+  const targetState = !allOpen;
+  
+  chunk.forEach(q => {
+    state.listExpandedExps[q.number] = targetState;
+    const box = document.getElementById("listExpBox-" + q.number);
+    const btn = document.getElementById("btnExpToggle-" + q.number);
+    if (box) box.style.display = targetState ? "block" : "none";
+    if (btn) btn.innerHTML = targetState ? "🙈 Hide Explanation & Exam Pearl" : "👁️ Show Explanation & Exam Pearl";
+  });
+  
+  const allBtn = document.getElementById("btnToggleAllListExp");
+  if (allBtn) allBtn.innerHTML = targetState ? "🙈 Collapse All Explanations" : "👁️ Expand All Explanations";
+}
+
+function renderQuizModeToolbarHTML(qs) {
+  const isList = state.quizViewMode === "list";
+  const isReview = Boolean(state.reviewMode);
+  const totalPages = Math.ceil(qs.length / 10);
+  const curPage = state.quizListPage || 0;
+  
+  return `
+    <div class="quiz-mode-toolbar" dir="ltr">
+      <div class="qmt-left">
+        <button type="button" class="btn-toggle-review ${isReview ? 'is-active' : ''}" onclick="toggleQuizReviewMode()" title="Toggle Review Mode: Reveal correct answers and pearls directly for study without recording false mistakes">
+          <span>📖 Review Mode:</span>
+          <strong>${isReview ? 'ON' : 'OFF'}</strong>
+        </button>
+        <button type="button" class="btn-toggle-view ${isList ? 'is-active' : ''}" onclick="toggleQuizViewMode()" title="Switch between Single Question Card and List View (10 questions per page)">
+          <span>${isList ? '🎴 Single Card' : '📄 List View (10 Qs)'}</span>
+        </button>
+      </div>
+      <div class="qmt-right">
+        ${isReview ? `
+          <span class="review-status-tag" title="In Review Mode, questions are displayed for reading/study only. Unanswered questions will NOT be counted as wrong answers in your records.">
+            🛡️ Progress Protected · Study Only
+          </span>
+        ` : ''}
+        ${isList ? `
+          <span class="qmt-page-info">
+            Set ${curPage + 1} of ${totalPages} (${qs.length} Qs total)
+          </span>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderQuestionCardHTML(q, idxInSession, totalQs, isListView) {
+  const st = state.qStatus[q.number] || {};
+  const isAnswered = typeof st.selected === "number";
+  const isReview = Boolean(state.reviewMode);
+  const isRevealed = isAnswered || isReview;
+  const isHintShown = !!st.hintUsed;
+  const isFlagged = !!st.flagged;
+  
+  const showPeerStats = isAnswered && !!fbDb;
+  const cachedPeerStats = showPeerStats ? getCachedQuestionPeerStats(q.number) : null;
+  const peerDetails = cachedPeerStats ? computePeerOptionDetails(cachedPeerStats, q.options.length) : null;
+  const isPost24 = isPostFeb2024Question(q);
+  const hasDualPolicy = typeof q.verified_ai_answer === "number" && q.verified_ai_answer !== q.verified_answer;
+  
+  // Options rendering
+  const optsHTML = q.options.map((optText, idx) => {
+    const letter = String.fromCharCode(65 + idx);
+    let rowCls = "";
+    let badgeRight = "";
+    
+    if (isRevealed) {
+      rowCls = "locked";
+      if (hasDualPolicy) {
+        const badges = [];
+        if (idx === q.verified_answer) {
+          rowCls += " is-correct";
+          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>`);
+          if (isPost24) {
+            badges.push(`<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>`);
+          } else {
+            badges.push(`<span class="opt-tag-pill is-model">Model Answer</span>`);
+          }
+        } else if (idx === q.verified_ai_answer) {
+          if (isAnswered && idx === st.selected) {
+            rowCls += " is-wrong";
+            badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
+          } else {
+            rowCls += " is-verified-ai";
+          }
+          const aiBadgeLabel = isPost24 ? (q.verified_ai_custom_label || "AI Recommended Answer") : (q.verified_ai_custom_label || "Verified AI Answer");
+          badges.push(`<span class="opt-tag-pill is-ai">${aiBadgeLabel}</span>`);
+        } else if (isAnswered && idx === st.selected) {
+          rowCls += " is-wrong";
+          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
+        }
+        badgeRight = badges.join(" ");
+      } else {
+        if (idx === q.verified_answer) {
+          rowCls += " is-correct";
+          if (isPost24) {
+            const amerTag = q.has_discrepancy ? ` <span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>` : "";
+            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${amerTag}`;
+          } else {
+            const mTag = q.model_answer_adopted ? ` <span class="opt-tag-pill is-model">Model Answer</span>` : "";
+            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${mTag}`;
+          }
+        } else if (isAnswered && idx === st.selected) {
+          rowCls += " is-wrong";
+          badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`;
+        } else if (q.has_discrepancy && idx === q.qbank_answer && q.qbank_answer !== q.verified_answer) {
+          if (isPost24) {
+            badgeRight = `<span class="opt-tag-pill is-ai" style="background:#eff6ff; color:#1e40af; border:1px solid #93c5fd; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">AI Recommended Answer</span>`;
+          } else {
+            badgeRight = `<span class="opt-tag-pill is-model" style="font-size:11.5px; font-weight:700;">Model Answer</span>`;
+          }
+        }
+      }
+    }
+    
+    const isElim = !!(state.eliminatedOpts[q.number] && state.eliminatedOpts[q.number][idx]);
+    const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
+    const finalBadgeRight = badgeRight;
+    const pctVal = (peerDetails && typeof peerDetails.pcts[idx] === "number") ? peerDetails.pcts[idx] : null;
+    const countVal = (peerDetails && peerDetails.counts && typeof peerDetails.counts[idx] === "number") ? peerDetails.counts[idx] : 0;
+    const peerFillWidth = pctVal !== null ? pctVal : 0;
+    const peerPctText = pctVal !== null ? formatPeerOptionLabel(pctVal, countVal, peerDetails.showCounts) : "";
+    const peerPctCls = pctVal !== null ? ("opt-peer-pct visible" + (peerDetails.isBelowMin ? " admin-below-min" : "")) : "opt-peer-pct";
+    const peerPctTitle = (pctVal !== null && peerDetails.showCounts) ? getPeerOptionTitle(countVal, peerDetails.total, peerDetails.isBelowMin) : "";
+    
+    return `
+      <div class="opt-row ${finalRowCls}" data-opt-idx="${idx}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
+        ${showPeerStats ? `<div class="opt-peer-bar"><div class="opt-peer-fill" data-peer-fill="${idx}" style="width:${peerFillWidth}%"></div></div>` : ""}
+        <div class="opt-left">
+          <span class="opt-char">${letter}</span>
+          <span>${annotateMedicalHTML(optText)}</span>
+        </div>
+        <div class="opt-right-wrap">
+          ${finalBadgeRight}
+          ${showPeerStats ? `<span class="${peerPctCls}" data-peer-pct="${idx}"${peerPctTitle ? ` title="${peerPctTitle}"` : ""}>${peerPctText}</span>` : ""}
+          <button class="opt-elim-btn" onclick="event.stopPropagation(); toggleEliminateOpt(${q.number}, ${idx});" title="Cross out / Eliminate this choice (or Right-Click)">✕</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+  
+  const verLetter = String.fromCharCode(65 + q.verified_answer);
+  const qbLetter = String.fromCharCode(65 + q.qbank_answer);
+  const aiLetter = hasDualPolicy ? String.fromCharCode(65 + q.verified_ai_answer) : "";
+  const tags = q.exam_tags || [];
+  const countNum = tags.length > 0 ? tags.length : 1;
+  const allChipsHTML = tags.map(tag => formatExamTagChip(tag)).join("");
+  
+  // Explanation Box Content
+  const explanationHTML = `
+    <div class="explanation-box">
+      ${hasDualPolicy ? `
+        <div class="dual-policy-card" dir="rtl">
+          <div class="dual-policy-row is-model-row">
+            <span class="opt-tag-pill ${isPost24 ? 'is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; font-weight:800;' : 'is-model'}">${isPost24 ? '(إجابة مذكرة د. أحمد عامر)' : 'Model Answer (المعتمد للدرجة)'}</span>
+            <span class="dual-policy-ans" dir="ltr"><strong>${verLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_answer] || '')}</span>
+          </div>
+          <div class="dual-policy-row is-ai-row">
+            <span class="opt-tag-pill is-ai">${isPost24 ? (q.verified_ai_custom_label || 'AI Recommended Answer') : (q.verified_ai_custom_label ? q.verified_ai_custom_label : 'Verified AI Answer (الأدق علمياً)')}</span>
+            <span class="dual-policy-ans" dir="ltr"><strong>${aiLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')}</span>
+          </div>
+          ${q.number === 82 ? "" : `<div class="dual-policy-why">
+            <div class="dual-policy-why-title">⚖️ ${isPost24 ? 'تقييم الخيارات واعتماد إجابة مذكرة د. أحمد عامر (' + verLetter + '):' : (q.verified_ai_custom_label ? 'مقارنة الخيارات واعتماد الـ Model Answer (' + verLetter + '):' : 'لماذا نعتمد الـ Model Answer (' + verLetter + ') برغم أنها ليست الأدق علمياً؟')}</div>
+            <div>
+              ${isPost24 ? `
+                بعد فبراير 2024 الموقع الرسمي للامتحان لم يعد ينشر Model Answer؛ ولذلك تم اعتماد الخيار <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> بناءً على مراجعة الكتب والمراجع، بينما الخيار <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> يمثل <strong>AI Recommended Answer</strong> وفق التدقيق السريري.
+              ` : (q.verified_ai_custom_label ? `
+                هناك تباين في المراجع الطبية المعتمدة حول الأولوية في هذا السيناريو بين <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كإجراء إسعافي أولي، وبين <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> كفحص ذي دقة تشخيصية أعلى؛ وبما أن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong>، فإننا نعتمد <strong>Model Answer (${verLetter})</strong> كـ Correct Answer لضمان درجتك في الامتحان، مع توضيح وجهة نظر وتفسير المصادر التي توصي بـ <strong>${aiLetter}</strong>.
+              ` : `
+                علمياً، إجابة <strong>Verified AI Answer (${aiLetter})</strong> هي الأصح طبياً كما هو موضّح في التفسير العلمي أدناه؛ ولكن لأن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong> حيث كان موقع الامتحان يعرض الأسئلة بالإجابات النموذجية ثم يكرر الأسئلة بنفس مفتاح التصحيح حتى وإن كان غير دقيق علمياً (ومَن يختار الصواب العلمي يُحسب له صفر)، فإننا نعتمد هنا <strong>Model Answer (${verLetter})</strong> كـ Correct Answer حفاظاً على درجتك في الامتحان، مع بيان <strong>Verified AI Answer (${aiLetter})</strong> وتفسيرها العلمي الكامل لفهمك الطبي.
+              `)}
+            </div>
+          </div>`}
+        </div>
+        ${isPost24 && q.has_discrepancy ? `
+          <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
+            <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
+          </div>
+        ` : ''}
+        ${q.has_discrepancy ? `<div class="qbank-alert" dir="ltr" style="text-align:left;"><strong>${isPost24 ? '🔍 Clinical Evaluation & Discrepancy Details:' : '⚠️ Key Comparison Attention:'}</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
+        <div class="verified-ai-expl-banner" dir="rtl">🔬 ${isPost24 ? `التفسير العلمي ومبررات اختيار <strong>AI Recommended Answer (${aiLetter})</strong>:` : (q.verified_ai_custom_label ? 'التفسير العلمي ووجهات النظر الطبية حول الاختيارات:' : `التفسير العلمي — لماذا نرى أن <strong>Verified AI Answer (${aiLetter})</strong> هي الأدق علمياً ولماذا باقي الاختيارات أضعف:`)}</div>
+      ` : `
+        <div style="font-weight:700; color:var(--text); margin-bottom:6px;">
+          ${isPost24
+            ? `<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11.5px; font-weight:800; margin-right:8px;">(إجابة مذكرة د. أحمد عامر)</span> ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}`
+            : `${q.model_answer_adopted ? 'Model Answer (المعتمد للدرجة):' : 'Verified Answer:'} ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}
+               ${q.model_answer_adopted ? '<span class="opt-tag-pill is-model" style="margin-right:8px;">Model Answer</span>' : ''}
+               ${q.has_discrepancy && q.verified_answer !== q.qbank_answer ? `<span style="color:var(--hint); margin-left:10px;">(Model Answer: ${qbLetter})</span>` : ''}`
+          }
+        </div>
+        ${isPost24 && q.has_discrepancy ? `
+          <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
+            <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
+          </div>
+        ` : ''}
+        ${!isPost24 && q.has_discrepancy ? `<div class="qbank-alert"><strong>⚠️ تنبيه ومقارنة مفتاح السؤال:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
+        ${isPost24 && q.has_discrepancy && q.discrepancy_note ? `<div class="qbank-alert"><strong>🔍 تفاصيل التناقض والتقييم السريري:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
+      `}
+      <p style="margin:8px 0 12px 0;">${annotateMedicalHTML(q.explanation.scientific)}</p>
+      ${q.explanation.wrong && q.explanation.wrong.length ? `
+        <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${hasDualPolicy ? 'Why other options are less likely (من منظور التحقق العلمي):' : 'Why other options are less likely:'}</div>
+        <ul style="margin:0 0 12px 0; padding-left:18px;">
+          ${q.explanation.wrong.map(w => `<li style="margin-bottom:4px;">${annotateMedicalHTML(w)}</li>`).join("")}
+        </ul>
+      ` : ''}
+      <div style="padding:10px 14px; background:var(--teal-light); border-left:3px solid var(--teal); border-radius:0 6px 6px 0; color:var(--text);">
+        <strong>Exam Pearl:</strong> ${annotateMedicalHTML(q.explanation.pearl)}
+      </div>
+    </div>
+    ${renderAmerPeriodNoticeHTML(q)}
+  `;
+  
+  // Explanation Display Logic
+  let explanationSectionHTML = "";
+  if (isListView) {
+    // In List View, explanation is collapsed by default!
+    const isExpOpen = Boolean(state.listExpandedExps && state.listExpandedExps[q.number]);
+    explanationSectionHTML = `
+      <div style="margin-top:10px;">
+        <button type="button" class="list-exp-toggle-btn" onclick="toggleListQuestionExp(${q.number})" id="btnExpToggle-${q.number}">
+          ${isExpOpen ? '🙈 Hide Explanation & Exam Pearl' : '👁️ Show Explanation & Exam Pearl'}
+        </button>
+        <div id="listExpBox-${q.number}" style="${isExpOpen ? 'display:block;' : 'display:none;'}">
+          ${explanationHTML}
+        </div>
+      </div>
+    `;
+  } else {
+    // Single Card Mode: show directly if isRevealed
+    if (isRevealed) {
+      explanationSectionHTML = explanationHTML;
+    }
+  }
+  
+  const cdata = getQuestionConceptData(q);
+  const cTitle = cdata.concept_title_en || cdata.concept_title_ar || "";
+  
+  return `
+    <div class="quiz-card ${isListView ? 'list-qcard-item' : ''}" data-qnum="${q.number}" id="list-qcard-${q.number}">
+      ${(!isListView) ? renderQuizConceptBannerHTML(q, getQuestionsForFilter(state.quizFilter)) : (cTitle ? `
+        <div class="list-card-concept-pill" dir="ltr">
+          <span class="lc-badge">💡 Concept:</span>
+          <span class="lc-title">${escapeHtml(cTitle)}</span>
+        </div>
+      ` : '')}
+      
+      <div class="qc-header">
+        <div class="qc-top-row">
+          <div class="qc-title-wrap">
+            <span class="qc-qnum-title">Question ${idxInSession + 1} of ${totalQs} <span class="qc-chapter-badge" style="color:var(--teal); font-weight:700; margin-right:4px;">• ${getChapterTitle(q.chapter_id)}</span>${q._predProb ? `<span class="qc-pred-badge" style="background:#0d9488; color:#fff; font-size:11px; padding:2px 7px; border-radius:10px; margin-right:6px; font-weight:700;" title="نسبة الاحتمالية المحسوبة">🎯 احتمالية ${q._predProb}%</span>` : ''}</span>
+            ${isAdminAccount() ? `<span class="admin-amer-pill" title="رقم السؤال في مذكرة د. أحمد عامر (أدمن)">#${q.number}</span>` : ''}
+            ${st.revealed ? `<span class="status-pill" style="background:var(--wrong-bg); color:var(--wrong); font-size:11px; flex-shrink:0;">Answer Revealed</span>` : ''}
+            ${isReview && !isAnswered ? `<span class="status-pill" style="background:#e0f2fe; color:#0369a1; font-size:11px; font-weight:700; flex-shrink:0;">📖 Review Mode</span>` : ''}
+          </div>
+          
+          <div class="qc-actions-wrap">
+            ${renderQuestionAttemptsDropdownHTML(q, st)}
+            ${!isListView ? `
+              <button class="subtle-link-btn" id="btnShuffleQuiz" onclick="shuffleCurrentSession()" title="إعادة ترتيب أسئلة السيشن الحالية عشوائياً">🔀 Shuffle</button>
+              <button class="subtle-link-btn" id="btnGroupConceptQuiz" onclick="restoreConceptGrouping()" title="Re-order session questions by clinical concept">🗂️ By Concept</button>
+              <button class="subtle-link-btn" onclick="finishAndShowSessionResults()" title="عرض تقرير النتيجة والملاحظات للسيشن الحالية">📊 النتيجة</button>
+            ` : ''}
+            <button class="subtle-link-btn" style="${isHintShown ? 'border-color:var(--hint); color:var(--hint); background:var(--hint-bg);' : ''}" onclick="triggerHint(${q.number})">
+              💡 Hint
+            </button>
+            ${(!isAnswered && !isReview) ? `
+              <button class="subtle-link-btn" onclick="revealQuizAnswer(${q.number})" title="Reveal the correct answer and explanation (counts as Incorrect)">
+                👁 Show Answer
+              </button>
+            ` : ''}
+            <button class="subtle-link-btn" style="${isFlagged ? 'border-color:var(--flag); color:var(--flag); background:var(--flag-bg);' : ''}" onclick="triggerFlag(${q.number})">
+              🚩 ${isFlagged ? 'Flagged' : 'Flag'}
+            </button>
+            <button class="subtle-link-btn" onclick="openReportQuestionModal(${q.number})" title="إبلاغ عن خطأ أو ملاحظة في السؤال للمشرف">
+              🚨 إبلاغ
+            </button>
+            ${isAnswered ? `<button class="subtle-link-btn" onclick="retryQuestion(${q.number})">🔄 Retry</button>` : ''}
+          </div>
+        </div>
+        
+        ${tags.length > 0 ? `
+          <div class="qc-exam-tags-row">
+            <span class="exam-count-pill" title="عدد مرات تكرار السؤال في الامتحانات">&times;${countNum}</span>
+            ${allChipsHTML}
+          </div>
+        ` : ''}
+      </div>
+      
+      <div class="qc-stem">${annotateMedicalHTML(q.stem)}</div>
+      ${isHintShown ? `<div class="hint-callout"><strong>Clinical Hint:</strong> ${annotateMedicalHTML(q.hint)}</div>` : ''}
+      <div class="opt-list">${optsHTML}</div>
+      ${renderAmerSingleOptNoticeHTML(q)}
+      ${showPeerStats && hasAdminPeerStatsAccess()
+        ? `<div class="opt-peer-admin-note ${peerDetails && peerDetails.showCounts ? ('visible' + (peerDetails.isBelowMin ? ' below-min' : '')) : ''}" id="peerAdminNote-${q.number}">${peerDetails && peerDetails.showCounts ? formatPeerAdminNote(peerDetails.total, peerDetails.isBelowMin) : ''}</div>`
+        : ''}
+      
+      ${explanationSectionHTML}
+      ${isAdminAccount() ? renderAdminRevisionBoxHTML('q_' + q.number, 'سؤال Q#' + q.number + ' (د. عامر: #' + q.number + ')') : ''}
+      ${renderQuestionCommunitySectionHTML(q)}
+      
+      ${!isListView ? `
+        <div class="quiz-footer-nav">
+          <button class="btn-outline" ${state.quizIndex === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="stepQuiz(-1)">&larr; Previous</button>
+          ${renderQuizFooterSkipConceptBtnHTML(q, getQuestionsForFilter(state.quizFilter))}
+          ${state.quizIndex < totalQs - 1
+            ? `<button class="btn-teal" onclick="stepQuiz(1)">Next Question &rarr;</button>`
+            : `<button class="btn-teal" onclick="finishAndShowSessionResults()" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%); font-weight:700; box-shadow:0 4px 12px rgba(10,108,116,0.3);">📊 إنهاء السيشن وعرض النتيجة &larr;</button>`
+          }
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
 function renderQuizPage(resetQTimer) {
-
   if (resetQTimer) {
-
     state.examTagsExpanded = false;
-
     state.attemptsDropdownOpen = false;
-
     startOrResetQuestionTimer();
-
   }
 
-
-
   const qs = getQuestionsForFilter(state.quizFilter);
-
   const dotsContainer = document.getElementById("quizDotsStrip");
-
   const expandDotsBtn = document.getElementById("btnExpandDots");
-
   const cardArea = document.getElementById("quizCardRenderArea");
 
-
-
-  if (qs.length === 0) {
-
-    dotsContainer.innerHTML = "";
-
-    renderQuizTierFilterBar();
-  renderQuizChapterFilterBar(qs);
-
-  cardArea.innerHTML = `<div class="article-card"><p>No questions match this filter.</p><button class="btn-outline" onclick="navigateTo('home')">Back to Dashboard</button></div>`;
-
+  if (!qs || qs.length === 0) {
+    if (dotsContainer) dotsContainer.innerHTML = "";
+    renderQuizChapterFilterBar(qs);
+    if (cardArea) {
+      cardArea.innerHTML = `<div class="article-card"><p>No questions match this filter.</p><button class="btn-outline" onclick="navigateTo('home')">Back to Dashboard</button></div>`;
+    }
     return;
-
   }
 
   if (state.quizIndex >= qs.length) state.quizIndex = 0;
 
-
-
-  const q = qs[state.quizIndex];
-
-  const st = state.qStatus[q.number] || {};
-
-  const isAnswered = typeof st.selected === "number";
-
-  const isHintShown = !!st.hintUsed;
-
-  const isFlagged = !!st.flagged;
-
-
-
   dotsContainer.classList.toggle("expanded-dots", state.dotsExpanded);
-
   if (expandDotsBtn) {
-
     expandDotsBtn.textContent = state.dotsExpanded ? "−" : "+";
-
   }
 
-
-
-  const filterSig = (state.quizFilter || "q") + "_" + qs.length + (state.dotsExpanded ? "_exp" : "_col");
+  const filterSig = (state.quizFilter || "q") + "_" + qs.length + (state.dotsExpanded ? "_exp" : "_col") + "_" + (state.quizPredictionTier || "all") + "_" + (state.reviewMode ? "rev" : "norm");
   if (dotsContainer._lastSig !== filterSig) {
     dotsContainer._lastSig = filterSig;
     let prevCid = null;
@@ -34055,6 +34567,7 @@ function renderQuizPage(resetQTimer) {
     const curDot = document.getElementById("qdot-" + state.quizIndex);
     if (curDot) {
       curDot.classList.add("active-dot");
+      const st = state.qStatus[qs[state.quizIndex].number] || {};
       curDot.classList.remove("dot-correct", "dot-hint", "dot-wrong");
       if (st.status === "correct") curDot.classList.add("dot-correct");
       else if (st.status === "hint") curDot.classList.add("dot-hint");
@@ -34072,485 +34585,103 @@ function renderQuizPage(resetQTimer) {
     }
   }
 
-
-
   if (!state.dotsExpanded) {
-
     setTimeout(() => {
-
       const activeDot = document.getElementById("qdot-" + state.quizIndex);
-
       if (activeDot && dotsContainer) {
-
         const offset = activeDot.offsetLeft - dotsContainer.offsetLeft - (dotsContainer.clientWidth / 2) + 14;
-
         dotsContainer.scrollTo({ left: Math.max(0, offset), behavior: "smooth" });
-
       }
-
     }, 20);
-
   }
-
-
-
-  const showPeerStats = isAnswered && !!fbDb;
-
-  const cachedPeerStats = showPeerStats ? getCachedQuestionPeerStats(q.number) : null;
-
-  const peerDetails = cachedPeerStats ? computePeerOptionDetails(cachedPeerStats, q.options.length) : null;
-
-
-
-  const isPost24 = isPostFeb2024Question(q);
-
-  const hasDualPolicy = typeof q.verified_ai_answer === "number" && q.verified_ai_answer !== q.verified_answer;
-
-
-
-  const optsHTML = q.options.map((optText, idx) => {
-
-    const letter = String.fromCharCode(65 + idx);
-
-    let rowCls = "";
-
-    let badgeRight = "";
-
-    if (isAnswered) {
-
-      rowCls = "locked";
-
-      if (hasDualPolicy) {
-
-        const badges = [];
-
-        if (idx === q.verified_answer) {
-
-          rowCls += " is-correct";
-
-          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>`);
-
-          if (isPost24) {
-
-            badges.push(`<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>`);
-
-          } else {
-
-            badges.push(`<span class="opt-tag-pill is-model">Model Answer</span>`);
-
-          }
-
-        } else if (idx === q.verified_ai_answer) {
-
-          if (idx === st.selected) {
-
-            rowCls += " is-wrong";
-
-            badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
-
-          } else {
-
-            rowCls += " is-verified-ai";
-
-          }
-
-          const aiBadgeLabel = isPost24 ? (q.verified_ai_custom_label || "AI Recommended Answer") : (q.verified_ai_custom_label || "Verified AI Answer");
-
-          badges.push(`<span class="opt-tag-pill is-ai">${aiBadgeLabel}</span>`);
-
-        } else if (idx === st.selected) {
-
-          rowCls += " is-wrong";
-
-          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
-
-        }
-
-        badgeRight = badges.join(" ");
-
-      } else {
-
-        if (idx === q.verified_answer) {
-
-          rowCls += " is-correct";
-
-          if (isPost24) {
-
-            const amerTag = q.has_discrepancy ? ` <span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>` : "";
-
-            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${amerTag}`;
-
-          } else {
-
-            const mTag = q.model_answer_adopted ? ` <span class="opt-tag-pill is-model">Model Answer</span>` : "";
-
-            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${mTag}`;
-
-          }
-
-        } else if (idx === st.selected) {
-
-          rowCls += " is-wrong";
-
-          badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`;
-
-        } else if (q.has_discrepancy && idx === q.qbank_answer && q.qbank_answer !== q.verified_answer) {
-
-          if (isPost24) {
-
-            badgeRight = `<span class="opt-tag-pill is-ai" style="background:#eff6ff; color:#1e40af; border:1px solid #93c5fd; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">AI Recommended Answer</span>`;
-
-          } else {
-
-            badgeRight = `<span class="opt-tag-pill is-model" style="font-size:11.5px; font-weight:700;">Model Answer</span>`;
-
-          }
-
-        }
-
-      }
-
-    }
-
-    const isElim = !!(state.eliminatedOpts[q.number] && state.eliminatedOpts[q.number][idx]);
-
-    const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
-
-    const finalBadgeRight = badgeRight;
-
-    const pctVal = (peerDetails && typeof peerDetails.pcts[idx] === "number") ? peerDetails.pcts[idx] : null;
-
-    const countVal = (peerDetails && peerDetails.counts && typeof peerDetails.counts[idx] === "number") ? peerDetails.counts[idx] : 0;
-
-    const peerFillWidth = pctVal !== null ? pctVal : 0;
-
-    const peerPctText = pctVal !== null ? formatPeerOptionLabel(pctVal, countVal, peerDetails.showCounts) : "";
-
-    const peerPctCls = pctVal !== null
-
-      ? ("opt-peer-pct visible" + (peerDetails.isBelowMin ? " admin-below-min" : ""))
-
-      : "opt-peer-pct";
-
-    const peerPctTitle = (pctVal !== null && peerDetails.showCounts)
-
-      ? getPeerOptionTitle(countVal, peerDetails.total, peerDetails.isBelowMin)
-
-      : "";
-
-    return `
-
-      <div class="opt-row ${finalRowCls}" data-opt-idx="${idx}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
-
-        ${showPeerStats ? `<div class="opt-peer-bar"><div class="opt-peer-fill" data-peer-fill="${idx}" style="width:${peerFillWidth}%"></div></div>` : ""}
-
-        <div class="opt-left">
-
-          <span class="opt-char">${letter}</span>
-
-          <span>${annotateMedicalHTML(optText)}</span>
-
-        </div>
-
-        <div class="opt-right-wrap">
-
-          ${finalBadgeRight}
-
-          ${showPeerStats ? `<span class="${peerPctCls}" data-peer-pct="${idx}"${peerPctTitle ? ` title="${peerPctTitle}"` : ""}>${peerPctText}</span>` : ""}
-
-          <button class="opt-elim-btn" onclick="event.stopPropagation(); toggleEliminateOpt(${q.number}, ${idx});" title="Cross out / Eliminate this choice (or Right-Click)">✕</button>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }).join("");
-
-
-
-  const verLetter = String.fromCharCode(65 + q.verified_answer);
-
-  const qbLetter = String.fromCharCode(65 + q.qbank_answer);
-
-  const aiLetter = hasDualPolicy ? String.fromCharCode(65 + q.verified_ai_answer) : "";
-
-
-
-  const tags = q.exam_tags || [];
-
-  const countNum = tags.length > 0 ? tags.length : 1;
-
-  const allChipsHTML = tags.map(tag => formatExamTagChip(tag)).join("");
-
-
 
   renderQuizTierFilterBar();
   renderQuizChapterFilterBar(qs);
 
-  cardArea.innerHTML = `
+  const toolbarHTML = renderQuizModeToolbarHTML(qs);
+  const isListView = state.quizViewMode === "list";
 
-    <div class="quiz-card" data-qnum="${q.number}">
-      ${renderQuizConceptBannerHTML(q, qs)}
+  if (isListView) {
+    const pageSize = 10;
+    const totalPages = Math.ceil(qs.length / pageSize);
+    if (state.quizListPage == null || state.quizListPage < 0) state.quizListPage = 0;
+    if (state.quizListPage >= totalPages) state.quizListPage = Math.max(0, totalPages - 1);
+    const curPage = state.quizListPage;
+    const startIdx = curPage * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, qs.length);
+    const chunk = qs.slice(startIdx, endIdx);
 
-      <div class="qc-header">
+    const allOpen = chunk.length > 0 && chunk.every(q => Boolean(state.listExpandedExps && state.listExpandedExps[q.number]));
 
-        <div class="qc-top-row">
-
-          <div class="qc-title-wrap">
-
-            <span class="qc-qnum-title">Question ${state.quizIndex + 1} of ${qs.length} <span class="qc-chapter-badge" style="color:var(--teal); font-weight:700; margin-right:4px;">• ${getChapterTitle(q.chapter_id)}</span>${q._predProb ? `<span class="qc-pred-badge" style="background:#0d9488; color:#fff; font-size:11px; padding:2px 7px; border-radius:10px; margin-right:6px; font-weight:700;" title="نسبة الاحتمالية المحسوبة">🎯 احتمالية ${q._predProb}%</span>` : ''}</span>
-
-            ${isAdminAccount() ? `<span class="admin-amer-pill" title="رقم السؤال في مذكرة د. أحمد عامر (أدمن)">#${q.number}</span>` : ''}
-
-            ${st.revealed ? `<span class="status-pill" style="background:var(--wrong-bg); color:var(--wrong); font-size:11px; flex-shrink:0;">Answer Revealed</span>` : ''}
-
-          </div>
-
-          <div class="qc-actions-wrap">
-
-            ${renderQuestionAttemptsDropdownHTML(q, st)}
-
-            <button class="subtle-link-btn" id="btnShuffleQuiz" onclick="shuffleCurrentSession()" title="إعادة ترتيب أسئلة السيشن الحالية عشوائياً">🔀 Shuffle</button>
-            <button class="subtle-link-btn" id="btnGroupConceptQuiz" onclick="restoreConceptGrouping()" title="Re-order session questions by clinical concept">🗂️ By Concept</button>
-
-            <button class="subtle-link-btn" onclick="finishAndShowSessionResults()" title="عرض تقرير النتيجة والملاحظات للسيشن الحالية">📊 النتيجة</button>
-
-            <button class="subtle-link-btn" style="${isHintShown ? 'border-color:var(--hint); color:var(--hint); background:var(--hint-bg);' : ''}" onclick="triggerHint(${q.number})">
-
-              💡 Hint
-
-            </button>
-
-            ${!isAnswered ? `
-
-              <button class="subtle-link-btn" onclick="revealQuizAnswer(${q.number})" title="Reveal the correct answer and explanation (counts as Incorrect)">
-
-                👁 Show Answer
-
-              </button>
-
-            ` : ''}
-
-            <button class="subtle-link-btn" style="${isFlagged ? 'border-color:var(--flag); color:var(--flag); background:var(--flag-bg);' : ''}" onclick="triggerFlag(${q.number})">
-
-              🚩 ${isFlagged ? 'Flagged' : 'Flag'}
-
-            </button>
-
-            <button class="subtle-link-btn" onclick="openReportQuestionModal(${q.number})" title="إبلاغ عن خطأ أو ملاحظة في السؤال للمشرف">
-
-              🚨 إبلاغ
-
-            </button>
-
-            ${isAnswered ? `<button class="subtle-link-btn" onclick="retryQuestion(${q.number})">🔄 Retry</button>` : ''}
-
-          </div>
-
+    const navTopHTML = `
+      <div class="quiz-list-nav-bar" dir="ltr">
+        <div class="ql-info">
+          <span>📄 Set ${curPage + 1} of ${totalPages}</span>
+          <span style="color:#64748b; font-weight:600; margin-left:6px;">(Questions ${startIdx + 1} – ${endIdx} of ${qs.length})</span>
         </div>
-
-        ${tags.length > 0 ? `
-
-          <div class="qc-exam-tags-row">
-
-            <span class="exam-count-pill" title="عدد مرات تكرار السؤال في الامتحانات">&times;${countNum}</span>
-
-            ${allChipsHTML}
-
-          </div>
-
-        ` : ''}
-
-      </div>
-
-
-
-      <div class="qc-stem">${annotateMedicalHTML(q.stem)}</div>
-
-
-
-      ${isHintShown ? `<div class="hint-callout"><strong>Clinical Hint:</strong> ${annotateMedicalHTML(q.hint)}</div>` : ''}
-
-
-
-      <div class="opt-list">${optsHTML}</div>
-
-      ${renderAmerSingleOptNoticeHTML(q)}
-
-      ${showPeerStats && hasAdminPeerStatsAccess()
-
-        ? `<div class="opt-peer-admin-note ${peerDetails && peerDetails.showCounts ? ('visible' + (peerDetails.isBelowMin ? ' below-min' : '')) : ''}" id="peerAdminNote-${q.number}">${peerDetails && peerDetails.showCounts ? formatPeerAdminNote(peerDetails.total, peerDetails.isBelowMin) : ''}</div>`
-
-        : ''}
-
-
-
-      ${isAnswered ? `
-
-        <div class="explanation-box">
-
-          ${hasDualPolicy ? `
-
-            <div class="dual-policy-card" dir="rtl">
-
-              <div class="dual-policy-row is-model-row">
-
-                <span class="opt-tag-pill ${isPost24 ? 'is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; font-weight:800;' : 'is-model'}">${isPost24 ? '(إجابة مذكرة د. أحمد عامر)' : 'Model Answer (المعتمد للدرجة)'}</span>
-
-                <span class="dual-policy-ans" dir="ltr"><strong>${verLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_answer] || '')}</span>
-
-              </div>
-
-              <div class="dual-policy-row is-ai-row">
-
-                <span class="opt-tag-pill is-ai">${isPost24 ? (q.verified_ai_custom_label || 'AI Recommended Answer') : (q.verified_ai_custom_label ? q.verified_ai_custom_label : 'Verified AI Answer (الأدق علمياً)')}</span>
-
-                <span class="dual-policy-ans" dir="ltr"><strong>${aiLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')}</span>
-
-              </div>
-
-              ${q.number === 82 ? "" : `<div class="dual-policy-why">
-
-                <div class="dual-policy-why-title">⚖️ ${isPost24 ? 'تقييم الخيارات واعتماد إجابة مذكرة د. أحمد عامر (' + verLetter + '):' : (q.verified_ai_custom_label ? 'مقارنة الخيارات واعتماد الـ Model Answer (' + verLetter + '):' : 'لماذا نعتمد الـ Model Answer (' + verLetter + ') برغم أنها ليست الأدق علمياً؟')}</div>
-
-                <div>
-
-                  ${isPost24 ? `
-
-                    بعد فبراير 2024 الموقع الرسمي للامتحان لم يعد ينشر Model Answer؛ ولذلك تم اعتماد الخيار <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> بناءً على مراجعة الكتب والمراجع، بينما الخيار <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> يمثل <strong>AI Recommended Answer</strong> وفق التدقيق السريري.
-
-                  ` : (q.verified_ai_custom_label ? `
-
-                    هناك تباين في المراجع الطبية المعتمدة حول الأولوية في هذا السيناريو بين <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كإجراء إسعافي أولي، وبين <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> كفحص ذي دقة تشخيصية أعلى؛ وبما أن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong>، فإننا نعتمد <strong>Model Answer (${verLetter})</strong> كـ Correct Answer لضمان درجتك في الامتحان، مع توضيح وجهة نظر وتفسير المصادر التي توصي بـ <strong>${aiLetter}</strong>.
-
-                  ` : `
-
-                    علمياً، إجابة <strong>Verified AI Answer (${aiLetter})</strong> هي الأصح طبياً كما هو موضّح في التفسير العلمي أدناه؛ ولكن لأن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong> حيث كان موقع الامتحان يعرض الأسئلة بالإجابات النموذجية ثم يكرر الأسئلة بنفس مفتاح التصحيح حتى وإن كان غير دقيق علمياً (ومَن يختار الصواب العلمي يُحسب له صفر)، فإننا نعتمد هنا <strong>Model Answer (${verLetter})</strong> كـ Correct Answer حفاظاً على درجتك في الامتحان، مع بيان <strong>Verified AI Answer (${aiLetter})</strong> وتفسيرها العلمي الكامل لفهمك الطبي.
-
-                  `)}
-
-                </div>
-
-              </div>`}
-
-            </div>
-
-            ${isPost24 && q.has_discrepancy ? `
-
-              <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
-
-                <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
-
-              </div>
-
-            ` : ''}
-
-            ${q.has_discrepancy ? `<div class="qbank-alert" dir="ltr" style="text-align:left;"><strong>${isPost24 ? '🔍 Clinical Evaluation & Discrepancy Details:' : '⚠️ Key Comparison Attention:'}</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
-
-            <div class="verified-ai-expl-banner" dir="rtl">🔬 ${isPost24 ? `التفسير العلمي ومبررات اختيار <strong>AI Recommended Answer (${aiLetter})</strong>:` : (q.verified_ai_custom_label ? 'التفسير العلمي ووجهات النظر الطبية حول الاختيارات:' : `التفسير العلمي — لماذا نرى أن <strong>Verified AI Answer (${aiLetter})</strong> هي الأدق علمياً ولماذا باقي الاختيارات أضعف:`)}</div>
-
-          ` : `
-
-            <div style="font-weight:700; color:var(--text); margin-bottom:6px;">
-
-              ${isPost24
-
-                ? `<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11.5px; font-weight:800; margin-right:8px;">(إجابة مذكرة د. أحمد عامر)</span> ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}`
-
-                : `${q.model_answer_adopted ? 'Model Answer (المعتمد للدرجة):' : 'Verified Answer:'} ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}
-
-                   ${q.model_answer_adopted ? '<span class="opt-tag-pill is-model" style="margin-right:8px;">Model Answer</span>' : ''}
-
-                   ${q.has_discrepancy && q.verified_answer !== q.qbank_answer ? `<span style="color:var(--hint); margin-left:10px;">(Model Answer: ${qbLetter})</span>` : ''}`
-
-              }
-
-            </div>
-
-            ${isPost24 && q.has_discrepancy ? `
-
-              <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
-
-                <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
-
-              </div>
-
-            ` : ''}
-
-            ${!isPost24 && q.has_discrepancy ? `<div class="qbank-alert"><strong>⚠️ تنبيه ومقارنة مفتاح السؤال:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
-
-            ${isPost24 && q.has_discrepancy && q.discrepancy_note ? `<div class="qbank-alert"><strong>🔍 تفاصيل التناقض والتقييم السريري:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
-
-          `}
-
-          <p style="margin:8px 0 12px 0;">${annotateMedicalHTML(q.explanation.scientific)}</p>
-
-          ${q.explanation.wrong && q.explanation.wrong.length ? `
-
-            <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${hasDualPolicy ? 'Why other options are less likely (من منظور التحقق العلمي):' : 'Why other options are less likely:'}</div>
-
-            <ul style="margin:0 0 12px 0; padding-left:18px;">
-
-              ${q.explanation.wrong.map(w => `<li style="margin-bottom:4px;">${annotateMedicalHTML(w)}</li>`).join("")}
-
-            </ul>
-
-          ` : ''}
-
-          <div style="padding:10px 14px; background:var(--teal-light); border-left:3px solid var(--teal); border-radius:0 6px 6px 0; color:var(--text);">
-
-            <strong>Exam Pearl:</strong> ${annotateMedicalHTML(q.explanation.pearl)}
-
-          </div>
-
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <button type="button" class="btn-outline" style="font-size:12px; padding:5px 11px;" id="btnToggleAllListExp" onclick="toggleAllListExplanations()">
+            ${allOpen ? '🙈 Collapse All Explanations' : '👁️ Expand All Explanations'}
+          </button>
+          <button type="button" class="btn-outline" style="font-size:12px; padding:5px 11px;" ${curPage === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="changeQuizListPage(-1)">
+            &larr; Prev 10 Qs
+          </button>
+          <button type="button" class="btn-teal" style="font-size:12px; padding:5px 12px;" ${curPage >= totalPages - 1 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="changeQuizListPage(1)">
+            Next 10 Qs &rarr;
+          </button>
         </div>
-
-        ${renderAmerPeriodNoticeHTML(q)}
-
-      ` : ''}
-
-
-
-      ${isAdminAccount() ? renderAdminRevisionBoxHTML('q_' + q.number, 'سؤال Q#' + q.number + ' (د. عامر: #' + q.number + ')') : ''}
-
-      ${renderQuestionCommunitySectionHTML(q)}
-
-
-
-      <div class="quiz-footer-nav">
-
-        <button class="btn-outline" ${state.quizIndex === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="stepQuiz(-1)">&larr; Previous</button>
-
-        ${renderQuizFooterSkipConceptBtnHTML(q, qs)}
-
-        ${state.quizIndex < qs.length - 1
-
-          ? `<button class="btn-teal" onclick="stepQuiz(1)">Next Question &rarr;</button>`
-
-          : `<button class="btn-teal" onclick="finishAndShowSessionResults()" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%); font-weight:700; box-shadow:0 4px 12px rgba(10,108,116,0.3);">📊 إنهاء السيشن وعرض النتيجة &larr;</button>`
-
-        }
-
       </div>
+    `;
 
-    </div>
+    const cardsHTML = chunk.map((item, i) => renderQuestionCardHTML(item, startIdx + i, qs.length, true)).join("");
 
-  `;
+    const navBottomHTML = `
+      <div class="quiz-list-nav-bar" style="margin-top:16px;" dir="ltr">
+        <button type="button" class="btn-outline" ${curPage === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="changeQuizListPage(-1)">
+          &larr; Previous 10 Questions
+        </button>
+        <div class="ql-info">
+          Set ${curPage + 1} of ${totalPages}
+        </div>
+        ${curPage < totalPages - 1 ? `
+          <button type="button" class="btn-teal" onclick="changeQuizListPage(1)">
+            Next 10 Questions &rarr;
+          </button>
+        ` : `
+          <button type="button" class="btn-teal" onclick="finishAndShowSessionResults()" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%);">
+            📊 Finish Session & View Results &rarr;
+          </button>
+        `}
+      </div>
+    `;
 
-
-
-  renderSplitNotesPane();
-
-  if (showPeerStats && !cachedPeerStats) {
-
-    loadAndRenderPeerStatsForQuestion(q.number, q.options.length);
-
+    cardArea.innerHTML = toolbarHTML + navTopHTML + `<div class="quiz-list-items-wrap">${cardsHTML}</div>` + navBottomHTML;
+  } else {
+    // Single Card Mode
+    const q = qs[state.quizIndex];
+    cardArea.innerHTML = toolbarHTML + renderQuestionCardHTML(q, state.quizIndex, qs.length, false);
   }
 
+  renderSplitNotesPane();
 }
 
+function jumpQuizIdx(idx) {
+  state.quizIndex = idx;
+  if (state.quizViewMode === "list") {
+    state.quizListPage = Math.floor(idx / 10);
+  }
+  renderQuizPage(true);
+  if (state.quizViewMode === "list") {
+    setTimeout(() => {
+      const qs = getQuestionsForFilter(state.quizFilter);
+      const q = (qs && qs[idx]) ? qs[idx] : null;
+      if (q) {
+        const el = document.getElementById("list-qcard-" + q.number);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 40);
+  }
+}
 
 
 const AMER_DISCREPANCY_160_SET = new Set([
@@ -34748,14 +34879,6 @@ function checkAutoStopTimerOnAnswer() {
 }
 
 
-
-function jumpQuizIdx(idx) {
-
-  state.quizIndex = idx;
-
-  renderQuizPage(true);
-
-}
 
 
 
@@ -35499,6 +35622,10 @@ async function loadAndRenderPeerStatsForQuestion(qnum, optCount) {
 
 
 function selectQuizOption(qnum, optIdx) {
+  if (state.reviewMode) {
+    showToast("📖 Review Mode Active: Answers are displayed for study without affecting your progress.");
+    return;
+  }
 
   if (typeof hasAdminCopyAccess === "function" && hasAdminCopyAccess()) {
 
