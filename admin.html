@@ -617,7 +617,8 @@
     <button class="tab-btn" data-tab="users" onclick="switchTab('users')">👥 الحسابات والطلاب</button>
     <button class="tab-btn" data-tab="qstats" onclick="switchTab('qstats')">🧠 تحليل الأسئلة (qStats)</button>
     <button class="tab-btn" data-tab="chapters" onclick="switchTab('chapters')">📚 تفاعل الشابترات</button>
-    <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">🚨 تقارير وبلاغات الأسئلة (<span id="reportsBadgeCount">0</span>)</button>
+    <button class="tab-btn" data-tab="feedback" onclick="switchTab('feedback');loadFeedbackAdmin()">💬 فيدباك الطلاب</button>
+<button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">🚨 تقارير وبلاغات الأسئلة (<span id="reportsBadgeCount">0</span>)</button>
   </div>
 
   <section class="tab-panel active" id="tab-overview">
@@ -824,7 +825,8 @@
     </div>
   </section>
 
-  <section class="tab-panel" id="tab-reports">
+  <section class="tab-panel" id="tab-feedback"><div id="feedbackAdminRoot"></div></section>
+<section class="tab-panel" id="tab-reports">
     <div class="panel">
       <div class="panel-header">
         <div>
@@ -2391,5 +2393,6 @@ if (typeof document !== "undefined" && typeof window !== "undefined") {
   window.addEventListener("DOMContentLoaded", initAdminPortal);
 }
 </script>
+<script src="feedback-admin.js?v=20261124-1"></script>
 </body>
 </html>

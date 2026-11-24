@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width,initial-scale=1"><title>شاركنا تجربتك — EMLE in a Nutshell</title><link rel="stylesheet" href="feedback.css?v=20261124-1"></head>
+<body>
+
+<header><a class="brand" href="feedback.html" dir="ltr"><span class="brand-icon">N</span><span>EMLE <small>in a Nutshell</small></span></a><span class="edition">تجربتك معانا <span>نوفمبر 2026</span></span></header>
+<main id="student" class="layout">
+<aside class="intro"><span class="eyebrow">صوتك جزء من التطوير</span><h1>إيه رأيك <br>في الرحلة؟</h1><p>كل تجربة بتعلمنا حاجة. <br>شاركنا اللي ساعدك، واللي محتاج يتحسن، عشان التجربة الجاية تبقى أفضل.</p><div class="intro-line"></div><div class="intro-meta"><span>01 — تجربتك</span><span>02 — مذاكرتك</span><span>03 — نتائجك</span></div><div class="privacy"><span class="lock">◇</span><strong>رأيك بينك وبين إدارة المنصة</strong><p>ردك مش هيظهر لباقي الطلاب. هنستخدمه لفهم تجربتك وتحسين المنصة.</p></div><span class="signature" dir="ltr">Made for your next step.</span></aside>
+<div class="form-area">
+<div id="success" class="card success" hidden><span class="success-icon">✓</span><h2>شكرًا إنك شاركتنا تجربتك</h2><p>تقدر ترجع تعدّل ردك أو تضيف درجاتك لما النتائج تظهر.</p><div class="callout">تم حفظ ردك. احتفظ برابط التعديل لنفسك؛ أي شخص معاه الرابط يقدر يشوف ردك ودرجاتك ويعدّلهم. لو فتحت الصفحة بحساب Google نفسه، تقدر ترجع لردك من حسابك أيضًا.</div><label for="editLink">رابط تعديل ردك</label><div class="copy-row"><input id="editLink" readonly dir="ltr"><button id="copyLink" type="button">نسخ الرابط</button></div><div class="actions"><button id="editAgain" type="button" class="primary">تعديل ردي</button><a href="index.html">العودة للمنصة ←</a></div></div>
+<div id="surveyShell"><div class="form-heading"><div><span class="eyebrow dark">استبيان تجربة الطلاب</span><h2>خلينا نسمع منك</h2></div><span id="stepCount" class="step-count">١ / ٣</span></div>
+<div class="account-strip"><div><strong id="accountLabel">الدخول بحساب المنصة</strong><p id="accountHelp">اعمل Sign in with google بنفس الحساب اللي مسجل بيه في المنصة</p></div><button type="button" class="google-signin" id="signIn">Sign in with Google</button></div>
+<nav class="steps" aria-label="مراحل الاستبيان"><button data-step="0" class="active" type="button"><b>١</b> تجربتك</button><button data-step="1" type="button"><b>٢</b> مذاكرتك</button><button data-step="2" type="button"><b>٣</b> نتائجك</button></nav>
+<form id="survey" novalidate>
+<section data-panel="0" class="card panel"><div class="section-title"><span>01</span><div><h3>نبدأ بتجربتك</h3><p>الحلو واللي محتاج يتغير، يهمنا نسمع الاتنين.</p></div></div>
+<div class="field"><label for="university">حضرتك جامعة إيه؟</label><input id="universitySearch" type="search" placeholder="ابحث باسم الجامعة أو الكلية" aria-label="البحث عن الجامعة"><select id="university" name="university" aria-label="الجامعة"><option value="">اختار الجامعة والكلية</option></select><input id="universityOther" name="universityOther" placeholder="اكتب اسم الجامعة والكلية" aria-label="جامعة أخرى" hidden maxlength="150"></div>
+<div class="field"><label for="discovery">عرفت منصة EMLE in a Nutshell منين؟</label><select id="discovery" name="discovery"><option value="">اختار مصدر معرفتك بالمنصة</option><option>صديق/زميل</option><option>جروب الدفعة</option><option>جروب/قناة تليجرام آخر</option><option>فيسبوك</option><option>تويتر</option><option>بحث على الانترنت</option><option>أخرى</option></select><input name="discoveryOther" id="discoveryOther" placeholder="عرفتنا منين؟" aria-label="مصدر آخر" hidden maxlength="200"></div>
+<div class="field"><label for="positives">إيه المميزات اللي شايفها في المنصة؟</label><textarea id="positives" name="positives" placeholder="إيه اللي ساعدك فعلًا في المذاكرة؟" maxlength="5000"></textarea></div>
+<div class="field"><label for="improvements">إيه السلبيات، أو اقتراحاتك لحاجات نحسنها بعدين؟</label><textarea id="improvements" name="improvements" placeholder="اكتب بصراحة… رأيك هيساعدنا نطوّر." maxlength="5000"></textarea></div>
+</section>
+<section data-panel="1" class="card panel" hidden><div class="section-title"><span>02</span><div><h3>ذاكرت معانا إزاي؟</h3><p>كل واحد ليه طريقة. احكيلنا عن طريقتك.</p></div></div>
+<fieldset><legend>اعتمدت على الـVIP Notes ولا الأسئلة؟</legend><div class="resource-grid"><label class="choice"><input type="radio" name="resource" value="notes"><span><b>VIP Notes</b><small>الملاحظات والمراجعة</small></span></label><label class="choice"><input type="radio" name="resource" value="questions"><span><b>الأسئلة</b><small>التدريب وحل الأسئلة</small></span></label><label class="choice"><input type="radio" name="resource" value="both"><span><b>كلاهما</b><small>الـNotes والأسئلة</small></span></label></div><button class="text-btn" type="button" id="clearResource">مسح الاختيار</button></fieldset>
+<fieldset id="packages" hidden><legend>اعتمدت على إيه في الأسئلة؟</legend><p class="muted">تقدر تختار أكتر من إجابة.</p><div class="choices" id="packageChoices"></div><input id="packageOther" name="packageOther" placeholder="اكتب اللي اعتمدت عليه" aria-label="مصدر أسئلة آخر" maxlength="300" hidden></fieldset>
+<div class="field account-field"><label for="platformEmail">اكتب الايميل بتاعك اللي مسجل بيه على المنصة</label><input id="platformEmail" name="platformEmail" type="email" dir="ltr" placeholder="you@example.com" maxlength="254"></div>
+</section>
+<section data-panel="2" class="card panel" hidden><div class="section-title"><span>03</span><div><h3>شاركنا نتائج رحلتك</h3><p>وممكن ترجع تضيفها في أي وقت.</p></div></div>
+<div class="score-message"><strong>درجتك هتفرق معانا جدًا</strong><p>لو تحب تشاركنا بدرجتك في الامتحان الفعلي صدقني هيفرق معانا جدًا في الاحصائيات، درجتك الشخصية محدش هيعرفها غير إدارة المنصة ولن ينشر على العام إلا إحصائيات مجمعة فقط.</p><p>لو بتجاوب الاستبيان ده ونتيجتك لسه مظهرتش، أستئذنك متنساش لما النتيجة تظهر تدخل تكتبها هيفرق معانا.</p></div>
+<div id="examFields"></div></section>
+<p id="formError" role="alert" class="error" hidden></p><div class="form-footer"><button type="button" id="back" class="quiet" hidden>→ السابق</button><span id="saveNote">مساحتك تقول رأيك بصراحة</span><button type="button" id="next" class="primary">التالي ←</button><button type="submit" id="submit" class="primary" hidden>إرسال رأيي ←</button></div>
+</form></div></div></main>
+<footer>EMLE in a Nutshell <span>·</span> بنطوّرها معاك</footer>
+
+
+<div id="toast" role="status" hidden></div><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-functions-compat.js"></script><script src="feedback-config.js?v=20261124-1"></script><script src="feedback.js?v=20261124-1"></script></body></html>
+
