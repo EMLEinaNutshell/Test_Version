@@ -11701,6 +11701,7 @@ function syncAdminCopyAccess() {
 
 
 <script src="./data-enc.js?v=20261124-ai-label1"></script>
+<style id="dashboardHomeOrderStyle">#mainContainer:has(#page-home:not(.active)) > #dashboardHomeTitle{display:none!important}</style>
 </head>
 
 <body>
@@ -11858,7 +11859,7 @@ function syncAdminCopyAccess() {
 
     </button>
 
-    <button class="subtle-link-btn" id="searchBtn" onclick="openSearchModal()" title="Instant Search across 135 Topics & 2,052 Questions (Ctrl+K)">🔍<span class="btn-label-desktop"> Search</span></button>
+    <button class="subtle-link-btn" id="searchBtn" onclick="openSearchModal()" title="Instant Search across 135 Topics & 2,072 Questions (Ctrl+K)">🔍<span class="btn-label-desktop"> Search</span></button>
 
     <button class="subtle-link-btn" id="customExamBtn" onclick="openCustomExamModal()" title="Build a Custom Exam Block (Tutor Mode)">⚡<span class="btn-label-desktop"> Custom Exam</span></button>
 
@@ -11944,6 +11945,33 @@ function syncAdminCopyAccess() {
 <div class="workspace">
 
   <main class="main-container" id="mainContainer">
+<div id="dashboardHomeTitle" class="page-title-block" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+
+        <div>
+
+          <div style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800; color:var(--teal); background:var(--teal-light); border:1px solid var(--teal-border); padding:2px 10px; border-radius:999px; margin-bottom:6px;">
+
+            <span>🩺</span>
+
+            <span>OFFICIAL STUDY PORTAL</span>
+
+          </div>
+
+          <h1 style="font-size:25px; font-weight:900; color:var(--text); letter-spacing:-0.4px;">EMLE in a Nutshell</h1>
+
+          <p>EMLE 2026 Clinical Knowledge Library &amp; Question Bank (135 High-Yield VIP Topics &bull; 2,072 Verified Questions)</p>
+
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+
+          <button class="btn-outline" onclick="openSearchModal()">🔍 Search Notes &amp; QBank</button>
+
+          <button class="btn-teal" onclick="openCustomExamModal()">⚡ Custom Exam Builder</button>
+
+        </div>
+
+      </div>
 
 
 
@@ -11985,35 +12013,96 @@ function syncAdminCopyAccess() {
 
     <!-- PAGE 1: MAIN DASHBOARD (HOME — EMLE IN A NUTSHELL) -->
 
-    <section class="view-page active" id="page-home"><!-- feedback-integration-start --><div dir="rtl" style="background:var(--teal-light,#e8f5ef);border:1px solid var(--teal-border,#a6cfc1);border-right:4px solid #087e7b;border-radius:12px;padding:20px;margin:18px 0;color:var(--text,#153b35)"><strong style="font-size:17px">دقيقتين من وقتك هيفرقوا معانا</strong><p style="line-height:1.9;margin:10px 0">مع اقتراب نهاية دور نوفمبر 2026، لو ساعدناك خلال الفترة اللي فاتت ولو بحاجة بسيطة، أتمنى تاخد من وقتك دقيقتين فقط تملى الفيدباك ده لإنه هيساعدنا كتير نطور من نفسنا</p><a href="feedback.html" style="display:inline-block;background:#087e7b;color:white;border-radius:8px;padding:9px 18px;text-decoration:none;font-weight:bold">اكتب الفيدباك ←</a></div><!-- feedback-integration-end -->
+    <section class="view-page active" id="page-home"><!-- feedback-integration-start --><div dir="rtl" style="background:linear-gradient(135deg,#dcfce7 0%,#bbf7d0 100%);border:1px solid #4ade80;border-right:5px solid #059669;border-radius:12px;padding:22px;margin:18px 0;color:#064e3b;box-shadow:0 4px 16px rgba(5,150,105,.12)"><strong style="font-size:17px">دقيقتين من وقتك هيفرقوا معانا</strong><p style="line-height:1.9;margin:10px 0">مع اقتراب نهاية دور نوفمبر 2026، لو ساعدناك خلال الفترة اللي فاتت ولو بحاجة بسيطة، أتمنى تاخد من وقتك دقيقتين فقط تملى الفيدباك ده لإنه هيساعدنا كتير نطور من نفسنا</p><a href="feedback.html" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#087e7b;color:white;border-radius:8px;padding:9px 18px;text-decoration:none;font-weight:bold">اكتب الفيدباك ←</a></div><!-- feedback-integration-end -->
+<div class="nav-cards-grid" style="margin-bottom: 20px;">
 
-      <div class="page-title-block" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div class="nav-portal-card" onclick="navigateTo('library')">
 
-        <div>
+          <div>
 
-          <div style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800; color:var(--teal); background:var(--teal-light); border:1px solid var(--teal-border); padding:2px 10px; border-radius:999px; margin-bottom:6px;">
+            <span class="npc-tag">VIP Notes</span>
 
-            <span>🩺</span>
+            <h2 class="npc-title">📚 Library</h2>
 
-            <span>OFFICIAL STUDY PORTAL</span>
+            <p class="npc-desc">Browse clinical divisions, 18 chapters, and 135 high-yield VIP Notes organized by clinical topic.</p>
 
           </div>
 
-          <h1 style="font-size:25px; font-weight:900; color:var(--text); letter-spacing:-0.4px;">EMLE in a Nutshell</h1>
+          <div class="npc-footer">
 
-          <p>EMLE 2026 Clinical Knowledge Library &amp; Question Bank (135 High-Yield VIP Topics &bull; 2,052 Verified Questions)</p>
+            <span>Open Library</span>
+
+            <span>&rarr;</span>
+
+          </div>
 
         </div>
 
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
 
-          <button class="btn-outline" onclick="openSearchModal()">🔍 Search Notes &amp; QBank</button>
 
-          <button class="btn-teal" onclick="openCustomExamModal()">⚡ Custom Exam Builder</button>
+        <div class="nav-portal-card" onclick="navigateTo('quizzes')">
 
+          <div>
+
+            <span class="npc-tag">QBank Sessions</span>
+
+            <h2 class="npc-title">📝 QBank</h2>
+
+            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">بنك الأسئلة خاص بـ <strong>د. أحمد عامر</strong> ويحتوي على <strong>2,072 سؤال</strong> مع الشرح والتفسيرات السريرية.</p>
+
+          </div>
+
+          <div class="npc-footer">
+
+            <span>Open QBank</span>
+
+            <span>&rarr;</span>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="nav-portal-card" onclick="navigateTo('exams')">
+
+          <div>
+
+            <span class="npc-tag">Past EMLE Papers</span>
+
+            <h2 class="npc-title">🎓 Exams</h2>
+
+            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">حل امتحانات <strong>EMLE</strong> السابقة كاملة على بعضها (<strong>49 امتحان</strong>) بنظام <strong>Tutor Mode</strong> مع تحليل اختياري.</p>
+
+          </div>
+
+          <div class="npc-footer">
+
+            <span>Open Exams</span>
+
+            <span>&rarr;</span>
+
+          </div>
+
+        </div>
+
+        <div class="nav-portal-card nav-portal-card-pred" onclick="navigateTo('predictions')" style="border-top: 3px solid #0d9488;">
+          <div>
+            <span class="npc-tag" style="background:#0d9488; color:#fff;">High Yield Core</span>
+            <h2 class="npc-title">🎯 Predictions</h2>
+            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">
+              توقعات امتحانات 2025 و 2026 (فعلي / تجريبي / محاكاة) مقسمة لـ <strong>3 باقات</strong>: الـ 100 الأكثر احتمالية، الـ 523 (نطاق الأمان)، والـ 1074 سؤال كاملة.
+            </p>
+          </div>
+          <div class="npc-footer" style="color:#0d9488; font-weight:700;">
+            <span>Open Predictions</span>
+            <span>&rarr;</span>
+          </div>
         </div>
 
       </div>
+
+      
 
 
 
@@ -12188,93 +12277,7 @@ function syncAdminCopyAccess() {
 
       <!-- 1. Library & QBank Entry Cards (With RTL Arabic Attribution & Pricing) -->
 
-      <div class="nav-cards-grid" style="margin-bottom: 20px;">
-
-        <div class="nav-portal-card" onclick="navigateTo('library')">
-
-          <div>
-
-            <span class="npc-tag">VIP Notes</span>
-
-            <h2 class="npc-title">📚 Library</h2>
-
-            <p class="npc-desc">Browse clinical divisions, 18 chapters, and 135 high-yield VIP Notes organized by clinical topic.</p>
-
-          </div>
-
-          <div class="npc-footer">
-
-            <span>Open Library</span>
-
-            <span>&rarr;</span>
-
-          </div>
-
-        </div>
-
-
-
-        <div class="nav-portal-card" onclick="navigateTo('quizzes')">
-
-          <div>
-
-            <span class="npc-tag">QBank Sessions</span>
-
-            <h2 class="npc-title">📝 QBank</h2>
-
-            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">بنك الأسئلة خاص بـ <strong>د. أحمد عامر</strong> ويحتوي على <strong>2,052 سؤال</strong> مع الشرح والتفسيرات السريرية.</p>
-
-          </div>
-
-          <div class="npc-footer">
-
-            <span>Open QBank</span>
-
-            <span>&rarr;</span>
-
-          </div>
-
-        </div>
-
-
-
-        <div class="nav-portal-card" onclick="navigateTo('exams')">
-
-          <div>
-
-            <span class="npc-tag">Past EMLE Papers</span>
-
-            <h2 class="npc-title">🎓 Exams</h2>
-
-            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">حل امتحانات <strong>EMLE</strong> السابقة كاملة على بعضها (<strong>49 امتحان</strong>) بنظام <strong>Tutor Mode</strong> مع تحليل اختياري.</p>
-
-          </div>
-
-          <div class="npc-footer">
-
-            <span>Open Exams</span>
-
-            <span>&rarr;</span>
-
-          </div>
-
-        </div>
-
-        <div class="nav-portal-card nav-portal-card-pred" onclick="navigateTo('predictions')" style="border-top: 3px solid #0d9488;">
-          <div>
-            <span class="npc-tag" style="background:#0d9488; color:#fff;">High Yield Core</span>
-            <h2 class="npc-title">🎯 Predictions</h2>
-            <p class="npc-desc" dir="rtl" style="text-align: right; line-height: 1.6; font-size: 13.5px;">
-              توقعات امتحانات 2025 و 2026 (فعلي / تجريبي / محاكاة) مقسمة لـ <strong>3 باقات</strong>: الـ 100 الأكثر احتمالية، الـ 523 (نطاق الأمان)، والـ 1074 سؤال كاملة.
-            </p>
-          </div>
-          <div class="npc-footer" style="color:#0d9488; font-weight:700;">
-            <span>Open Predictions</span>
-            <span>&rarr;</span>
-          </div>
-        </div>
-
-      </div>
+      
 
 
 
@@ -12286,7 +12289,7 @@ function syncAdminCopyAccess() {
 
           <span class="ac-title">Study Progress &amp; QBank Analysis</span>
 
-          <span class="ac-subtitle" id="homeOverallSummary">0 of 2,052 available questions answered</span>
+          <span class="ac-subtitle" id="homeOverallSummary">0 of 2,072 available questions answered</span>
 
         </div>
 
@@ -12654,7 +12657,7 @@ function syncAdminCopyAccess() {
 
             <div class="pcc-item">
 
-              <span class="pcc-val" id="statUniqueQs">2,052</span>
+              <span class="pcc-val" id="statUniqueQs">2,072</span>
 
               <span class="pcc-lbl">Unique Qs</span>
 
@@ -12800,7 +12803,7 @@ function syncAdminCopyAccess() {
 
         <h1>Library</h1>
 
-        <p>Select a chapter or filter topics by Exam Yield (2,052 unique questions = 6,970 exam appearances across 135 topics).</p>
+        <p>Select a chapter or filter topics by Exam Yield (2,072 unique questions = 6,970 exam appearances across 135 topics).</p>
 
         <div class="yield-filter-bar" id="libraryYieldFilterBar"></div>
 
@@ -12952,7 +12955,7 @@ function syncAdminCopyAccess() {
 
           <h1>📊 EMLE Exam Frequency &amp; Pareto Visual Analytics</h1>
 
-          <p>Comprehensive breakdown of 2,052 unique questions across 6,970 actual exam appearances in 18 chapters (135 topics).</p>
+          <p>Comprehensive breakdown of 2,072 unique questions across 6,970 actual exam appearances in 18 chapters (135 topics).</p>
 
         </div>
 
@@ -13176,7 +13179,7 @@ function syncAdminCopyAccess() {
 
     <div class="search-results-list" id="globalSearchResults">
 
-      <div style="color:var(--text-muted); font-size:13px; padding:12px;">Type at least 2 characters to search across all 135 VIP Notes topics and 2,052 QBank questions...</div>
+      <div style="color:var(--text-muted); font-size:13px; padding:12px;">Type at least 2 characters to search across all 135 VIP Notes topics and 2,072 QBank questions...</div>
 
     </div>
 
@@ -13233,6 +13236,26 @@ function syncAdminCopyAccess() {
     </div>
 
 
+
+    <div class="form-row">
+      <label class="form-label">Exam year — select one or more</label>
+      <div class="yield-filter-bar" id="ceYearsContainer"></div>
+      <p style="font-size:12px;color:var(--text-muted)">Includes questions appearing in any selected year.</p>
+    </div>
+    <div class="form-row">
+      <label class="form-label" for="cePackageScope">Question package / exclusions</label>
+      <select id="cePackageScope" onchange="setCeOpt('packageScope',this.value)" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card,#fff);color:var(--text)">
+        <option value="all">All questions</option>
+        <option value="p100">Top 100 package</option>
+        <option value="p500">Top 500 package (523 questions)</option>
+        <option value="p1000">2025/2026 package (1,074 questions)</option>
+        <option value="without100">All questions except Top 100</option>
+        <option value="without500">All questions except Top 500</option>
+        <option value="without1000">All questions except 2025/2026 package</option>
+        <option value="p500without100">Top 500 except Top 100</option>
+        <option value="p1000without500">2025/2026 package except Top 500</option>
+      </select>
+    </div>
 
     <div class="form-row">
 
@@ -13294,7 +13317,7 @@ function syncAdminCopyAccess() {
 
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border-subtle);">
 
-      <div style="font-size:13px; font-weight:700; color:var(--teal);" id="cePoolMatchCounter">Matching Pool: 2,052 Questions</div>
+      <div style="font-size:13px; font-weight:700; color:var(--teal);" id="cePoolMatchCounter">Matching Pool: 2,072 Questions</div>
 
       <div style="display:flex; gap:8px;">
 
@@ -16728,6 +16751,75 @@ let _historyInitialized = false;
 
 
 
+// Reload position belongs to this tab; it does not change saved answers.
+let portalResumeReady = false;
+function savePortalPosition() {
+  if (!portalResumeReady) return;
+  try {
+    const snap = buildHistorySnapshot(state.currentView, state.currentView === 'topic' ? state.currentTopicId : null);
+    Object.assign(snap, {version:1,scrollY:window.scrollY,quizChapterFilter:state.quizChapterFilter,splitNotesOpen:state.splitNotesOpen,
+      sessionSeconds:sessionElapsedSeconds,questionSeconds:qTimerSeconds,paused:quizTimersPaused});
+    sessionStorage.setItem('emle_tab_position_v1',JSON.stringify(snap));
+  } catch(e) {}
+}
+window.addEventListener('pagehide',savePortalPosition);
+window.addEventListener('beforeunload',savePortalPosition);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)savePortalPosition()});
+function restorePortalPosition() {
+  try {
+    const saved=JSON.parse(sessionStorage.getItem('emle_tab_position_v1')||'null');
+    if(!saved || saved.version!==1 || !document.getElementById('page-'+saved.view))return false;
+    if(saved.view==='topic' && !findTopicById(saved.topicId))return false;
+    if(saved.chapterId)state.currentChapterId=saved.chapterId;
+    if(saved.topicId)state.currentTopicId=saved.topicId;
+    if(saved.view==='quiz') {
+      const byId=new Map(DATA.questions.map(q=>[q.number,q]));
+      const qs=(saved.quizQNums||[]).map(n=>byId.get(n)).filter(Boolean);
+      if(!qs.length)return false;
+      state.quizFilter=saved.quizFilter;
+      state.activeQuizQs=qs;
+      if(saved.quizFilter==='custom_exam')state.customQs=qs.slice();
+      state.quizIndex=Math.max(0,Math.min(Number(saved.quizIndex)||0,qs.length-1));
+      state.customExamTitle=saved.customExamTitle||'';
+      state.customExamReturnView=saved.customExamReturnView||'quizzes';
+      state.quizChapterFilter=saved.quizChapterFilter||null;
+      state.splitNotesOpen=!!saved.splitNotesOpen;
+      startSessionElapsedTimer();
+    }
+    navigateTo(saved.view,saved.view==='topic'?saved.topicId:saved.param,{isInitialBoot:true});
+    if(saved.view==='quiz') {
+      sessionElapsedSeconds=Math.max(0,Number(saved.sessionSeconds)||0);
+      qTimerSeconds=Math.max(0,Number(saved.questionSeconds)||0);
+      quizTimersPaused=!!saved.paused;
+      const sessionEl=document.getElementById('sessionTimerText');if(sessionEl)sessionEl.textContent=formatElapsedTime(sessionElapsedSeconds);
+      updatePauseButtonsUI();
+    }
+    history.replaceState(buildHistorySnapshot(saved.view,saved.param),'','#'+saved.view+(saved.view==='topic'?'-'+saved.topicId:''));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:Math.max(0,Number(saved.scrollY)||0),behavior:'instant'})));
+    return true;
+  }catch(e){return false}
+}
+function getCeYearOptions() {
+  return [...new Set(DATA.questions.flatMap(q=>(q.exam_tags||[]).map(t=>parseExamTagMeta(t).year)).filter(Boolean))].sort((a,b)=>b-a);
+}
+function filterCeYearsAndPackages(pool) {
+  const years=ceConfig.years||[];
+  if(years.length)pool=pool.filter(q=>(q.exam_tags||[]).some(t=>years.includes(String(parseExamTagMeta(t).year))));
+  const choice=ceConfig.packageScope||'all';
+  if(choice==='all')return pool;
+  const packs=computePredictionsAnalysis();
+  const sets={p100:new Set(packs.top100.map(q=>q.number)),p500:new Set(packs.top500.map(q=>q.number)),p1000:new Set(packs.all.map(q=>q.number))};
+  const rules={without100:[null,'p100'],without500:[null,'p500'],without1000:[null,'p1000'],p500without100:['p500','p100'],p1000without500:['p1000','p500'],p100:['p100',null],p500:['p500',null],p1000:['p1000',null]};
+  const rule=rules[choice];if(!rule)return [];
+  return pool.filter(q=>(!rule[0]||sets[rule[0]].has(q.number))&&(!rule[1]||!sets[rule[1]].has(q.number)));
+}
+function updateCeExtraFilters() {
+  ceConfig.years=ceConfig.years||[];
+  const box=document.getElementById('ceYearsContainer');
+  if(box){const years=getCeYearOptions();box.innerHTML=`<button class="yf-btn ${!ceConfig.years.length?'active-yf':''}" onclick="toggleCeMulti('years','ALL')">All years</button>`+years.map(y=>`<button class="yf-btn ${ceConfig.years.includes(String(y))?'active-yf':''}" onclick="toggleCeMulti('years','${y}')">${y}</button>`).join('');}
+  const select=document.getElementById('cePackageScope');if(select)select.value=ceConfig.packageScope||'all';
+}
+
 function buildHistorySnapshot(view, param) {
 
   return {
@@ -16947,6 +17039,7 @@ window.addEventListener("popstate", function(e) {
 function navigateTo(view, param, navOpts) {
 
   const opts = navOpts || {};
+  const preservedScrollY = window.scrollY;
 
   const prevView = state.currentView;
 
@@ -17064,7 +17157,7 @@ function navigateTo(view, param, navOpts) {
     else if (view === "quizzes") renderQuizzesHub();
     else if (view === "chapter") renderChapter();
     else if (view === "topic") renderTopicPage(state.currentTopicId);
-    else if (view === "quiz") renderQuizPage(true);
+    else if (view === "quiz") renderQuizPage(!opts.preservePosition);
     else if (view === "exams") renderExamsPage();
     else if (view === "analytics") renderAnalyticsPage();
         else if (view === "studyplan") renderStudyPlanPage();
@@ -17082,7 +17175,8 @@ function navigateTo(view, param, navOpts) {
 
   }
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (opts.preservePosition) requestAnimationFrame(() => window.scrollTo({top:preservedScrollY,behavior:"instant"}));
+  else window.scrollTo({ top: 0, behavior: "smooth" });
 
 }
 
@@ -17631,7 +17725,7 @@ function runGlobalSearch(query) {
 
   if (q.length < 2) {
 
-    box.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:12px;">Type at least 2 characters to search across all 135 VIP Notes topics and 2,052 QBank questions...</div>`;
+    box.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:12px;">Type at least 2 characters to search across all 135 VIP Notes topics and 2,072 QBank questions...</div>`;
 
     return;
 
@@ -17984,13 +18078,14 @@ function getCeMatchingQuestions() {
 
   }
 
-  return pool;
+  return filterCeYearsAndPackages(pool);
 
 }
 
 
 
 function updateCeModalUI() {
+  updateCeExtraFilters();
 
   ["all","unanswered","wrong","flagged","rep5","discrepancy"].forEach(p => {
 
@@ -21173,7 +21268,7 @@ function renderStudyPlanPage() {
 
           <button class="spd-filter-btn ${plan.scope === 'all' ? 'active-spd' : ''}" onclick="setStudyPlanScope('all')">
 
-            🌐 All QBank (135 Topics &bull; 2,052 Qs)
+            🌐 All QBank (135 Topics &bull; 2,072 Qs)
 
           </button>
 
@@ -25368,7 +25463,7 @@ async function syncProgressFromCloud(user) {
       }
 
       if (typeof navigateTo === "function" && state.currentView && DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
-        navigateTo(state.currentView, state.currentTopicId);
+        navigateTo(state.currentView, state.currentTopicId, { preservePosition: true });
       }
       if (typeof renderStreakWidget === "function") {
         renderStreakWidget();
@@ -26022,7 +26117,7 @@ function handleImportProgressFile(event) {
 
       closeAuthModal();
       if (typeof navigateTo === "function" && state.currentView && DATA && Array.isArray(DATA.topics) && DATA.topics.length > 0) {
-        navigateTo(state.currentView, state.currentTopicId);
+        navigateTo(state.currentView, state.currentTopicId, { preservePosition: true });
       }
       if (typeof renderStreakWidget === "function") {
         renderStreakWidget();
@@ -26643,7 +26738,8 @@ async function bootCompressedPortal() {
   try { initBrowserHistoryGuard(); } catch (e) {}
 
   try {
-    navigateTo("home", null, { isInitialBoot: true });
+    if (!restorePortalPosition()) navigateTo("home", null, { isInitialBoot: true });
+    portalResumeReady = true;
   } catch (e) {
     console.error("Initial navigateTo error:", e);
     try { renderHome(); } catch (err) {}
