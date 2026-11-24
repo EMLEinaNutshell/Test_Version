@@ -11880,7 +11880,7 @@ function syncAdminCopyAccess() {
 .session-controls .sf-result{display:flex;align-items:center;gap:7px;align-self:center;margin-top:24px;color:var(--teal);font-size:12px;font-weight:600;white-space:nowrap}.sf-result-dot{height:7px;width:7px;border-radius:50%;background:var(--teal)}
 @media(max-width:600px){.session-controls{padding:14px;gap:14px}.sf-field{min-width:100%}.session-controls .sf-result{margin:0}.sf-menu{max-height:285px}.sf-option{min-height:46px}}
 
-</style><link rel="stylesheet" href="private.css?v=4"></head>
+</style><link rel="stylesheet" href="private.css?v=5"></head>
 
 <body>
 
@@ -16936,7 +16936,7 @@ function savePortalPosition() {
   if (!portalResumeReady) return;
   try {
     const snap = buildHistorySnapshot(state.currentView, state.currentView === 'topic' ? state.currentTopicId : null);
-    Object.assign(snap, {version:1,scrollY:window.scrollY,quizChapterFilter:state.quizChapterFilter,splitNotesOpen:state.splitNotesOpen,privateFocusId:state.privateFocusId,
+    Object.assign(snap, {version:1,scrollY:window.scrollY,quizChapterFilter:state.quizChapterFilter,splitNotesOpen:state.splitNotesOpen,privateFocusId:state.privateFocusId,privateSessionChapter:state.privateSessionChapter,
       sessionSeconds:sessionElapsedSeconds,questionSeconds:qTimerSeconds,paused:quizTimersPaused});
     sessionStorage.setItem('emle_private_tab_position_v1',JSON.stringify(snap));
   } catch(e) {}
@@ -16949,7 +16949,7 @@ function restorePortalPosition() {
     const saved=JSON.parse(sessionStorage.getItem('emle_private_tab_position_v1')||'null');
     if(!saved || saved.version!==1 || !document.getElementById('page-'+saved.view))return false;
     if(saved.view==='topic' && !findTopicById(saved.topicId))return false;
-    state.privateFocusId=saved.privateFocusId||null;
+    state.privateFocusId=saved.privateFocusId||null;state.privateSessionChapter=saved.privateSessionChapter||saved.chapterId||"all";
     if(saved.chapterId)state.currentChapterId=saved.chapterId;
     if(saved.topicId)state.currentTopicId=saved.topicId;
     if(saved.view==='quiz') {
@@ -28932,7 +28932,7 @@ function renderQuestionCardHTML(q, idxInSession, totalQs, isListView) {
       
       <div class="qc-stem">${privateStem(q)}</div>
       ${isHintShown ? `<div class="hint-callout"><strong>Clinical Hint:</strong> ${annotateMedicalHTML(q.hint)}</div>` : ''}
-      <div class="opt-list">${optsHTML}</div>
+      <div class="opt-list">${optsHTML}</div>${privateInlineNavigation(q)}
       ${renderAmerSingleOptNoticeHTML(q)}
       ${showPeerStats && hasAdminPeerStatsAccess()
         ? `<div class="opt-peer-admin-note ${peerDetails && peerDetails.showCounts ? ('visible' + (peerDetails.isBelowMin ? ' below-min' : '')) : ''}" id="peerAdminNote-${q.number}">${peerDetails && peerDetails.showCounts ? formatPeerAdminNote(peerDetails.total, peerDetails.isBelowMin) : ''}</div>`
@@ -29057,7 +29057,7 @@ function renderQuizTierFilterBar(){
  }else if(!kind){packageUI='<label>Filter by Package<select aria-label="Filter by Package" onchange="setQuizPredictionTier(this.value)">'+[['all','Full Session'],['top100','Top 100'],['top500','Top 500 · 523'],['pred2526','2025/2026 · 1,074']].map(([k,label])=>`<option value="${k}" ${(state.quizPredictionTier||'all')===k?'selected':''}>${label} (${counts[k]})</option>`).join('')+'</select></label>'}
  const pool=sessionSubsetPool();
  bar.innerHTML=`<div class="session-controls">${packageUI}<label>ترتيب الأسئلة<select aria-label="Question order" onchange="setSessionControl('sessionOrder',this.value)">${[['original','ترتيب السيشن الأصلي'],['focus','By Focus'],['probability','الأكثر احتمالية في الامتحان'],['shuffle','Shuffled']].map(([k,l])=>`<option value="${k}" ${(state.sessionOrder||'original')===k?'selected':''}>${l}</option>`).join('')}</select></label><label>حالة الحل<select aria-label="Answer status" onchange="setSessionControl('sessionStatus',this.value)">${[['all','كل الأسئلة'],['unanswered','لسه متحلّتش'],['correct','صح بدون هينت'],['wrong','غلط'],['hint','حليتها بهينت'],['flagged','فلاجز']].map(([k,l])=>`<option value="${k}" ${(state.sessionStatus||'all')===k?'selected':''}>${l} (${pool.filter(q=>sessionStatusMatch(q,k)).length})</option>`).join('')}</select></label><span>${getQuestionsForFilter(state.quizFilter).length} سؤال مطابق</span></div>`;
- enhanceSessionFilterMenus();
+ const privateFilterHost=bar.querySelector('.session-controls');privateFilterHost.insertAdjacentHTML('beforeend',privateChapterFilterHTML());enhanceSessionFilterMenus();
 }
 
 
@@ -29108,7 +29108,7 @@ function openPrivateExamFilter(){
 }
 function applyPrivateExams(){getPrivatePrefs().exams=Array.from(document.querySelectorAll('#privateExamModal input:checked'),e=>e.value);savePrivatePrefs();document.getElementById('privateExamModal').classList.remove('show');navigateTo('home')}
 function renderHome(){
- document.getElementById('page-home').innerHTML=`<div class="pp-welcome"><span class="pp-eyebrow">YOUR PRIVATE STUDY SPACE</span><h1>Read. Focus. Practice.</h1><p>The 2025–2026 VIP Notes, connected to your questions — one chapter at a time.</p></div>${privateFilters()}<div class="pp-chapters">${DATA.privateStudy.chapters.map((c,i)=>{const qs=privateQuestionPool(c.questionIds),solved=privateSolved(qs.map(q=>q.number));return `<button class="pp-chapter" onclick="openPrivateChapter('${c.id}')"><span class="pp-chapter-number">${String(i+1).padStart(2,'0')}</span><h2>${privateEsc(c.title)}</h2><p>${c.focuses.filter(f=>privateQuestionPool(f.questionIds).length).length} focuses · ${qs.length} questions</p><progress value="${solved}" max="${Math.max(qs.length,1)}"></progress><span>${solved} solved <b>Open chapter →</b></span></button>`}).join('')}</div>`;updatePrivateProgress();renderPrivateSidebar();
+ document.getElementById('page-home').innerHTML=`<div class="pp-welcome"><span class="pp-eyebrow">YOUR PRIVATE STUDY SPACE</span><h1>Read. Focus. Practice.</h1><p>The 2025–2026 VIP Notes, connected to your questions — one chapter at a time.</p></div>${privateFilters()}<div class="pp-chapter-practice"><div><strong>ابدأ حل الأسئلة كلها</strong><span>${privateQuestionPool().length} سؤال حسب الباقة والفلاتر المختارة</span></div><button class="btn-teal" onclick="startPrivateAllQuestions()">ابدأ الحل · كل الشابترات →</button></div><div class="pp-chapters">${DATA.privateStudy.chapters.map((c,i)=>{const qs=privateQuestionPool(c.questionIds),solved=privateSolved(qs.map(q=>q.number));return `<button class="pp-chapter" onclick="openPrivateChapter('${c.id}')"><span class="pp-chapter-number">${String(i+1).padStart(2,'0')}</span><h2>${privateEsc(c.title)}</h2><p>${c.focuses.filter(f=>privateQuestionPool(f.questionIds).length).length} focuses · ${qs.length} questions</p><progress value="${solved}" max="${Math.max(qs.length,1)}"></progress><span>${solved} solved <b>Open chapter →</b></span></button>`}).join('')}</div>`;updatePrivateProgress();renderPrivateSidebar();
 }
 function renderPrivateSidebar(){const root=document.getElementById('sidebarTreeContainer');if(root)root.innerHTML=DATA.privateStudy.chapters.map(c=>`<button class="pp-side-chapter" onclick="openPrivateChapter('${c.id}')">${privateEsc(c.title)}</button>`).join('')}
 function openPrivateChapter(id){state.currentChapterId=id;navigateTo('chapter')}
@@ -29117,8 +29117,8 @@ function renderChapter(){
  const focuses=c.focuses.filter(f=>privateQuestionPool(f.questionIds).length);const qs=privateQuestionPool(c.questionIds);
  document.getElementById('page-chapter').innerHTML=`<button class="subtle-link-btn" onclick="navigateTo('home')">← All chapters</button><div class="pp-chapter-head"><span class="pp-eyebrow">CHAPTER NOTES</span><h1>${privateEsc(c.title)}</h1><p>${focuses.length} focuses · ${qs.length} matching questions</p><div class="pp-actions"><button class="btn-teal" onclick="practicePrivateChapter('${c.id}')">حل الشابتر كامل · By Focus</button><a class="btn-outline" href="#privateChapterNotes" onclick="document.getElementById('privateChapterNotes').scrollIntoView({behavior:'smooth'});return false">Read whole chapter ↓</a></div></div>${privateFilters()}<div class="pp-chapter-practice"><div><strong>مراجعة الشابتر بالترتيب</strong><span>${privateSolved(privateQuestionPool(c.questionIds,true).map(q=>q.number))} / ${privateQuestionPool(c.questionIds,true).length} سؤال محلول</span></div><button class="btn-teal" onclick="practicePrivateChapter('${c.id}')">حل أسئلة الشابتر · By Focus →</button></div><div class="pp-focus-index">${focuses.map((f,i)=>`<button onclick="openPrivateFocus('${f.id}')"><span>${String(i+1).padStart(2,'0')}</span>${privateEsc(f.title)}<small>${privateFocusProgress(f)}</small></button>`).join('')}</div><div id="privateChapterNotes" class="pp-notes">${focuses.map(f=>`<section class="pp-focus-full">${f.html}<button class="btn-teal" onclick="openPrivateFocus('${f.id}')">Read & practice this focus · ${privateQuestionPool(f.questionIds).length} Qs →</button></section>`).join('')||'<p>No questions match these filters. Choose another package or exam.</p>'}</div>`;updatePrivateProgress();
 }
-function openPrivateFocus(id){const focus=privateFocus(id);if(!focus)return;const qs=privateQuestionPool(focus.questionIds,true,true);if(!qs.length){showToast('No matching questions in this focus.');return}state.privateFocusId=id;state.currentChapterId=focus.chapterId;state.customExamTitle=focus.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers');state.sessionSubset=getPrivatePrefs().subset||'all';state.sessionStatus=getPrivatePrefs().status||'all';state.sessionOrder='focus';applySessionControls()}
-function practicePrivateChapter(id){state.privateFocusId=null;const c=DATA.privateStudy.chapters.find(c=>c.id===id),qs=privateQuestionPool(c.questionIds,true,true);if(!qs.length)return;state.currentChapterId=id;state.customExamTitle=c.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers');state.sessionSubset=getPrivatePrefs().subset||'all';state.sessionStatus=getPrivatePrefs().status||'all';state.sessionOrder='focus';applySessionControls()}
+function openPrivateFocus(id){const focus=privateFocus(id);if(!focus)return;const qs=privateQuestionPool(focus.questionIds,true,true);if(!qs.length){showToast('No matching questions in this focus.');return}state.privateSessionChapter=focus.chapterId;state.privateFocusId=id;state.currentChapterId=focus.chapterId;state.customExamTitle=focus.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers');state.sessionSubset=getPrivatePrefs().subset||'all';state.sessionStatus=getPrivatePrefs().status||'all';state.sessionOrder='focus';applySessionControls();state.quizIndex=0;state.quizListPage=0;renderQuizPage(true)}
+function practicePrivateChapter(id){state.privateSessionChapter=id;state.privateFocusId=null;const c=DATA.privateStudy.chapters.find(c=>c.id===id),qs=privateQuestionPool(c.questionIds,true,true);if(!qs.length)return;state.currentChapterId=id;state.customExamTitle=c.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers');state.sessionSubset=getPrivatePrefs().subset||'all';state.sessionStatus=getPrivatePrefs().status||'all';state.sessionOrder='focus';applySessionControls();state.quizIndex=0;state.quizListPage=0;renderQuizPage(true)}
 function renderQuizPage(reset){
  privateBaseRenderQuizPage(reset);renderPrivateFocusPanel();updatePrivateProgress();
 }
@@ -29151,6 +29151,21 @@ function renderPrivateFocusPanel(){
  layout.classList.toggle('pp-focus-open',visible);layout.classList.add('pp-focus-layout');document.getElementById('mainContainer').classList.toggle('pp-focus-wide',visible);
  document.querySelectorAll('#quizCardRenderArea [data-qnum]').forEach(card=>{if(!card.classList.contains('quiz-card')&&!card.classList.contains('list-qcard-item'))return;card.querySelector('.pp-card-focus')?.remove();const cf=privateFocusForQuestion(findQuestionByNumber(Number(card.dataset.qnum)));if(cf){const header=document.createElement('div');header.className='pp-card-focus';header.innerHTML=`<span>${privateEsc(cf.title)}</span><button class="subtle-link-btn" onclick="showPrivateQuestionFocus(${Number(card.dataset.qnum)})">Focus Notes ↗</button>`;card.prepend(header)}});
 }
+
+function startPrivateAllQuestions(){openPrivateSessionChapter('all',true)}
+function openPrivateSessionChapter(id,fresh=false){
+ const subset=fresh?(getPrivatePrefs().subset||'all'):(state.sessionSubset||'all'),status=fresh?(getPrivatePrefs().status||'all'):(state.sessionStatus||'all'),order=fresh?'focus':(state.sessionOrder||'focus');
+ const chapter=DATA.privateStudy.chapters.find(c=>c.id===id);if(id!=='all'&&!chapter)return;
+ const qs=privateQuestionPool(chapter?.questionIds,true,true);state.privateSessionChapter=id;state.privateFocusId=null;state.currentChapterId=chapter?.id||null;state.customExamTitle=chapter?.title||'All chapters';state.customExamReturnView=chapter?'chapter':'home';
+ executeStartQuizSession('custom_exam',qs,'keep_answers');state.sessionSubset=subset;state.sessionStatus=status;state.sessionOrder=order;applySessionControls();state.quizIndex=0;state.quizListPage=0;renderQuizPage(true);
+}
+function privateChapterFilterHTML(){
+ const key=state.privateSessionChapter||state.currentChapterId||'all';const pool=privateQuestionPool(null,true,true).filter(q=>privateSubsetMatch(q,state.sessionSubset||'all'));
+ const option=(id,title,qs)=>`<option value="${id}" ${id===key?'selected':''}>${privateEsc(title)} · ⁦${privateSolved(qs.map(q=>q.number))} / ${qs.length}⁩ محلول</option>`;
+ return `<label>الشابتر · المحلول / الإجمالي<select aria-label="Study chapter" onchange="openPrivateSessionChapter(this.value)">${option('all','كل الشابترات',pool)}${DATA.privateStudy.chapters.map(c=>option(c.id,c.title,pool.filter(q=>c.questionIds.includes(q.number)))).join('')}</select></label>`;
+}
+function privateInlineNavigation(q){const qs=getQuestionsForFilter(state.quizFilter),i=qs.findIndex(x=>x.number===q.number);if(i<0)return '';const start=Math.max(0,Math.min(i-2,qs.length-5)),end=Math.min(qs.length,start+5);return `<nav class="pp-inline-nav" aria-label="Question navigation"><div class="pp-nav-actions"><button type="button" class="btn-outline" ${i===0?'disabled':''} onclick="privateJumpQuestion(${i-1})">← السابق</button><span>${i+1} / ${qs.length}</span>${i<qs.length-1?`<button type="button" class="btn-teal" onclick="privateJumpQuestion(${i+1})">السؤال التالي →</button>`:'<button type="button" class="btn-teal" onclick="finishAndShowSessionResults()">إنهاء السيشن</button>'}</div><div class="pp-inline-numbers">${Array.from({length:end-start},(_,k)=>{const n=start+k;return `<button type="button" ${n===i?'aria-current="step"':''} onclick="privateJumpQuestion(${n})">${n+1}</button>`}).join('')}</div></nav>`}
+function privateJumpQuestion(index){const qs=getQuestionsForFilter(state.quizFilter);if(index<0||index>=qs.length)return;state.quizIndex=index;state.quizListPage=Math.floor(index/10);renderQuizPage(true);const card=document.querySelector('#quizCardRenderArea [data-qnum="'+qs[index].number+'"]')||document.getElementById('quizCardRenderArea');if(card)window.scrollTo({top:card.getBoundingClientRect().top+scrollY-document.getElementById('mainTopbar').offsetHeight-14,behavior:'smooth'})}
 
 // Exam sprint: Cairo time is explicit, independent of the computer timezone.
 const SPRINT_KEY='emle_private_sprint_v1';
