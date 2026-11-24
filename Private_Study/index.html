@@ -11702,7 +11702,185 @@ function syncAdminCopyAccess() {
 
 <script src="./data-enc.js?v=20261124-ai-label1"></script>
 <style id="dashboardHomeOrderStyle">#mainContainer:has(#page-home:not(.active)) > #dashboardHomeTitle{display:none!important}</style>
-<link rel="stylesheet" href="private.css?v=2"></head>
+<style>
+/* --- Review Mode & List View CSS --- */
+/* --- Review Mode & List View CSS --- */
+.quiz-mode-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(11, 35, 53, 0.04);
+}
+.qmt-left, .qmt-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.btn-toggle-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+.btn-toggle-review:hover {
+  background: #f1f5f9;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+.btn-toggle-review.is-active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border-color: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+.btn-toggle-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+.btn-toggle-view:hover {
+  background: #f1f5f9;
+  border-color: #0a6c74;
+  color: #0a6c74;
+}
+.btn-toggle-view.is-active {
+  background: linear-gradient(135deg, #0a6c74 0%, #0d9488 100%);
+  border-color: #0a6c74;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(10, 108, 116, 0.25);
+}
+.review-status-tag {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.qmt-page-info {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* List View Accordion Toggle */
+.list-exp-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdfa;
+  border: 1.5px solid #0a6c74;
+  color: #0a6c74;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 10px 0 6px 0;
+  transition: all 0.15s ease;
+}
+.list-exp-toggle-btn:hover {
+  background: #0a6c74;
+  color: #ffffff;
+}
+
+/* List View Navigation Bars */
+.quiz-list-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(11, 35, 53, 0.04);
+}
+.ql-info {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.list-qcard-item {
+  margin-bottom: 20px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 10px rgba(11, 35, 53, 0.06) !important;
+  border: 1.5px solid #e2e8f0 !important;
+}
+.list-card-concept-pill {
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  border-left: 3.5px solid #0a6c74;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.lc-badge {
+  color: #0a6c74;
+  font-weight: 800;
+}
+.lc-title {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+
+.qtf-container{border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0;background:var(--surface)}.qtf-header,.qtf-pills-wrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.qtf-header{justify-content:space-between;margin-bottom:8px}.qtf-title{font-weight:700}.qtf-subtitle{font-size:12px;color:var(--text-muted)}.qtf-pill{border:1px solid var(--border);border-radius:20px;padding:7px 12px;background:var(--surface);color:var(--text);cursor:pointer;display:flex;gap:7px}.qtf-pill.is-active{background:var(--teal);color:white}.qtf-pill.is-empty{opacity:.5}.qtf-pill-badge{font-weight:800}.quiz-mode-toolbar,.quiz-list-nav-bar{background:var(--surface);color:var(--text)}
+
+</style><style>.session-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:end;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:12px 0}.session-controls label{display:grid;gap:6px;font-size:12px;font-weight:700;flex:1;min-width:170px}.session-controls select{padding:9px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);width:100%}.session-controls>span{font-size:12px;color:var(--text-muted)}.session-concept-label,.qc-concept-banner{padding:10px 14px;background:var(--teal-light);color:var(--teal);border-radius:8px;margin-bottom:12px;font-size:13px}.qc-concept-banner{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}.qc-concept-actions{display:flex;gap:8px;align-items:center}.qc-concept-skip-btn{border:1px solid var(--teal);border-radius:7px;padding:6px;background:var(--surface);color:var(--teal);cursor:pointer}.qdot-concept-divider{display:inline-block;width:2px;height:20px;background:var(--teal);margin:0 5px}@media(max-width:820px){.workspace{margin-left:0!important;width:100%}.main-container{width:100%;min-width:0}.sidebar{transform:translateX(-100%)}body.sidebar-mobile-open .sidebar{transform:translateX(0)}}@media(max-width:600px){.session-controls label{min-width:100%}.qc-concept-actions{flex-wrap:wrap}}</style><style>
+.session-controls{padding:18px;gap:16px;align-items:end;border:1px solid var(--border);border-radius:16px;background:linear-gradient(135deg,var(--surface),var(--teal-light));box-shadow:0 3px 14px rgba(15,70,80,.035)}
+.sf-field{position:relative;flex:1;min-width:180px;text-align:right}
+.sf-caption{display:flex;align-items:center;gap:7px;margin-bottom:9px;font-size:12px;font-weight:700;color:var(--text-muted)}
+.sf-caption>span{font-size:17px;color:var(--teal);line-height:1}
+.sf-trigger{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:10px 13px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--text);font:inherit;font-size:13px;font-weight:600;text-align:right;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.sf-trigger:hover{border-color:var(--teal)}
+.sf-trigger:focus-visible,.sf-trigger[aria-expanded=true]{outline:0;border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.13)}
+.sf-value{flex:1;min-width:0;unicode-bidi:plaintext}.sf-trigger svg{flex-shrink:0;color:var(--text-muted);transition:transform .15s}.sf-trigger[aria-expanded=true] svg{transform:rotate(180deg)}
+.sf-count{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;background:var(--teal-light);color:var(--teal);border-radius:7px;padding:3px 7px;white-space:nowrap;flex-shrink:0}
+.sf-menu{position:absolute;top:calc(100% + 7px);right:0;left:0;z-index:1000;padding:6px;background:var(--surface);border:1px solid var(--border);border-radius:13px;box-shadow:0 12px 35px rgba(15,40,55,.17);max-height:310px;overflow:auto;overscroll-behavior:contain}
+.sf-menu[hidden]{display:none}
+.sf-option{display:flex;align-items:center;gap:9px;width:100%;min-height:43px;border:0;border-radius:8px;padding:9px 8px;background:transparent;color:var(--text);font:inherit;font-size:12px;text-align:right;cursor:pointer}
+.sf-option:hover,.sf-option:focus-visible{background:var(--teal-light);outline:0}.sf-option[aria-selected=true]{background:var(--teal-light);color:var(--teal);font-weight:700}
+.sf-check{width:17px;flex-shrink:0;color:var(--teal);font-weight:800}.sf-option-text{flex:1;unicode-bidi:plaintext}
+.session-controls .sf-result{display:flex;align-items:center;gap:7px;align-self:center;margin-top:24px;color:var(--teal);font-size:12px;font-weight:600;white-space:nowrap}.sf-result-dot{height:7px;width:7px;border-radius:50%;background:var(--teal)}
+@media(max-width:600px){.session-controls{padding:14px;gap:14px}.sf-field{min-width:100%}.session-controls .sf-result{margin:0}.sf-menu{max-height:285px}.sf-option{min-height:46px}}
+
+</style><link rel="stylesheet" href="private.css?v=3"></head>
 
 <body>
 
@@ -12901,7 +13079,8 @@ function syncAdminCopyAccess() {
 
             
 
-            <div id="quizChapterFilterBar" class="quiz-chap-filter-bar"></div>
+            <div id="quizTierFilterBar"></div>
+<div id="quizChapterFilterBar" class="quiz-chap-filter-bar"></div>
       <div class="q-dots-bar">
 
         <div class="q-dots-strip" id="quizDotsStrip"></div>
@@ -16776,7 +16955,9 @@ function restorePortalPosition() {
     if(saved.view==='quiz') {
       const byId=new Map(DATA.questions.map(q=>[q.number,q]));
       const qs=(saved.quizQNums||[]).map(n=>byId.get(n)).filter(Boolean);
-      if(!qs.length)return false;
+      if(!qs.length && !(saved.baseQNums||[]).some(n=>byId.has(n)))return false;
+      state.sessionSubset=saved.sessionSubset||"all";state.sessionStatus=saved.sessionStatus||"all";state.sessionOrder=saved.sessionOrder||"original";
+      state.reviewMode=!!saved.reviewMode;state.quizViewMode=saved.quizViewMode||'card';state.quizListPage=saved.quizListPage||0;state.quizPredictionTier=saved.quizPredictionTier||'all';state.baseSessionQs=(saved.baseQNums||saved.quizQNums).map(n=>byId.get(n)).filter(Boolean);
       state.quizFilter=saved.quizFilter;
       state.activeQuizQs=qs;
       if(saved.quizFilter==='custom_exam')state.customQs=qs.slice();
@@ -16836,6 +17017,7 @@ function buildHistorySnapshot(view, param) {
     quizFilter: state.quizFilter,
 
     quizIndex: state.quizIndex,
+    sessionSubset:state.sessionSubset||"all",sessionStatus:state.sessionStatus||"all",sessionOrder:state.sessionOrder||"original",reviewMode:!!state.reviewMode,quizViewMode:state.quizViewMode||"card",quizListPage:state.quizListPage||0,quizPredictionTier:state.quizPredictionTier||"all",baseQNums:(state.baseSessionQs||state.activeQuizQs||[]).map(q=>q.number),
 
     quizQNums: (state.activeQuizQs || []).map(q => q.number),
 
@@ -17831,6 +18013,7 @@ function openSearchedQuestion(qnum) {
   const qs = computeQuestionsForFilter(state.quizFilter);
 
   state.activeQuizQs = qs.slice();
+  state.baseSessionQs=qs.slice();state.quizPredictionTier="all";state.quizListPage=0;state.sessionSubset="all";state.sessionStatus="all";state.sessionOrder="original";
   state.quizChapterFilter = null;
 
   const idx = qs.findIndex(x => x.number === qnum);
@@ -22600,6 +22783,7 @@ function toggleQuizChapterFilter(cid) {
 }
 
 function applyQuizChapterFilterAndAdjustIndex() {
+  state.quizIndex=0;state.quizListPage=0;
   const qs = getQuestionsForFilter(state.quizFilter);
   if (!qs || qs.length === 0) return;
 
@@ -22738,9 +22922,9 @@ function computeQuestionsForFilter(filter) {
 
 
 
-function getQuestionsForFilter(filter) {
+function getUnfilteredQuestionsForFilter(filter) {
 
-  if (filter === state.quizFilter && Array.isArray(state.activeQuizQs) && state.activeQuizQs.length > 0) {
+  if (filter === state.quizFilter && Array.isArray(state.activeQuizQs) && (state.activeQuizQs.length > 0 || Array.isArray(state.baseSessionQs))) {
 
     return state.activeQuizQs;
 
@@ -22978,6 +23162,7 @@ function executeStartQuizSession(filter, qs, mode) {
   state.quizFilter = filter;
 
   state.activeQuizQs = qs.slice();
+  state.baseSessionQs=qs.slice();state.quizPredictionTier="all";state.quizListPage=0;state.sessionSubset="all";state.sessionStatus="all";state.sessionOrder="original";
   state.quizChapterFilter = null;
 
   if (filter === "custom_exam") {
@@ -23360,70 +23545,38 @@ function isPostFeb2024Question(q) {
 
 
 function privateBaseRenderQuizPage(resetQTimer) {
-
-  if (resetQTimer) {
-
+  if (resetQTimer && !state.reviewMode) {
     state.examTagsExpanded = false;
-
     state.attemptsDropdownOpen = false;
-
     startOrResetQuestionTimer();
-
   }
 
-
-
-  const qs = getQuestionsForFilter(state.quizFilter);
-
+  const qs = getQuizVisibleQuestions();
   const dotsContainer = document.getElementById("quizDotsStrip");
-
   const expandDotsBtn = document.getElementById("btnExpandDots");
-
   const cardArea = document.getElementById("quizCardRenderArea");
 
-
-
-  if (qs.length === 0) {
-
-    dotsContainer.innerHTML = "";
-
-    renderQuizChapterFilterBar(qs);
-
-  cardArea.innerHTML = `<div class="article-card"><p>No questions match this filter.</p><button class="btn-outline" onclick="navigateTo('home')">Back to Dashboard</button></div>`;
-
+  renderQuizTierFilterBar();
+  if (!qs || qs.length === 0) {
+    if (dotsContainer) dotsContainer.innerHTML = "";
+    renderQuizChapterFilterBar(getUnfilteredQuestionsForFilter(state.quizFilter));
+    if (cardArea) {
+      cardArea.innerHTML = `<div class="article-card"><p>No questions match this filter.</p><button class="btn-outline" onclick="navigateTo('home')">Back to Dashboard</button></div>`;
+    }
     return;
-
   }
 
   if (state.quizIndex >= qs.length) state.quizIndex = 0;
 
-
-
-  const q = qs[state.quizIndex];
-
-  const st = state.qStatus[q.number] || {};
-
-  const isAnswered = typeof st.selected === "number";
-
-  const isHintShown = !!st.hintUsed;
-
-  const isFlagged = !!st.flagged;
-
-
-
   dotsContainer.classList.toggle("expanded-dots", state.dotsExpanded);
-
   if (expandDotsBtn) {
-
     expandDotsBtn.textContent = state.dotsExpanded ? "−" : "+";
-
   }
 
-
-
-  const filterSig = (state.quizFilter || "q") + "_" + qs.length + (state.dotsExpanded ? "_exp" : "_col");
+  const filterSig = (state.quizFilter || "q") + "_" + qs.length + (state.dotsExpanded ? "_exp" : "_col") + "_" + (state.quizPredictionTier || "all") + "_" + (state.reviewMode ? "rev" : "norm");
   if (dotsContainer._lastSig !== filterSig) {
     dotsContainer._lastSig = filterSig;
+    let prevCid = null;
     dotsContainer.innerHTML = qs.map((item, idx) => {
       const ist = state.qStatus[item.number] || {};
       let cls = idx === state.quizIndex ? "active-dot" : "";
@@ -23432,10 +23585,21 @@ function privateBaseRenderQuizPage(resetQTimer) {
       else if (ist.status === "wrong") cls += " dot-wrong";
       if (ist.flagged) cls += " dot-flagged";
       const flagBadge = ist.flagged ? `<span class="dot-flag-badge" title="Flagged Question">🚩</span>` : "";
-            const isFilteredOut = (state.quizChapterFilter && state.quizChapterFilter.length > 0 && !state.quizChapterFilter.includes(item.chapter_id));
+      const isFilteredOut = (state.quizChapterFilter && state.quizChapterFilter.length > 0 && !state.quizChapterFilter.includes(item.chapter_id));
       if (isFilteredOut) cls += " dot-filtered-hidden";
       const chapName = getChapterTitle(item.chapter_id);
-      return `<button class="q-dot ${cls}" id="qdot-${idx}" data-chap="${item.chapter_id || ''}" onclick="jumpQuizIdx(${idx})" title="سؤال ${idx + 1} • #${item.number} • ${chapName}${ist.flagged ? ' (Flagged 🚩)' : ''}">${idx + 1}${flagBadge}</button>`;
+      const cdata = {};
+      const cTitle = cdata.concept_title_en || cdata.concept_title_ar || "Clinical Concept";
+
+      let dividerHTML = "";
+      if (prevCid && cdata.concept_id && cdata.concept_id !== prevCid) {
+        dividerHTML = `<span class="qdot-concept-divider" title="New Concept: ${escapeHtml(cTitle)}"></span>`;
+      }
+      prevCid = cdata.concept_id;
+
+      const chapAttr = item.chapter_id || "";
+      const flagTitle = ist.flagged ? " (Flagged 🚩)" : "";
+      return `${dividerHTML}<button class="q-dot ${cls}" id="qdot-${idx}" data-chap="${chapAttr}" onclick="jumpQuizIdx(${idx})" title="Question ${idx + 1} • #${item.number} • ${chapName}${flagTitle}">${idx + 1}${flagBadge}</button>`;
     }).join("");
   } else {
     const oldActive = dotsContainer.querySelector(".active-dot");
@@ -23445,6 +23609,7 @@ function privateBaseRenderQuizPage(resetQTimer) {
     const curDot = document.getElementById("qdot-" + state.quizIndex);
     if (curDot) {
       curDot.classList.add("active-dot");
+      const st = state.qStatus[qs[state.quizIndex].number] || {};
       curDot.classList.remove("dot-correct", "dot-hint", "dot-wrong");
       if (st.status === "correct") curDot.classList.add("dot-correct");
       else if (st.status === "hint") curDot.classList.add("dot-hint");
@@ -23462,477 +23627,96 @@ function privateBaseRenderQuizPage(resetQTimer) {
     }
   }
 
-
-
   if (!state.dotsExpanded) {
-
     setTimeout(() => {
-
       const activeDot = document.getElementById("qdot-" + state.quizIndex);
-
       if (activeDot && dotsContainer) {
-
         const offset = activeDot.offsetLeft - dotsContainer.offsetLeft - (dotsContainer.clientWidth / 2) + 14;
-
         dotsContainer.scrollTo({ left: Math.max(0, offset), behavior: "smooth" });
-
       }
-
     }, 20);
-
   }
 
-
-
-  const showPeerStats = isAnswered || Boolean(state && state.reviewMode);
-  const cachedPeerStats = showPeerStats ? getCachedQuestionPeerStats(q.number) : null;
-  const peerDetails = showPeerStats ? (cachedPeerStats ? computePeerOptionDetails(cachedPeerStats, q.options.length, q) : getDeterministicPeerBaseline(q)) : null;
-
-
-
-  const isPost24 = !q.answer_key_label && isPostFeb2024Question(q);
-
-  const hasDualPolicy = typeof q.verified_ai_answer === "number" && q.verified_ai_answer !== q.verified_answer;
-
-
-
-  const optsHTML = q.options.map((optText, idx) => {
-
-    const letter = String.fromCharCode(65 + idx);
-
-    let rowCls = "";
-
-    let badgeRight = "";
-
-    if (isAnswered) {
-
-      rowCls = "locked";
-
-      if (hasDualPolicy) {
-
-        const badges = [];
-
-        if (idx === q.verified_answer) {
-
-          rowCls += " is-correct";
-
-          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>`);
-
-          if (isPost24) {
-
-            badges.push(`<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>`);
-
-          } else {
-
-            badges.push(`<span class="opt-tag-pill is-model">Model Answer</span>`);
-
-          }
-
-        } else if (idx === q.verified_ai_answer) {
-
-          if (idx === st.selected) {
-
-            rowCls += " is-wrong";
-
-            badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
-
-          } else {
-
-            rowCls += " is-verified-ai";
-
-          }
-
-          const aiBadgeLabel = isPost24 ? (q.verified_ai_custom_label || "AI Recommended Answer") : (q.verified_ai_custom_label || "Verified AI Answer");
-
-          badges.push(`<span class="opt-tag-pill is-ai">${aiBadgeLabel}</span>`);
-
-        } else if (idx === st.selected) {
-
-          rowCls += " is-wrong";
-
-          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
-
-        }
-
-        badgeRight = badges.join(" ");
-
-      } else {
-
-        if (idx === q.verified_answer) {
-
-          rowCls += " is-correct";
-
-          if (isPost24) {
-
-            const amerTag = q.has_discrepancy ? ` <span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>` : "";
-
-            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${amerTag}`;
-
-          } else {
-
-            const mTag = q.model_answer_adopted ? ` <span class="opt-tag-pill is-model">Model Answer</span>` : "";
-
-            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${mTag}`;
-
-          }
-
-        } else if (idx === st.selected) {
-
-          rowCls += " is-wrong";
-
-          badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`;
-
-        } else if (q.has_discrepancy && idx === q.qbank_answer && q.qbank_answer !== q.verified_answer) {
-
-          if (isPost24) {
-
-            badgeRight = `<span class="opt-tag-pill is-ai" style="background:#eff6ff; color:#1e40af; border:1px solid #93c5fd; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">AI Recommended Answer</span>`;
-
-          } else {
-
-            badgeRight = `<span class="opt-tag-pill is-model" style="font-size:11.5px; font-weight:700;">Model Answer</span>`;
-
-          }
-
-        }
-
-      }
-
-    }
-
-    const isElim = !!(state.eliminatedOpts[q.number] && state.eliminatedOpts[q.number][idx]);
-
-    const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
-
-    const finalBadgeRight = q.answer_key_label === 'AI Recommended Answer:' && badgeRight && idx === q.verified_answer
-      ? '<span class="opt-tag-pill is-ai">AI Recommended</span>' : badgeRight;
-
-    const pctVal = (peerDetails && typeof peerDetails.pcts[idx] === "number") ? peerDetails.pcts[idx] : null;
-
-    const countVal = (peerDetails && peerDetails.counts && typeof peerDetails.counts[idx] === "number") ? peerDetails.counts[idx] : 0;
-
-    const peerFillWidth = pctVal !== null ? pctVal : 0;
-
-    const peerPctText = pctVal !== null ? formatPeerOptionLabel(pctVal, countVal, peerDetails.showCounts) : "";
-
-    const peerPctCls = pctVal !== null
-
-      ? ("opt-peer-pct visible" + (peerDetails.isBelowMin ? " admin-below-min" : ""))
-
-      : "opt-peer-pct";
-
-    const peerPctTitle = (pctVal !== null && peerDetails.showCounts)
-
-      ? getPeerOptionTitle(countVal, peerDetails.total, peerDetails.isBelowMin)
-
-      : "";
-
-    return `
-
-      <div class="opt-row ${finalRowCls}" data-opt-idx="${idx}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
-
-        ${showPeerStats ? `<div class="opt-peer-bar"><div class="opt-peer-fill" data-peer-fill="${idx}" style="width:${peerFillWidth}%"></div></div>` : ""}
-
-        <div class="opt-left">
-
-          <span class="opt-char">${letter}</span>
-
-          <span>${annotateMedicalHTML(optText)}</span>
-
+  renderQuizTierFilterBar();
+  renderQuizChapterFilterBar(getUnfilteredQuestionsForFilter(state.quizFilter));
+
+  const toolbarHTML = renderQuizModeToolbarHTML(qs);
+  const isListView = state.quizViewMode === "list";
+
+  if (isListView) {
+    const pageSize = 10;
+    const totalPages = Math.ceil(qs.length / pageSize);
+    if (state.quizListPage == null || state.quizListPage < 0) state.quizListPage = 0;
+    if (state.quizListPage >= totalPages) state.quizListPage = Math.max(0, totalPages - 1);
+    const curPage = state.quizListPage;
+    const startIdx = curPage * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, qs.length);
+    const chunk = qs.slice(startIdx, endIdx);
+
+    const allOpen = chunk.length > 0 && chunk.every(q => Boolean(state.listExpandedExps && state.listExpandedExps[q.number]));
+
+    const navTopHTML = `
+      <div class="quiz-list-nav-bar" dir="ltr">
+        <div class="ql-info">
+          <span>📄 Set ${curPage + 1} of ${totalPages}</span>
+          <span style="color:#64748b; font-weight:600; margin-left:6px;">(Questions ${startIdx + 1} – ${endIdx} of ${qs.length})</span>
         </div>
-
-        <div class="opt-right-wrap">
-
-          ${finalBadgeRight}
-
-          ${showPeerStats ? `<span class="${peerPctCls}" data-peer-pct="${idx}"${peerPctTitle ? ` title="${peerPctTitle}"` : ""}>${peerPctText}</span>` : ""}
-
-          <button class="opt-elim-btn" onclick="event.stopPropagation(); toggleEliminateOpt(${q.number}, ${idx});" title="Cross out / Eliminate this choice (or Right-Click)">✕</button>
-
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <button type="button" class="btn-outline" style="font-size:12px; padding:5px 11px;" id="btnToggleAllListExp" onclick="toggleAllListExplanations()">
+            ${allOpen ? '🙈 Collapse All Explanations' : '👁️ Expand All Explanations'}
+          </button>
+          <button type="button" class="btn-outline" style="font-size:12px; padding:5px 11px;" ${curPage === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="changeQuizListPage(-1)">
+            &larr; Prev 10 Qs
+          </button>
+          <button type="button" class="btn-teal" style="font-size:12px; padding:5px 12px;" ${curPage >= totalPages - 1 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="changeQuizListPage(1)">
+            Next 10 Qs &rarr;
+          </button>
         </div>
-
       </div>
-
     `;
 
-  }).join("");
+    const cardsHTML = chunk.map((item, i) => renderQuestionCardHTML(item, startIdx + i, qs.length, true)).join("");
 
-
-
-  const verLetter = String.fromCharCode(65 + q.verified_answer);
-
-  const qbLetter = String.fromCharCode(65 + q.qbank_answer);
-
-  const aiLetter = hasDualPolicy ? String.fromCharCode(65 + q.verified_ai_answer) : "";
-
-
-
-  const tags = q.exam_tags || [];
-
-  const countNum = tags.length > 0 ? tags.length : 1;
-
-  const allChipsHTML = tags.map(tag => formatExamTagChip(tag)).join("");
-
-
-
-  renderQuizChapterFilterBar(qs);
-
-  cardArea.innerHTML = `
-
-    <div class="quiz-card" data-qnum="${q.number}">
-
-      <div class="qc-header">
-
-        <div class="qc-top-row">
-
-          <div class="qc-title-wrap">
-
-            <span class="qc-qnum-title">Question ${state.quizIndex + 1} of ${qs.length} <span class="qc-chapter-badge" style="color:var(--teal); font-weight:700; margin-right:4px;">• ${getChapterTitle(q.chapter_id)}</span>${q._predProb ? `<span class="qc-pred-badge" style="background:#0d9488; color:#fff; font-size:11px; padding:2px 7px; border-radius:10px; margin-right:6px; font-weight:700;" title="نسبة الاحتمالية المحسوبة">🎯 احتمالية ${q._predProb}%</span>` : ''}</span>
-
-            ${isAdminAccount() ? `<span class="admin-amer-pill" title="رقم السؤال في مذكرة د. أحمد عامر (أدمن)">#${q.number}</span>` : ''}
-
-            ${st.revealed ? `<span class="status-pill" style="background:var(--wrong-bg); color:var(--wrong); font-size:11px; flex-shrink:0;">Answer Revealed</span>` : ''}
-
-          </div>
-
-          <div class="qc-actions-wrap">
-
-            ${renderQuestionAttemptsDropdownHTML(q, st)}
-
-            <button class="subtle-link-btn" id="btnShuffleQuiz" onclick="shuffleCurrentSession()" title="إعادة ترتيب أسئلة السيشن الحالية عشوائياً">🔀 Shuffle</button>
-
-            <button class="subtle-link-btn" onclick="finishAndShowSessionResults()" title="عرض تقرير النتيجة والملاحظات للسيشن الحالية">📊 النتيجة</button>
-
-            <button class="subtle-link-btn" style="${isHintShown ? 'border-color:var(--hint); color:var(--hint); background:var(--hint-bg);' : ''}" onclick="triggerHint(${q.number})">
-
-              💡 Hint
-
-            </button>
-
-            ${!isAnswered ? `
-
-              <button class="subtle-link-btn" onclick="revealQuizAnswer(${q.number})" title="Reveal the correct answer and explanation (counts as Incorrect)">
-
-                👁 Show Answer
-
-              </button>
-
-            ` : ''}
-
-            <button class="subtle-link-btn" style="${isFlagged ? 'border-color:var(--flag); color:var(--flag); background:var(--flag-bg);' : ''}" onclick="triggerFlag(${q.number})">
-
-              🚩 ${isFlagged ? 'Flagged' : 'Flag'}
-
-            </button>
-
-            <button class="subtle-link-btn" onclick="openReportQuestionModal(${q.number})" title="إبلاغ عن خطأ أو ملاحظة في السؤال للمشرف">
-
-              🚨 إبلاغ
-
-            </button>
-
-            ${isAnswered ? `<button class="subtle-link-btn" onclick="retryQuestion(${q.number})">🔄 Retry</button>` : ''}
-
-          </div>
-
+    const navBottomHTML = `
+      <div class="quiz-list-nav-bar" style="margin-top:16px;" dir="ltr">
+        <button type="button" class="btn-outline" ${curPage === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="changeQuizListPage(-1)">
+          &larr; Previous 10 Questions
+        </button>
+        <div class="ql-info">
+          Set ${curPage + 1} of ${totalPages}
         </div>
-
-        ${tags.length > 0 ? `
-
-          <div class="qc-exam-tags-row">
-
-            <span class="exam-count-pill" title="عدد مرات تكرار السؤال في الامتحانات">&times;${countNum}</span>
-
-            ${allChipsHTML}
-
-          </div>
-
-        ` : ''}
-
+        ${curPage < totalPages - 1 ? `
+          <button type="button" class="btn-teal" onclick="changeQuizListPage(1)">
+            Next 10 Questions &rarr;
+          </button>
+        ` : `
+          <button type="button" class="btn-teal" onclick="finishAndShowSessionResults()" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%);">
+            📊 Finish Session & View Results &rarr;
+          </button>
+        `}
       </div>
-
-
-
-      <div class="qc-stem">${privateStem(q)}</div>
-
-
-
-      ${isHintShown ? `<div class="hint-callout"><strong>Clinical Hint:</strong> ${annotateMedicalHTML(q.hint)}</div>` : ''}
-
-
-
-      <div class="opt-list">${optsHTML}</div>
-
-      ${renderAmerSingleOptNoticeHTML(q)}
-
-      ${showPeerStats && hasAdminPeerStatsAccess()
-
-        ? `<div class="opt-peer-admin-note ${peerDetails && peerDetails.showCounts ? ('visible' + (peerDetails.isBelowMin ? ' below-min' : '')) : ''}" id="peerAdminNote-${q.number}">${peerDetails && peerDetails.showCounts ? formatPeerAdminNote(peerDetails.total, peerDetails.isBelowMin) : ''}</div>`
-
-        : ''}
-
-
-
-      ${isAnswered ? `
-
-        <div class="explanation-box">
-
-          ${hasDualPolicy ? `
-
-            <div class="dual-policy-card" dir="rtl">
-
-              <div class="dual-policy-row is-model-row">
-
-                <span class="opt-tag-pill ${isPost24 ? 'is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; font-weight:800;' : 'is-model'}">${isPost24 ? '(إجابة مذكرة د. أحمد عامر)' : 'Model Answer (المعتمد للدرجة)'}</span>
-
-                <span class="dual-policy-ans" dir="ltr"><strong>${verLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_answer] || '')}</span>
-
-              </div>
-
-              <div class="dual-policy-row is-ai-row">
-
-                <span class="opt-tag-pill is-ai">${isPost24 ? (q.verified_ai_custom_label || 'AI Recommended Answer') : (q.verified_ai_custom_label ? q.verified_ai_custom_label : 'Verified AI Answer (الأدق علمياً)')}</span>
-
-                <span class="dual-policy-ans" dir="ltr"><strong>${aiLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')}</span>
-
-              </div>
-
-              ${q.number === 82 ? "" : `<div class="dual-policy-why">
-
-                <div class="dual-policy-why-title">⚖️ ${isPost24 ? 'تقييم الخيارات واعتماد إجابة مذكرة د. أحمد عامر (' + verLetter + '):' : (q.verified_ai_custom_label ? 'مقارنة الخيارات واعتماد الـ Model Answer (' + verLetter + '):' : 'لماذا نعتمد الـ Model Answer (' + verLetter + ') برغم أنها ليست الأدق علمياً؟')}</div>
-
-                <div>
-
-                  ${isPost24 ? `
-
-                    بعد فبراير 2024 الموقع الرسمي للامتحان لم يعد ينشر Model Answer؛ ولذلك تم اعتماد الخيار <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> بناءً على مراجعة الكتب والمراجع، بينما الخيار <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> يمثل <strong>AI Recommended Answer</strong> وفق التدقيق السريري.
-
-                  ` : (q.verified_ai_custom_label ? `
-
-                    هناك تباين في المراجع الطبية المعتمدة حول الأولوية في هذا السيناريو بين <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كإجراء إسعافي أولي، وبين <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> كفحص ذي دقة تشخيصية أعلى؛ وبما أن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong>، فإننا نعتمد <strong>Model Answer (${verLetter})</strong> كـ Correct Answer لضمان درجتك في الامتحان، مع توضيح وجهة نظر وتفسير المصادر التي توصي بـ <strong>${aiLetter}</strong>.
-
-                  ` : `
-
-                    علمياً، إجابة <strong>Verified AI Answer (${aiLetter})</strong> هي الأصح طبياً كما هو موضّح في التفسير العلمي أدناه؛ ولكن لأن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong> حيث كان موقع الامتحان يعرض الأسئلة بالإجابات النموذجية ثم يكرر الأسئلة بنفس مفتاح التصحيح حتى وإن كان غير دقيق علمياً (ومَن يختار الصواب العلمي يُحسب له صفر)، فإننا نعتمد هنا <strong>Model Answer (${verLetter})</strong> كـ Correct Answer حفاظاً على درجتك في الامتحان، مع بيان <strong>Verified AI Answer (${aiLetter})</strong> وتفسيرها العلمي الكامل لفهمك الطبي.
-
-                  `)}
-
-                </div>
-
-              </div>`}
-
-            </div>
-
-            ${isPost24 && q.has_discrepancy ? `
-
-              <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
-
-                <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
-
-              </div>
-
-            ` : ''}
-
-            ${q.has_discrepancy ? `<div class="qbank-alert" dir="ltr" style="text-align:left;"><strong>${isPost24 ? '🔍 Clinical Evaluation & Discrepancy Details:' : '⚠️ Key Comparison Attention:'}</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
-
-            <div class="verified-ai-expl-banner" dir="rtl">🔬 ${isPost24 ? `التفسير العلمي ومبررات اختيار <strong>AI Recommended Answer (${aiLetter})</strong>:` : (q.verified_ai_custom_label ? 'التفسير العلمي ووجهات النظر الطبية حول الاختيارات:' : `التفسير العلمي — لماذا نرى أن <strong>Verified AI Answer (${aiLetter})</strong> هي الأدق علمياً ولماذا باقي الاختيارات أضعف:`)}</div>
-
-          ` : `
-
-            <div style="font-weight:700; color:var(--text); margin-bottom:6px;">
-
-              ${isPost24
-
-                ? `<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11.5px; font-weight:800; margin-right:8px;">(إجابة مذكرة د. أحمد عامر)</span> ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}`
-
-                : `${q.answer_key_label || (q.model_answer_adopted ? 'Model Answer (المعتمد للدرجة):' : 'Verified Answer:')} ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}
-
-                   ${q.model_answer_adopted ? '<span class="opt-tag-pill is-model" style="margin-right:8px;">Model Answer</span>' : ''}
-
-                   ${q.has_discrepancy && q.verified_answer !== q.qbank_answer ? `<span style="color:var(--hint); margin-left:10px;">(Model Answer: ${qbLetter})</span>` : ''}`
-
-              }
-
-            </div>
-
-            ${isPost24 && q.has_discrepancy ? `
-
-              <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
-
-                <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
-
-              </div>
-
-            ` : ''}
-
-            ${!isPost24 && q.has_discrepancy ? `<div class="qbank-alert"><strong>⚠️ تنبيه ومقارنة مفتاح السؤال:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
-
-            ${isPost24 && q.has_discrepancy && q.discrepancy_note ? `<div class="qbank-alert"><strong>🔍 تفاصيل التناقض والتقييم السريري:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
-
-          `}
-
-          <p style="margin:8px 0 12px 0;">${annotateMedicalHTML(q.explanation.scientific)}</p>
-
-          ${q.explanation.wrong && q.explanation.wrong.length ? `
-
-            <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${hasDualPolicy ? 'Why other options are less likely (من منظور التحقق العلمي):' : 'Why other options are less likely:'}</div>
-
-            <ul style="margin:0 0 12px 0; padding-left:18px;">
-
-              ${q.explanation.wrong.map(w => `<li style="margin-bottom:4px;">${annotateMedicalHTML(w)}</li>`).join("")}
-
-            </ul>
-
-          ` : ''}
-
-          <div style="padding:10px 14px; background:var(--teal-light); border-left:3px solid var(--teal); border-radius:0 6px 6px 0; color:var(--text);">
-
-            <strong>Exam Pearl:</strong> ${annotateMedicalHTML(q.explanation.pearl)}
-
-          </div>
-
-        </div>
-
-        ${renderAmerPeriodNoticeHTML(q)}
-
-      ` : ''}
-
-
-
-      ${isAdminAccount() ? renderAdminRevisionBoxHTML('q_' + q.number, 'سؤال Q#' + q.number + ' (د. عامر: #' + q.number + ')') : ''}
-
-      ${renderQuestionCommunitySectionHTML(q)}
-
-
-
-      <div class="quiz-footer-nav">
-
-        <button class="btn-outline" ${state.quizIndex === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="stepQuiz(-1)">&larr; Previous</button>
-
-        ${state.quizIndex < qs.length - 1
-
-          ? `<button class="btn-teal" onclick="stepQuiz(1)">Next Question &rarr;</button>`
-
-          : `<button class="btn-teal" onclick="finishAndShowSessionResults()" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%); font-weight:700; box-shadow:0 4px 12px rgba(10,108,116,0.3);">📊 إنهاء السيشن وعرض النتيجة &larr;</button>`
-
-        }
-
-      </div>
-
-    </div>
-
-  `;
-
-
-
-  renderSplitNotesPane();
-
-  if (showPeerStats && !cachedPeerStats) {
-
-    loadAndRenderPeerStatsForQuestion(q.number, q.options.length);
-
+    `;
+
+    cardArea.innerHTML = toolbarHTML + navTopHTML + `<div class="quiz-list-items-wrap">${cardsHTML}</div>` + navBottomHTML;
+    chunk.forEach(item => {
+      const ist = state.qStatus[item.number] || {};
+      const rev = typeof ist.selected === "number" || Boolean(state.reviewMode);
+      if (rev) {
+        loadAndRenderPeerStatsForQuestion(item.number, item.options.length);
+      }
+    });
+  } else {
+    // Single Card Mode
+    const q = qs[state.quizIndex];
+    cardArea.innerHTML = toolbarHTML + renderQuestionCardHTML(q, state.quizIndex, qs.length, false);
+    const st = state.qStatus[q.number] || {};
+    const rev = typeof st.selected === "number" || Boolean(state.reviewMode);
+    if (rev) {
+      loadAndRenderPeerStatsForQuestion(q.number, q.options.length);
+    }
   }
 
+  renderSplitNotesPane();
 }
 
 
@@ -24160,11 +23944,21 @@ function checkAutoStopTimerOnAnswer() {
 
 
 function jumpQuizIdx(idx) {
-
   state.quizIndex = idx;
-
+  if (state.quizViewMode === "list") {
+    state.quizListPage = Math.floor(idx / 10);
+  }
   renderQuizPage(true);
-
+  if (state.quizViewMode === "list") {
+    setTimeout(() => {
+      const qs = getQuizVisibleQuestions();
+      const q = (qs && qs[idx]) ? qs[idx] : null;
+      if (q) {
+        const el = document.getElementById("list-qcard-" + q.number);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 40);
+  }
 }
 
 
@@ -24189,6 +23983,7 @@ function stepQuiz(delta) {
 
 
 function triggerHint(qnum) {
+  if(state.reviewMode){showToast('Review Mode: progress is protected. Turn it off to answer or retry.');return;}
 
   if (!state.qStatus[qnum]) {
 
@@ -24457,6 +24252,7 @@ function renderQuestionAttemptsDropdownHTML(q, st) {
 
 
 function revealQuizAnswer(qnum) {
+  if(state.reviewMode){showToast('Review Mode: progress is protected. Turn it off to answer or retry.');return;}
 
   const cur = state.qStatus[qnum] || { selected: null, status: null, hintUsed: false, flagged: false, history: [] };
 
@@ -24801,6 +24597,7 @@ async function loadAndRenderPeerStatsForQuestion(qnum, optCount) {
   }
 }
 function selectQuizOption(qnum, optIdx) {
+  if(state.reviewMode){showToast('Review Mode: progress is protected. Turn it off to answer or retry.');return;}
 
   if (typeof hasAdminCopyAccess === "function" && hasAdminCopyAccess()) {
 
@@ -24862,6 +24659,7 @@ function selectQuizOption(qnum, optIdx) {
 
 
 function retryQuestion(qnum) {
+  if(state.reviewMode){showToast('Review Mode: progress is protected. Turn it off to answer or retry.');return;}
 
   if (state.qStatus[qnum]) {
 
@@ -26826,27 +26624,7 @@ function shuffleArray(arr) {
 
 
 
-function shuffleCurrentSession() {
-
-  if (!Array.isArray(state.activeQuizQs) || state.activeQuizQs.length < 2) {
-
-    showToast("لا توجد أسئلة كافية لعمل Shuffle في هذه السيشن.");
-
-    return;
-
-  }
-
-  if (!confirm("هل ترغب في إعادة ترتيب أسئلة السيشن الحالية عشوائياً (Shuffle)؟")) return;
-
-  state.activeQuizQs = shuffleArray(state.activeQuizQs);
-
-  state.quizIndex = 0; const dBox = document.getElementById("quizDotsStrip"); if (dBox) delete dBox._lastSig;
-
-  renderQuizPage(true);
-
-  showToast("🔀 تم ترتيب أسئلة السيشن عشوائياً بنجاح!");
-
-}
+/* shuffleCurrentSession restored below with session controls */
 
 
 
@@ -28803,6 +28581,486 @@ if (typeof document !== "undefined") {
 }
 
 
+// restored-review-list-package-v1
+function toggleQuizReviewMode() {
+  state.reviewMode = !state.reviewMode;
+  if(state.reviewMode){state.reviewPreviousPause=quizTimersPaused;quizTimersPaused=true;}
+  else quizTimersPaused=!!state.reviewPreviousPause;
+  updatePauseButtonsUI();
+  renderQuizPage(false);
+  if (state.reviewMode) {
+    showToast("📖 Review Mode Active: Answers & Exam Pearls revealed for study without affecting progress!");
+  } else {
+    showToast("🎯 Normal Quiz Mode: Answer questions to record your progress.");
+  }
+}
+
+function toggleQuizViewMode() {
+  state.quizViewMode = (state.quizViewMode === "list") ? "card" : "list";
+  if (state.quizViewMode === "list") {
+    state.quizListPage = Math.floor((state.quizIndex || 0) / 10);
+  }
+  renderQuizPage(false);
+  if (state.quizViewMode === "list") {
+    showToast("📄 Switched to List View (10 questions per page).");
+  } else {
+    showToast("🎴 Switched to Single Card View.");
+  }
+}
+
+function changeQuizListPage(delta) {
+  const qs = getQuizVisibleQuestions();
+  if (!qs || qs.length === 0) return;
+  const totalPages = Math.ceil(qs.length / 10);
+  let newPage = (state.quizListPage || 0) + delta;
+  if (newPage < 0) newPage = 0;
+  if (newPage >= totalPages) newPage = Math.max(0, totalPages - 1);
+  state.quizListPage = newPage;
+  state.quizIndex = newPage * 10;
+  
+  const dBox = document.getElementById("quizDotsStrip");
+  if (dBox) delete dBox._lastSig;
+  
+  renderQuizPage(false);
+  const cardArea = document.getElementById("quizCardRenderArea");
+  if (cardArea) {
+    cardArea.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function toggleListQuestionExp(qnum) {
+  if (!state.listExpandedExps) state.listExpandedExps = {};
+  state.listExpandedExps[qnum] = !state.listExpandedExps[qnum];
+  const isOpen = state.listExpandedExps[qnum];
+  const box = document.getElementById("listExpBox-" + qnum);
+  const btn = document.getElementById("btnExpToggle-" + qnum);
+  if (box) box.style.display = isOpen ? "block" : "none";
+  if (btn) btn.innerHTML = isOpen ? "🙈 Hide Explanation & Exam Pearl" : "👁️ Show Explanation & Exam Pearl";
+}
+
+function toggleAllListExplanations() {
+  if (!state.listExpandedExps) state.listExpandedExps = {};
+  const qs = getQuizVisibleQuestions();
+  if (!qs || qs.length === 0) return;
+  const curPage = state.quizListPage || 0;
+  const startIdx = curPage * 10;
+  const endIdx = Math.min(startIdx + 10, qs.length);
+  const chunk = qs.slice(startIdx, endIdx);
+  
+  const allOpen = chunk.every(q => Boolean(state.listExpandedExps[q.number]));
+  const targetState = !allOpen;
+  
+  chunk.forEach(q => {
+    state.listExpandedExps[q.number] = targetState;
+    const box = document.getElementById("listExpBox-" + q.number);
+    const btn = document.getElementById("btnExpToggle-" + q.number);
+    if (box) box.style.display = targetState ? "block" : "none";
+    if (btn) btn.innerHTML = targetState ? "🙈 Hide Explanation & Exam Pearl" : "👁️ Show Explanation & Exam Pearl";
+  });
+  
+  const allBtn = document.getElementById("btnToggleAllListExp");
+  if (allBtn) allBtn.innerHTML = targetState ? "🙈 Collapse All Explanations" : "👁️ Expand All Explanations";
+}
+
+function renderQuizModeToolbarHTML(qs) {
+  const isList = state.quizViewMode === "list";
+  const isReview = Boolean(state.reviewMode);
+  const totalPages = Math.ceil(qs.length / 10);
+  const curPage = state.quizListPage || 0;
+  
+  return `
+    <div class="quiz-mode-toolbar" dir="ltr">
+      <div class="qmt-left">
+        <button type="button" class="btn-toggle-review ${isReview ? 'is-active' : ''}" onclick="toggleQuizReviewMode()" title="Toggle Review Mode: Reveal correct answers and pearls directly for study without recording false mistakes">
+          <span>📖 Review Mode:</span>
+          <strong>${isReview ? 'ON' : 'OFF'}</strong>
+        </button>
+        <button type="button" class="btn-toggle-view ${isList ? 'is-active' : ''}" onclick="toggleQuizViewMode()" title="Switch between Single Question Card and List View (10 questions per page)">
+          <span>${isList ? '🎴 Single Card' : '📄 List View (10 Qs)'}</span>
+        </button>
+      </div>
+      <div class="qmt-right">
+        ${isReview ? `
+          <span class="review-status-tag" title="In Review Mode, questions are displayed for reading/study only. Unanswered questions will NOT be counted as wrong answers in your records.">
+            🛡️ Progress Protected · Study Only
+          </span>
+        ` : ''}
+        ${isList ? `
+          <span class="qmt-page-info">
+            Set ${curPage + 1} of ${totalPages} (${qs.length} Qs total)
+          </span>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderQuestionCardHTML(q, idxInSession, totalQs, isListView) {
+  const st = state.qStatus[q.number] || {};
+  const isAnswered = typeof st.selected === "number";
+  const isReview = Boolean(state.reviewMode);
+  const isRevealed = isAnswered || isReview;
+  const isHintShown = !!st.hintUsed;
+  const isFlagged = !!st.flagged;
+  
+  const showPeerStats = isAnswered || isReview;
+  const cachedPeerStats = showPeerStats ? getCachedQuestionPeerStats(q.number) : null;
+  const peerDetails = showPeerStats ? (cachedPeerStats ? computePeerOptionDetails(cachedPeerStats, q.options.length, q) : getDeterministicPeerBaseline(q)) : null;
+  const isPost24 = !q.answer_key_label && isPostFeb2024Question(q);
+  const hasDualPolicy = typeof q.verified_ai_answer === "number" && q.verified_ai_answer !== q.verified_answer;
+  
+  // Options rendering
+  const optsHTML = q.options.map((optText, idx) => {
+    const letter = String.fromCharCode(65 + idx);
+    let rowCls = "";
+    let badgeRight = "";
+    
+    if (isRevealed) {
+      rowCls = "locked";
+      if (hasDualPolicy) {
+        const badges = [];
+        if (idx === q.verified_answer) {
+          rowCls += " is-correct";
+          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>`);
+          if (isPost24) {
+            badges.push(`<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>`);
+          } else {
+            badges.push(`<span class="opt-tag-pill is-model">Model Answer</span>`);
+          }
+        } else if (idx === q.verified_ai_answer) {
+          if (isAnswered && idx === st.selected) {
+            rowCls += " is-wrong";
+            badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
+          } else {
+            rowCls += " is-verified-ai";
+          }
+          const aiBadgeLabel = isPost24 ? (q.verified_ai_custom_label || "AI Recommended Answer") : (q.verified_ai_custom_label || "Verified AI Answer");
+          badges.push(`<span class="opt-tag-pill is-ai">${aiBadgeLabel}</span>`);
+        } else if (isAnswered && idx === st.selected) {
+          rowCls += " is-wrong";
+          badges.push(`<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`);
+        }
+        badgeRight = badges.join(" ");
+      } else {
+        if (idx === q.verified_answer) {
+          rowCls += " is-correct";
+          if (isPost24) {
+            const amerTag = q.has_discrepancy ? ` <span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800;">(إجابة مذكرة د. أحمد عامر)</span>` : "";
+            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${amerTag}`;
+          } else {
+            const mTag = q.model_answer_adopted ? ` <span class="opt-tag-pill is-model">Model Answer</span>` : "";
+            badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--correct);">Correct</span>${mTag}`;
+          }
+        } else if (isAnswered && idx === st.selected) {
+          rowCls += " is-wrong";
+          badgeRight = `<span style="font-size:12px; font-weight:600; color:var(--wrong);">Your Answer</span>`;
+        } else if (q.has_discrepancy && idx === q.qbank_answer && q.qbank_answer !== q.verified_answer) {
+          if (isPost24) {
+            badgeRight = `<span class="opt-tag-pill is-ai" style="background:#eff6ff; color:#1e40af; border:1px solid #93c5fd; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">AI Recommended Answer</span>`;
+          } else {
+            badgeRight = `<span class="opt-tag-pill is-model" style="font-size:11.5px; font-weight:700;">Model Answer</span>`;
+          }
+        }
+      }
+    }
+    
+    const isElim = !!(state.eliminatedOpts[q.number] && state.eliminatedOpts[q.number][idx]);
+    const finalRowCls = (isElim ? "is-eliminated " : "") + rowCls;
+    const finalBadgeRight = q.answer_key_label === 'AI Recommended Answer:' && badgeRight && idx === q.verified_answer ? '<span class="opt-tag-pill is-ai">AI Recommended</span>' : badgeRight;
+    const pctVal = (peerDetails && typeof peerDetails.pcts[idx] === "number") ? peerDetails.pcts[idx] : null;
+    const countVal = (peerDetails && peerDetails.counts && typeof peerDetails.counts[idx] === "number") ? peerDetails.counts[idx] : 0;
+    const peerFillWidth = pctVal !== null ? pctVal : 0;
+    const peerPctText = pctVal !== null ? formatPeerOptionLabel(pctVal, countVal, peerDetails.showCounts) : "";
+    const peerPctCls = pctVal !== null ? ("opt-peer-pct visible" + (peerDetails.isBelowMin ? " admin-below-min" : "")) : "opt-peer-pct";
+    const peerPctTitle = (pctVal !== null && peerDetails.showCounts) ? getPeerOptionTitle(countVal, peerDetails.total, peerDetails.isBelowMin) : "";
+    
+    return `
+      <div class="opt-row ${finalRowCls}" data-opt-idx="${idx}" onclick="selectQuizOption(${q.number}, ${idx})" oncontextmenu="if(hasAdminCopyAccess() && window.getSelection && window.getSelection().toString().trim()) return; event.preventDefault(); toggleEliminateOpt(${q.number}, ${idx});">
+        ${showPeerStats ? `<div class="opt-peer-bar"><div class="opt-peer-fill" data-peer-fill="${idx}" style="width:${peerFillWidth}%"></div></div>` : ""}
+        <div class="opt-left">
+          <span class="opt-char">${letter}</span>
+          <span>${annotateMedicalHTML(optText)}</span>
+        </div>
+        <div class="opt-right-wrap">
+          ${finalBadgeRight}
+          ${showPeerStats ? `<span class="${peerPctCls}" data-peer-pct="${idx}"${peerPctTitle ? ` title="${peerPctTitle}"` : ""}>${peerPctText}</span>` : ""}
+          <button class="opt-elim-btn" onclick="event.stopPropagation(); toggleEliminateOpt(${q.number}, ${idx});" title="Cross out / Eliminate this choice (or Right-Click)">✕</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+  
+  const verLetter = String.fromCharCode(65 + q.verified_answer);
+  const qbLetter = String.fromCharCode(65 + q.qbank_answer);
+  const aiLetter = hasDualPolicy ? String.fromCharCode(65 + q.verified_ai_answer) : "";
+  const tags = q.exam_tags || [];
+  const countNum = tags.length > 0 ? tags.length : 1;
+  const allChipsHTML = tags.map(tag => formatExamTagChip(tag)).join("");
+  
+  // Explanation Box Content
+  const explanationHTML = `
+    <div class="explanation-box">
+      ${hasDualPolicy ? `
+        <div class="dual-policy-card" dir="rtl">
+          <div class="dual-policy-row is-model-row">
+            <span class="opt-tag-pill ${isPost24 ? 'is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; font-weight:800;' : 'is-model'}">${isPost24 ? '(إجابة مذكرة د. أحمد عامر)' : 'Model Answer (المعتمد للدرجة)'}</span>
+            <span class="dual-policy-ans" dir="ltr"><strong>${verLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_answer] || '')}</span>
+          </div>
+          <div class="dual-policy-row is-ai-row">
+            <span class="opt-tag-pill is-ai">${isPost24 ? (q.verified_ai_custom_label || 'AI Recommended Answer') : (q.verified_ai_custom_label ? q.verified_ai_custom_label : 'Verified AI Answer (الأدق علمياً)')}</span>
+            <span class="dual-policy-ans" dir="ltr"><strong>${aiLetter}.</strong> ${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')}</span>
+          </div>
+          ${q.number === 82 ? "" : `<div class="dual-policy-why">
+            <div class="dual-policy-why-title">⚖️ ${isPost24 ? 'تقييم الخيارات واعتماد إجابة مذكرة د. أحمد عامر (' + verLetter + '):' : (q.verified_ai_custom_label ? 'مقارنة الخيارات واعتماد الـ Model Answer (' + verLetter + '):' : 'لماذا نعتمد الـ Model Answer (' + verLetter + ') برغم أنها ليست الأدق علمياً؟')}</div>
+            <div>
+              ${isPost24 ? `
+                بعد فبراير 2024 الموقع الرسمي للامتحان لم يعد ينشر Model Answer؛ ولذلك تم اعتماد الخيار <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> بناءً على مراجعة الكتب والمراجع، بينما الخيار <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> يمثل <strong>AI Recommended Answer</strong> وفق التدقيق السريري.
+              ` : (q.verified_ai_custom_label ? `
+                هناك تباين في المراجع الطبية المعتمدة حول الأولوية في هذا السيناريو بين <strong>${verLetter} (${annotateMedicalHTML(q.options[q.verified_answer] || '')})</strong> كإجراء إسعافي أولي، وبين <strong>${aiLetter} (${annotateMedicalHTML(q.options[q.verified_ai_answer] || '')})</strong> كفحص ذي دقة تشخيصية أعلى؛ وبما أن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong>، فإننا نعتمد <strong>Model Answer (${verLetter})</strong> كـ Correct Answer لضمان درجتك في الامتحان، مع توضيح وجهة نظر وتفسير المصادر التي توصي بـ <strong>${aiLetter}</strong>.
+              ` : `
+                علمياً، إجابة <strong>Verified AI Answer (${aiLetter})</strong> هي الأصح طبياً كما هو موضّح في التفسير العلمي أدناه؛ ولكن لأن هذا السؤال ورد في امتحانات <strong>فبراير 2024 أو قبله (&le; 02/2024)</strong> حيث كان موقع الامتحان يعرض الأسئلة بالإجابات النموذجية ثم يكرر الأسئلة بنفس مفتاح التصحيح حتى وإن كان غير دقيق علمياً (ومَن يختار الصواب العلمي يُحسب له صفر)، فإننا نعتمد هنا <strong>Model Answer (${verLetter})</strong> كـ Correct Answer حفاظاً على درجتك في الامتحان، مع بيان <strong>Verified AI Answer (${aiLetter})</strong> وتفسيرها العلمي الكامل لفهمك الطبي.
+              `)}
+            </div>
+          </div>`}
+        </div>
+        ${isPost24 && q.has_discrepancy ? `
+          <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
+            <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
+          </div>
+        ` : ''}
+        ${q.has_discrepancy ? `<div class="qbank-alert" dir="ltr" style="text-align:left;"><strong>${isPost24 ? '🔍 Clinical Evaluation & Discrepancy Details:' : '⚠️ Key Comparison Attention:'}</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
+        <div class="verified-ai-expl-banner" dir="rtl">🔬 ${isPost24 ? `التفسير العلمي ومبررات اختيار <strong>AI Recommended Answer (${aiLetter})</strong>:` : (q.verified_ai_custom_label ? 'التفسير العلمي ووجهات النظر الطبية حول الاختيارات:' : `التفسير العلمي — لماذا نرى أن <strong>Verified AI Answer (${aiLetter})</strong> هي الأدق علمياً ولماذا باقي الاختيارات أضعف:`)}</div>
+      ` : `
+        <div style="font-weight:700; color:var(--text); margin-bottom:6px;">
+          ${isPost24
+            ? `<span class="opt-tag-pill is-amer-note" style="background:#059669; color:#fff; border:1px solid #047857; padding:2px 8px; border-radius:4px; font-size:11.5px; font-weight:800; margin-right:8px;">(إجابة مذكرة د. أحمد عامر)</span> ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}`
+            : `${q.answer_key_label || (q.model_answer_adopted ? 'Model Answer (المعتمد للدرجة):' : 'Verified Answer:')} ${verLetter}. ${annotateMedicalHTML(q.options[q.verified_answer] || '')}
+               ${q.model_answer_adopted ? '<span class="opt-tag-pill is-model" style="margin-right:8px;">Model Answer</span>' : ''}
+               ${q.has_discrepancy && q.verified_answer !== q.qbank_answer ? `<span style="color:var(--hint); margin-left:10px;">(Model Answer: ${qbLetter})</span>` : ''}`
+          }
+        </div>
+        ${isPost24 && q.has_discrepancy ? `
+          <div class="qbank-alert" style="background:#f0fdf4; border:1px solid #86efac; color:#14532d; padding:10px 14px; border-radius:6px; margin:8px 0; direction:rtl; text-align:right;" dir="rtl">
+            <strong>📢 تنبيه رسمي (بعد فبراير 2024):</strong> بعد فبراير 2024 الموقع الرسمي للامتحان معدش بينزل Model Answer، فدي حتى الآن مش إجابة رسمية معتمدة 100% لإن مفيش مودل أنسر؛ وإنما تم اعتمادها كـ <strong>(إجابة مذكرة د. أحمد عامر)</strong> وفقاً للمراجعة والتدقيق العلمي السريري.
+          </div>
+        ` : ''}
+        ${!isPost24 && q.has_discrepancy ? `<div class="qbank-alert"><strong>⚠️ تنبيه ومقارنة مفتاح السؤال:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
+        ${isPost24 && q.has_discrepancy && q.discrepancy_note ? `<div class="qbank-alert"><strong>🔍 تفاصيل التناقض والتقييم السريري:</strong> ${annotateMedicalHTML(q.discrepancy_note)}</div>` : ''}
+      `}
+      <p style="margin:8px 0 12px 0;">${annotateMedicalHTML(q.explanation.scientific)}</p>
+      ${q.explanation.wrong && q.explanation.wrong.length ? `
+        <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${hasDualPolicy ? 'Why other options are less likely (من منظور التحقق العلمي):' : 'Why other options are less likely:'}</div>
+        <ul style="margin:0 0 12px 0; padding-left:18px;">
+          ${q.explanation.wrong.map(w => `<li style="margin-bottom:4px;">${annotateMedicalHTML(w)}</li>`).join("")}
+        </ul>
+      ` : ''}
+      <div style="padding:10px 14px; background:var(--teal-light); border-left:3px solid var(--teal); border-radius:0 6px 6px 0; color:var(--text);">
+        <strong>Exam Pearl:</strong> ${annotateMedicalHTML(q.explanation.pearl)}
+      </div>
+    </div>
+    ${renderAmerPeriodNoticeHTML(q)}
+  `;
+  
+  // Explanation Display Logic
+  let explanationSectionHTML = "";
+  if (isListView && isRevealed) {
+    // In List View, explanation is collapsed by default!
+    const isExpOpen = Boolean(state.listExpandedExps && state.listExpandedExps[q.number]);
+    explanationSectionHTML = `
+      <div style="margin-top:10px;">
+        <button type="button" class="list-exp-toggle-btn" onclick="toggleListQuestionExp(${q.number})" id="btnExpToggle-${q.number}">
+          ${isExpOpen ? '🙈 Hide Explanation & Exam Pearl' : '👁️ Show Explanation & Exam Pearl'}
+        </button>
+        <div id="listExpBox-${q.number}" style="${isExpOpen ? 'display:block;' : 'display:none;'}">
+          ${explanationHTML}
+        </div>
+      </div>
+    `;
+  } else {
+    // Single Card Mode: show directly if isRevealed
+    if (isRevealed) {
+      explanationSectionHTML = explanationHTML;
+    }
+  }
+  
+  const cdata = {};
+  const cTitle = cdata.concept_title_en || cdata.concept_title_ar || "";
+  
+  return `
+    <div class="quiz-card ${isListView ? 'list-qcard-item' : ''}" data-qnum="${q.number}" id="list-qcard-${q.number}">
+      
+      <div class="qc-header">
+        <div class="qc-top-row">
+          <div class="qc-title-wrap">
+            <span class="qc-qnum-title">Question ${idxInSession + 1} of ${totalQs} <span class="qc-chapter-badge" style="color:var(--teal); font-weight:700; margin-right:4px;">• ${getChapterTitle(q.chapter_id)}</span>${q._predProb ? `<span class="qc-pred-badge" style="background:#0d9488; color:#fff; font-size:11px; padding:2px 7px; border-radius:10px; margin-right:6px; font-weight:700;" title="نسبة الاحتمالية المحسوبة">🎯 احتمالية ${q._predProb}%</span>` : ''}</span>
+            ${isAdminAccount() ? `<span class="admin-amer-pill" title="رقم السؤال في مذكرة د. أحمد عامر (أدمن)">#${q.number}</span>` : ''}
+            ${st.revealed ? `<span class="status-pill" style="background:var(--wrong-bg); color:var(--wrong); font-size:11px; flex-shrink:0;">Answer Revealed</span>` : ''}
+            ${isReview && !isAnswered ? `<span class="status-pill" style="background:#e0f2fe; color:#0369a1; font-size:11px; font-weight:700; flex-shrink:0;">📖 Review Mode</span>` : ''}
+          </div>
+          
+          <div class="qc-actions-wrap">
+            ${renderQuestionAttemptsDropdownHTML(q, st)}
+            ${!isListView ? `
+              <button class="subtle-link-btn" id="btnShuffleQuiz" onclick="shuffleCurrentSession()" title="إعادة ترتيب أسئلة السيشن الحالية عشوائياً">🔀 Shuffle</button>
+              <button class="subtle-link-btn" onclick="finishAndShowSessionResults()" title="عرض تقرير النتيجة والملاحظات للسيشن الحالية">📊 النتيجة</button>
+            ` : ''}
+            <button class="subtle-link-btn" style="${isHintShown ? 'border-color:var(--hint); color:var(--hint); background:var(--hint-bg);' : ''}" onclick="triggerHint(${q.number})">
+              💡 Hint
+            </button>
+            ${(!isAnswered && !isReview) ? `
+              <button class="subtle-link-btn" onclick="revealQuizAnswer(${q.number})" title="Reveal the correct answer and explanation (counts as Incorrect)">
+                👁 Show Answer
+              </button>
+            ` : ''}
+            <button class="subtle-link-btn" style="${isFlagged ? 'border-color:var(--flag); color:var(--flag); background:var(--flag-bg);' : ''}" onclick="triggerFlag(${q.number})">
+              🚩 ${isFlagged ? 'Flagged' : 'Flag'}
+            </button>
+            <button class="subtle-link-btn" onclick="openReportQuestionModal(${q.number})" title="إبلاغ عن خطأ أو ملاحظة في السؤال للمشرف">
+              🚨 إبلاغ
+            </button>
+            ${isAnswered ? `<button class="subtle-link-btn" onclick="retryQuestion(${q.number})">🔄 Retry</button>` : ''}
+          </div>
+        </div>
+        
+        ${tags.length > 0 ? `
+          <div class="qc-exam-tags-row">
+            <span class="exam-count-pill" title="عدد مرات تكرار السؤال في الامتحانات">&times;${countNum}</span>
+            ${allChipsHTML}
+          </div>
+        ` : ''}
+      </div>
+      
+      <div class="qc-stem">${privateStem(q)}</div>
+      ${isHintShown ? `<div class="hint-callout"><strong>Clinical Hint:</strong> ${annotateMedicalHTML(q.hint)}</div>` : ''}
+      <div class="opt-list">${optsHTML}</div>
+      ${renderAmerSingleOptNoticeHTML(q)}
+      ${showPeerStats && hasAdminPeerStatsAccess()
+        ? `<div class="opt-peer-admin-note ${peerDetails && peerDetails.showCounts ? ('visible' + (peerDetails.isBelowMin ? ' below-min' : '')) : ''}" id="peerAdminNote-${q.number}">${peerDetails && peerDetails.showCounts ? formatPeerAdminNote(peerDetails.total, peerDetails.isBelowMin) : ''}</div>`
+        : ''}
+      
+      ${explanationSectionHTML}
+      ${isAdminAccount() ? renderAdminRevisionBoxHTML('q_' + q.number, 'سؤال Q#' + q.number + ' (د. عامر: #' + q.number + ')') : ''}
+      ${renderQuestionCommunitySectionHTML(q)}
+      
+      ${!isListView ? `
+        <div class="quiz-footer-nav">
+          <button class="btn-outline" ${state.quizIndex === 0 ? 'disabled style="opacity:0.4; cursor:default;"' : ''} onclick="stepQuiz(-1)">&larr; Previous</button>
+          
+          
+          ${state.quizIndex < totalQs - 1
+            ? `<button class="btn-teal" onclick="stepQuiz(1)">Next Question &rarr;</button>`
+            : `<button class="btn-teal" onclick="finishAndShowSessionResults()" style="background:linear-gradient(135deg, #0a6c74 0%, #0d9488 100%); font-weight:700; box-shadow:0 4px 12px rgba(10,108,116,0.3);">📊 إنهاء السيشن وعرض النتيجة &larr;</button>`
+          }
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+
+
+
+
+/* renderQuizTierFilterBar restored below with session controls */
+
+function getQuizVisibleQuestions(){
+ const all=getQuestionsForFilter(state.quizFilter),chapters=state.quizChapterFilter;
+ return chapters&&chapters.length?all.filter(q=>chapters.includes(q.chapter_id)):all;
+}
+function isQuestionInTier(q,tier){
+ if(tier==='all')return true;
+ const p=computePredictionsAnalysis(),list=tier==='top100'?p.top100:tier==='top500'?p.top500:tier==='pred2526'?p.all:[];
+ return list.some(item=>item.number===q.number);
+}
+function getTierCountsForBaseQuestions(qs){
+ const counts={all:qs.length,top100:0,top500:0,pred2526:0},p=computePredictionsAnalysis();
+ for(const [key,list] of Object.entries({top100:p.top100,top500:p.top500,pred2526:p.all})){const ids=new Set(list.map(q=>q.number));counts[key]=qs.filter(q=>ids.has(q.number)).length}
+ return counts;
+}
+/* setQuizPredictionTier restored below with session controls */
+
+function getQuestionsForFilter(filter){
+ const qs=getUnfilteredQuestionsForFilter(filter),chapters=state.quizChapterFilter;
+ return filter===state.quizFilter&&chapters&&chapters.length?qs.filter(q=>chapters.includes(q.chapter_id)):qs;
+}
+
+
+// session-controls-v2
+window.QUESTION_CONCEPTS_MAP={};
+window.ORIGINAL_2025_2026_IDS=[1260, 1294, 1319, 1266, 1297, 906, 623, 736, 38, 1251, 239, 522, 1617, 626, 836, 837, 1742, 1200, 1022, 1197, 951, 1066, 258, 932, 413, 176, 350, 721, 83, 1353, 1371, 784, 1240, 1351, 1234, 921, 1235, 771, 899, 1440, 1156, 1394, 1446, 1471, 1178, 702, 1021, 1741, 902, 10, 1372, 1474, 868, 862, 1084, 1401, 1450, 2027, 1359, 1621, 1890, 1111, 1354, 1653, 1882, 292, 866, 884, 1057, 1831, 1007, 138, 2030, 541, 1499, 984, 1344, 1346, 1634, 1892, 1405, 1598, 1233, 863, 867, 559, 1081, 1129, 1893, 1889, 1891, 1289, 1737, 1058, 1102, 442, 69, 646, 1264, 1265, 312, 109, 1392, 1437, 1449, 1464, 1912, 1913, 299, 743, 1365, 1853, 1888, 2033, 326, 557, 566, 435, 654, 766, 1947, 1938, 934, 1927, 1461, 144, 952, 757, 1914, 1986, 590, 1855, 1886, 206, 443, 1854, 1027, 211, 444, 2034, 246, 252, 419, 745, 263, 594, 685, 1004, 300, 516, 584, 1201, 975, 998, 1165, 1563, 919, 186, 920, 577, 821, 1830, 691, 20, 704, 1701, 4, 1733, 485, 1599, 481, 1616, 1600, 1285, 1243, 555, 381, 964, 580, 1772, 1006, 1336, 1702, 578, 1015, 1822, 739, 369, 276, 539, 340, 1396, 290, 711, 1307, 1589, 1656, 1732, 1675, 912, 1649, 1670, 1775, 1614, 407, 789, 117, 336, 1707, 790, 916, 1554, 1672, 1709, 1784, 137, 341, 1711, 1161, 1509, 780, 1527, 1604, 690, 1676, 683, 1295, 1730, 1045, 287, 352, 1553, 286, 1712, 792, 1159, 1698, 1074, 1315, 787, 1615, 1044, 561, 356, 1829, 227, 420, 1562, 1063, 1087, 1113, 273, 1101, 49, 2014, 1062, 1588, 1782, 1647, 1036, 1033, 1375, 1442, 538, 834, 1559, 330, 1153, 1350, 1382, 1397, 1398, 1444, 1516, 1798, 898, 982, 1665, 1109, 1337, 470, 1555, 1739, 1558, 634, 709, 815, 1108, 1551, 1144, 1193, 6, 1774, 494, 712, 1788, 1212, 1769, 1110, 801, 1326, 1452, 385, 741, 1728, 698, 1031, 1221, 63, 1338, 371, 1059, 1997, 885, 1143, 1959, 619, 871, 729, 230, 308, 30, 1191, 692, 1512, 165, 379, 1729, 1973, 1976, 1128, 1708, 1863, 1962, 473, 966, 382, 548, 1574, 114, 173, 282, 1671, 1845, 15, 638, 270, 649, 178, 234, 726, 852, 1532, 1926, 3, 484, 506, 677, 653, 1414, 515, 1384, 1443, 409, 678, 1032, 1550, 1719, 1591, 1793, 1684, 695, 606, 260, 628, 669, 1293, 86, 1218, 1504, 1518, 238, 288, 424, 1305, 1429, 1792, 2003, 149, 742, 150, 1361, 1479, 277, 338, 1309, 1636, 995, 767, 1848, 1873, 1936, 423, 1280, 1400, 1430, 1453, 1458, 31, 1152, 1381, 1395, 1411, 1433, 1445, 1448, 1455, 1463, 1467, 169, 707, 758, 1726, 1526, 521, 629, 734, 462, 527, 573, 617, 637, 1091, 1857, 1887, 1525, 1780, 474, 672, 1298, 95, 53, 811, 387, 727, 1076, 1147, 905, 622, 723, 1421, 45, 284, 337, 696, 1088, 1049, 1377, 1436, 499, 1991, 29, 1658, 100, 135, 891, 1813, 1816, 115, 1244, 62, 422, 465, 639, 1783, 663, 1860, 825, 1683, 1506, 229, 1657, 1659, 1105, 1752, 1069, 1466, 1188, 392, 1011, 1402, 1435, 1475, 1476, 1478, 1703, 1624, 1806, 1809, 1904, 1937, 1944, 1995, 1996, 1999, 1661, 1713, 183, 249, 1505, 1821, 1777, 480, 838, 897, 1654, 1655, 988, 1241, 1977, 875, 1017, 1024, 1092, 1097, 1592, 1190, 1407, 1472, 14, 1287, 563, 372, 914, 880, 904, 956, 1012, 1137, 1895, 1905, 1922, 1934, 1189, 744, 1439, 1685, 1602, 1500, 1673, 1902, 1908, 1919, 901, 1296, 1374, 1990, 355, 985, 990, 1632, 1920, 1925, 1948, 1738, 1883, 1899, 1154, 1357, 1399, 1434, 1468, 529, 262, 1660, 1256, 1406, 1480, 1573, 1575, 1787, 466, 1238, 1715, 2019, 463, 1543, 1508, 913, 1663, 1984, 959, 960, 1130, 1496, 1755, 1760, 1906, 1909, 1590, 1790, 1896, 1946, 433, 1086, 1089, 367, 384, 400, 449, 450, 1042, 1134, 881, 266, 1093, 107, 1230, 1409, 1431, 1465, 1858, 1923, 1692, 298, 358, 1971, 1998, 1366, 1454, 1459, 1596, 1897, 2038, 2044, 331, 440, 1005, 1390, 1432, 554, 1272, 1106, 588, 595, 353, 656, 664, 768, 773, 1339, 1903, 1930, 1935, 307, 74, 562, 874, 90, 91, 1199, 1348, 2028, 2035, 2036, 2045, 140, 199, 200, 213, 446, 242, 761, 1136, 1764, 1921, 1907, 603, 1079, 237, 285, 415, 445, 447, 591, 600, 455, 941, 954, 1131, 1924, 799, 1403, 911, 105, 958, 65, 202, 204, 953, 377, 389, 453, 454, 950, 955, 1126, 1148, 1462, 1856, 1898, 1080, 1807, 1929, 1096, 1194, 205, 621, 655, 710, 759, 763, 1691, 232, 456, 265, 497, 582, 598, 675, 686, 687, 2039, 2040, 933, 97, 133, 134, 900, 1424, 1425, 1441, 1477, 1486, 1823, 61, 110, 794, 427, 610, 689, 928, 929, 1151, 1239, 1447, 1335, 24, 207, 587, 662, 162, 175, 1408, 1422, 1473, 632, 879, 882, 1013, 1085, 1568, 1748, 1696, 1492, 1530, 1674, 1677, 1850, 231, 680, 1633, 1699, 1786, 2022, 1257, 1417, 987, 931, 935, 1894, 1217, 978, 986, 788, 1029, 112, 1214, 1328, 1410, 1488, 605, 800, 1325, 1426, 1451, 1460, 1681, 1960, 1967, 147, 1560, 1620, 1731, 1776, 1805, 1810, 1928, 1945, 432, 439, 579, 922, 965, 1000, 1177, 1345, 660, 1859, 1954, 1874, 1931, 316, 876, 1734, 2, 19, 98, 2037, 2043, 2052, 143, 1770, 864, 168, 778, 294, 1727, 1801, 1974, 856, 303, 318, 396, 593, 817, 1020, 1090, 910, 1662, 1418, 1420, 1578, 102, 659, 1340, 859, 722, 1127, 1838, 145, 1139, 1751, 1862, 1864, 191, 225, 343, 56, 872, 1198, 342, 776, 996, 1988, 1993, 2051, 1491, 1501, 1957, 136, 1631, 1950, 1951, 1778, 1884, 46, 1259, 365, 782, 930, 1258, 1277, 1412, 1413, 1427, 1481, 938, 576, 666, 9, 151, 1714, 1023, 1119, 1141, 1623, 1502, 1753, 1885, 1910, 1916, 1744, 1791, 1933, 523, 865, 873, 259, 414, 1124, 1138, 1142, 945, 92, 93, 111, 1209, 1330, 1331, 1438, 1482, 1487, 1503, 1517, 1917, 1953, 1303, 1428, 1680, 1757, 1958, 2047, 2049, 394, 431, 436, 1135, 1391, 1415, 1456, 1483, 1484, 1485, 1490, 657, 658, 775, 1901, 1949, 1871, 1872, 1939, 81, 104, 963, 1423, 1457, 2020, 2029, 2041, 2042, 2048, 85, 89, 167, 215, 940, 962, 1140, 1765, 1915, 1918, 1952, 1943, 1956, 1978, 2013, 524, 542, 592, 459, 627, 949, 1133, 1900, 94, 113, 148, 388, 411, 451, 957, 961, 774, 1122, 1489, 1955, 272, 321, 448, 460, 461, 620, 106, 703, 760, 765, 878, 2023, 2046, 492, 495, 498, 567, 585, 586, 599, 688, 2026, 2050, 82, 103, 519, 520, 614, 679, 661, 665, 1961, 208, 212, 214, 772];
+
+
+
+
+
+
+
+// polished-session-filters-v1
+function enhanceSessionFilterMenus(root){
+ const host=root||document.querySelector('#quizTierFilterBar .session-controls');if(!host)return;
+ host.setAttribute('dir','rtl');
+ host.querySelectorAll('label').forEach((label,i)=>{
+  const select=label.querySelector('select');if(!select)return;
+  const field=document.createElement('div');field.className='sf-field';
+  const title=label.firstChild.textContent.trim(),name=select.getAttribute('aria-label');
+  const icon=name==='Answer status'?'◎':name==='Question order'?'⇅':'▦';
+  const selected=select.selectedOptions[0];
+  const split=t=>{const m=t.match(/^(.*?)\s*\((\d[\d,]*)\)$/);return m?{text:m[1],count:m[2]}:{text:t,count:''}};
+  const display=split(selected.textContent);const id=(host.id||'quiz-filters')+'-sf-menu-'+i;
+  field.innerHTML=`<span class="sf-caption"><span aria-hidden="true">${icon}</span>${escapeHtml(title)}</span><button type="button" class="sf-trigger" aria-label="${escapeHtml(title)}" aria-haspopup="listbox" aria-expanded="false" aria-controls="${id}"><span class="sf-value">${escapeHtml(display.text)}</span>${display.count?`<span class="sf-count">${display.count}</span>`:''}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="sf-menu" role="listbox" aria-label="${escapeHtml(title)}" id="${id}" hidden></div>`;
+  const menu=field.querySelector('.sf-menu'),trigger=field.querySelector('.sf-trigger');
+  Array.from(select.options).forEach(o=>{
+   const parts=split(o.textContent),option=document.createElement('button');option.type='button';option.className='sf-option';option.setAttribute('role','option');option.setAttribute('aria-selected',String(o.selected));option.dataset.value=o.value;option.tabIndex=-1;
+   option.innerHTML=`<span class="sf-check" aria-hidden="true">${o.selected?'✓':''}</span><span class="sf-option-text">${escapeHtml(parts.text)}</span>${parts.count?`<span class="sf-count">${parts.count}</span>`:''}`;
+   option.addEventListener('click',()=>{select.value=o.value;select.dispatchEvent(new Event('change',{bubbles:true}));(host.id?document.getElementById(host.id):document.querySelector('#quizTierFilterBar .session-controls'))?.querySelectorAll('.sf-trigger')[i]?.focus({preventScroll:true})});menu.append(option);
+  });
+  trigger.addEventListener('click',()=>{const open=menu.hidden;closeSessionFilterMenus();menu.hidden=!open;trigger.setAttribute('aria-expanded',String(open));if(open)(menu.querySelector('[aria-selected="true"]')||menu.firstElementChild)?.focus({preventScroll:true})});
+  field.addEventListener('keydown',e=>{
+   const options=Array.from(menu.children),index=options.indexOf(document.activeElement);
+   if(e.key==='Escape'){menu.hidden=true;trigger.setAttribute('aria-expanded','false');trigger.focus();e.preventDefault()}
+   if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();if(menu.hidden){closeSessionFilterMenus();menu.hidden=false;trigger.setAttribute('aria-expanded','true')}let next=e.key==='Home'?0:e.key==='End'?options.length-1:e.key==='ArrowDown'?(index+1)%options.length:(index<=0?options.length-1:index-1);options[next]?.focus()}
+  });
+  field.addEventListener('focusout',()=>setTimeout(()=>{if(!field.contains(document.activeElement)){menu.hidden=true;trigger.setAttribute('aria-expanded','false')}},0));
+  select.hidden=true;select.tabIndex=-1;field.append(select);label.replaceWith(field);
+ });
+ const count=host.querySelector(':scope > span');if(count){count.className='sf-result';count.setAttribute('aria-live','polite');count.innerHTML='<span class="sf-result-dot" aria-hidden="true"></span>'+count.textContent}
+}
+function closeSessionFilterMenus(){document.querySelectorAll('.sf-menu').forEach(e=>e.hidden=true);document.querySelectorAll('.sf-trigger').forEach(e=>e.setAttribute('aria-expanded','false'))}
+document.addEventListener('click',e=>{if(!e.target.closest('.sf-field'))closeSessionFilterMenus()});
+
+function sessionPackageKind(){return getPrivatePrefs().package}
+function sessionStatusMatch(q,key){const s=state.qStatus[q.number]||{},answered=Number.isInteger(s.selected)&&s.selected>=0&&!!s.status;if(key==='unanswered')return !answered;if(key==='correct')return answered&&s.status==='correct'&&!s.hintUsed;if(key==='wrong')return answered&&s.status==='wrong';if(key==='hint')return answered&&(s.status==='hint'||!!s.hintUsed);if(key==='flagged')return !!s.flagged;return true}
+function sessionSubsetPool(){let qs=(state.baseSessionQs||[]).slice();const kind=sessionPackageKind(),choice=state.sessionSubset||'all',p=DATA.prediction_packages;
+ if(kind==='500'){const original=new Set(p.safe500.slice(0,500)),top100=new Set(p.top100);if(choice==='original')qs=qs.filter(q=>original.has(q.number));if(choice==='added')qs=qs.filter(q=>!original.has(q.number));if(choice==='remainder')qs=qs.filter(q=>!top100.has(q.number))}
+ else if(kind==='1000'){const old=new Set(window.ORIGINAL_2025_2026_IDS),safe=new Set(p.safe500);if(choice==='original')qs=qs.filter(q=>old.has(q.number));if(choice==='added')qs=qs.filter(q=>!old.has(q.number));if(choice==='remainder')qs=qs.filter(q=>!safe.has(q.number))}
+ else if(!kind && state.quizPredictionTier && state.quizPredictionTier!=='all')qs=qs.filter(q=>isQuestionInTier(q,state.quizPredictionTier));
+ return qs;
+}
+function applySessionControls(){
+ const current=getQuestionsForFilter(state.quizFilter)[state.quizIndex];let qs=sessionSubsetPool().filter(q=>sessionStatusMatch(q,state.sessionStatus||'all'));
+ const order=state.sessionOrder||'original';
+ 
+ if(order==='probability'){const scored=new Map(computePredictionsAnalysis().all.map(q=>[q.number,q._predScore]));qs.sort((a,b)=>(scored.get(b.number)??-1)-(scored.get(a.number)??-1)||(b.freq||0)-(a.freq||0)||a.number-b.number)}
+ if(order==='shuffle')qs=shuffleArray(qs);
+ state.activeQuizQs=qs;if(state.quizFilter==='custom_exam')state.customQs=qs.slice();state.quizIndex=Math.max(0,qs.findIndex(q=>q.number===current?.number));state.quizListPage=Math.floor(state.quizIndex/10);
+ const dots=document.getElementById('quizDotsStrip');if(dots)delete dots._lastSig;renderQuizPage(true);
+}
+function setSessionControl(key,value){state[key]=value;applySessionControls()}
+function setQuizPredictionTier(tier){if(!state.baseSessionQs)state.baseSessionQs=getUnfilteredQuestionsForFilter(state.quizFilter).slice();state.quizPredictionTier=tier;state.quizChapterFilter=null;applySessionControls()}
+function shuffleCurrentSession(){state.sessionOrder='shuffle';applySessionControls();showToast('Shuffled session questions')}
+function renderQuizTierFilterBar(){
+ const bar=document.getElementById('quizTierFilterBar');if(!bar)return;if(!state.baseSessionQs)state.baseSessionQs=getUnfilteredQuestionsForFilter(state.quizFilter).slice();
+ const kind=sessionPackageKind(),counts=getTierCountsForBaseQuestions(state.baseSessionQs),subset=state.sessionSubset||'all';let packageUI='';
+ if(kind==='500'||kind==='1000'){
+ const saved=state.sessionSubset;const options=kind==='500'?[['all','كل أسئلة الباقة في السيشن'],['original','الـ500 الأصلية'],['added','إضافات تجريبي نوفمبر'],['remainder','الباقي خارج باقة الـ100']]:[['all','كل أسئلة الباقة في السيشن'],['original','الـ1,054 الأصلية'],['added','إضافات نوفمبر'],['remainder','الباقي خارج باقة الـ500']];
+ packageUI='<label>محتوى الباقة<select aria-label="Package subset" onchange="setSessionControl(\'sessionSubset\',this.value)">'+options.map(([k,label])=>{state.sessionSubset=k;const n=sessionSubsetPool().length;return `<option value="${k}" ${subset===k?'selected':''}>${label} (${n})</option>`}).join('')+'</select></label>';state.sessionSubset=saved;
+ }else if(!kind){packageUI='<label>Filter by Package<select aria-label="Filter by Package" onchange="setQuizPredictionTier(this.value)">'+[['all','Full Session'],['top100','Top 100'],['top500','Top 500 · 523'],['pred2526','2025/2026 · 1,074']].map(([k,label])=>`<option value="${k}" ${(state.quizPredictionTier||'all')===k?'selected':''}>${label} (${counts[k]})</option>`).join('')+'</select></label>'}
+ const pool=sessionSubsetPool();
+ bar.innerHTML=`<div class="session-controls">${packageUI}<label>ترتيب الأسئلة<select aria-label="Question order" onchange="setSessionControl('sessionOrder',this.value)">${[['original','ترتيب السيشن الأصلي'],['probability','الأكثر احتمالية في الامتحان'],['shuffle','Shuffled']].map(([k,l])=>`<option value="${k}" ${(state.sessionOrder||'original')===k?'selected':''}>${l}</option>`).join('')}</select></label><label>حالة الحل<select aria-label="Answer status" onchange="setSessionControl('sessionStatus',this.value)">${[['all','كل الأسئلة'],['unanswered','لسه متحلّتش'],['correct','صح بدون هينت'],['wrong','غلط'],['hint','حليتها بهينت'],['flagged','فلاجز']].map(([k,l])=>`<option value="${k}" ${(state.sessionStatus||'all')===k?'selected':''}>${l} (${pool.filter(q=>sessionStatusMatch(q,k)).length})</option>`).join('')}</select></label><span>${getQuestionsForFilter(state.quizFilter).length} سؤال مطابق</span></div>`;
+ enhanceSessionFilterMenus();
+}
+
+
 /* Private study interface; the original question and synchronization engine is retained. */
 let privatePrefs;
 function getPrivatePrefs(){
@@ -28812,7 +29070,7 @@ function getPrivatePrefs(){
 function savePrivatePrefs(){localStorage.setItem('emle_private_preferences_v1',JSON.stringify(getPrivatePrefs()))}
 function privateEsc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function privateFocus(id){return DATA.privateStudy.chapters.flatMap(c=>c.focuses).find(f=>f.id===id)}
-function privateQuestionPool(ids,ignoreStatus=false){const prefs=getPrivatePrefs(),allowed=new Set(DATA.privateStudy.packages[prefs.package]),selected=ids?new Set(ids):null;return DATA.questions.filter(q=>(ignoreStatus||privateStatusMatches(q,prefs.status||'all'))&&allowed.has(q.number)&&(!selected||selected.has(q.number))&&(!prefs.exams.length||(q.exam_tags||[]).some(t=>prefs.exams.includes(normalizeExamTag(t)))))}
+function privateQuestionPool(ids,ignoreStatus=false,ignoreSubset=false){const prefs=getPrivatePrefs(),allowed=new Set(DATA.privateStudy.packages[prefs.package]),selected=ids?new Set(ids):null;return DATA.questions.filter(q=>(ignoreStatus||privateStatusMatches(q,prefs.status||'all'))&&(ignoreSubset||privateSubsetMatch(q,prefs.subset||'all'))&&allowed.has(q.number)&&(!selected||selected.has(q.number))&&(!prefs.exams.length||(q.exam_tags||[]).some(t=>prefs.exams.includes(normalizeExamTag(t)))))}
 function privateStatusMatches(q,filter){
  const s=state.qStatus[q.number]||{},answered=Number.isInteger(s.selected)&&s.selected>=0&&!!s.status;
  if(filter==='unanswered')return !answered;
@@ -28830,6 +29088,7 @@ function setPrivateStatus(value){getPrivatePrefs().status=value;savePrivatePrefs
 function privateSolved(ids){return ids.filter(n=>{const s=state.qStatus[n];return s&&Number.isInteger(s.selected)&&s.selected>=0&&!!s.status}).length}
 function updatePrivateProgress(){
  let root=document.getElementById('privateProgress');if(!root)return;const prefs=getPrivatePrefs();
+ document.querySelectorAll('.pp-filters').forEach(host=>enhanceSessionFilterMenus(host));
  root.innerHTML=['500','1000'].map(k=>{const ids=DATA.privateStudy.packages[k],n=privateSolved(ids),pct=Math.round(n/ids.length*100);return `<div class="pp-meter"><div><strong>${k==='500'?'Top 500':'2025 / 2026'}</strong><span>${n} / ${ids.length} solved</span></div><progress value="${n}" max="${ids.length}"></progress></div>`}).join('')+`<label class="pp-highlight"><input type="checkbox" ${prefs.highlights?'checked':''} onchange="togglePrivateHighlights(this.checked)"> Key clues</label>`;
 }
 function togglePrivateHighlights(on){getPrivatePrefs().highlights=on;savePrivatePrefs();updatePrivateProgress();if(state.currentView==='quiz')renderQuizPage(false)}
@@ -28839,8 +29098,8 @@ function privateStem(q){
  for(const [start,end] of spans){result+=privateEsc(q.stem.slice(offset,start))+'<mark class="private-clue">'+privateEsc(q.stem.slice(start,end))+'</mark>';offset=end}
  return annotateMedicalHTML(result+privateEsc(q.stem.slice(offset)));
 }
-function privateFilters(){const prefs=getPrivatePrefs();return `<div class="pp-filters"><label>Question package<select aria-label="Question package" onchange="setPrivatePackage(this.value)"><option value="500" ${prefs.package==='500'?'selected':''}>Top 500 · ${DATA.privateStudy.packages['500'].length} questions</option><option value="1000" ${prefs.package==='1000'?'selected':''}>2025/2026 · ${DATA.privateStudy.packages['1000'].length} questions</option></select></label><label>حالة الأسئلة<select aria-label="Question status" onchange="setPrivateStatus(this.value)">${privateStatusOptions()}</select></label><button class="btn-outline" onclick="openPrivateExamFilter()">Select exams <span>${prefs.exams.length?'('+prefs.exams.length+')':'· All'}</span></button>${prefs.exams.length?'<button class="subtle-link-btn" onclick="clearPrivateExams()">Clear exam filter</button>':''}<span class="pp-filter-count">${privateQuestionPool().length} matching questions</span></div>`}
-function setPrivatePackage(k){getPrivatePrefs().package=k;savePrivatePrefs();navigateTo('home')}
+function privateFilters(){const prefs=getPrivatePrefs();return `<div class="pp-filters session-controls" id="privateFilters-${state.currentView}"><label>Question package<select aria-label="Question package" onchange="setPrivatePackage(this.value)"><option value="500" ${prefs.package==='500'?'selected':''}>Top 500 · ${DATA.privateStudy.packages['500'].length} questions</option><option value="1000" ${prefs.package==='1000'?'selected':''}>2025/2026 · ${DATA.privateStudy.packages['1000'].length} questions</option></select></label>${privateSubsetFilterHTML()}<label>حالة الأسئلة<select aria-label="Question status" onchange="setPrivateStatus(this.value)">${privateStatusOptions()}</select></label><button class="btn-outline" onclick="openPrivateExamFilter()">Select exams <span>${prefs.exams.length?'('+prefs.exams.length+')':'· All'}</span></button>${prefs.exams.length?'<button class="subtle-link-btn" onclick="clearPrivateExams()">Clear exam filter</button>':''}<span class="pp-filter-count">${privateQuestionPool().length} matching questions</span></div>`}
+function setPrivatePackage(k){getPrivatePrefs().package=k;getPrivatePrefs().subset='all';savePrivatePrefs();navigateTo('home')}
 function clearPrivateExams(){getPrivatePrefs().exams=[];savePrivatePrefs();navigateTo('home')}
 function openPrivateExamFilter(){
  const tags=[...new Set(DATA.questions.flatMap(q=>(q.exam_tags||[]).map(normalizeExamTag)))].sort((a,b)=>parseExamTagMeta(b).sortKey-parseExamTagMeta(a).sortKey);
@@ -28858,8 +29117,8 @@ function renderChapter(){
  const focuses=c.focuses.filter(f=>privateQuestionPool(f.questionIds).length);const qs=privateQuestionPool(c.questionIds);
  document.getElementById('page-chapter').innerHTML=`<button class="subtle-link-btn" onclick="navigateTo('home')">← All chapters</button><div class="pp-chapter-head"><span class="pp-eyebrow">CHAPTER NOTES</span><h1>${privateEsc(c.title)}</h1><p>${focuses.length} focuses · ${qs.length} matching questions</p><div class="pp-actions"><button class="btn-teal" onclick="practicePrivateChapter('${c.id}')">Practice chapter questions</button><a class="btn-outline" href="#privateChapterNotes" onclick="document.getElementById('privateChapterNotes').scrollIntoView({behavior:'smooth'});return false">Read whole chapter ↓</a></div></div>${privateFilters()}<div class="pp-focus-index">${focuses.map((f,i)=>`<button onclick="openPrivateFocus('${f.id}')"><span>${String(i+1).padStart(2,'0')}</span>${privateEsc(f.title)}<small>${privateQuestionPool(f.questionIds).length} Qs →</small></button>`).join('')}</div><div id="privateChapterNotes" class="pp-notes">${focuses.map(f=>`<section class="pp-focus-full">${f.html}<button class="btn-teal" onclick="openPrivateFocus('${f.id}')">Read & practice this focus · ${privateQuestionPool(f.questionIds).length} Qs →</button></section>`).join('')||'<p>No questions match these filters. Choose another package or exam.</p>'}</div>`;updatePrivateProgress();
 }
-function openPrivateFocus(id){const focus=privateFocus(id);if(!focus)return;const qs=privateQuestionPool(focus.questionIds);if(!qs.length){showToast('No matching questions in this focus.');return}state.privateFocusId=id;state.currentChapterId=focus.chapterId;state.customExamTitle=focus.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers')}
-function practicePrivateChapter(id){state.privateFocusId=null;const c=DATA.privateStudy.chapters.find(c=>c.id===id),qs=privateQuestionPool(c.questionIds);if(!qs.length)return;state.currentChapterId=id;state.customExamTitle=c.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers')}
+function openPrivateFocus(id){const focus=privateFocus(id);if(!focus)return;const qs=privateQuestionPool(focus.questionIds,true,true);if(!qs.length){showToast('No matching questions in this focus.');return}state.privateFocusId=id;state.currentChapterId=focus.chapterId;state.customExamTitle=focus.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers');state.sessionSubset=getPrivatePrefs().subset||'all';state.sessionStatus=getPrivatePrefs().status||'all';applySessionControls()}
+function practicePrivateChapter(id){state.privateFocusId=null;const c=DATA.privateStudy.chapters.find(c=>c.id===id),qs=privateQuestionPool(c.questionIds,true,true);if(!qs.length)return;state.currentChapterId=id;state.customExamTitle=c.title;state.customExamReturnView='chapter';executeStartQuizSession('custom_exam',qs,'keep_answers');state.sessionSubset=getPrivatePrefs().subset||'all';state.sessionStatus=getPrivatePrefs().status||'all';applySessionControls()}
 function renderQuizPage(reset){
  privateBaseRenderQuizPage(reset);let box=document.getElementById('privateFocusNotes');if(!box){box=document.createElement('section');box.id='privateFocusNotes';box.className='pp-notes';document.getElementById('page-quiz').prepend(box)}
  const f=privateFocus(state.privateFocusId);box.innerHTML=f?`<button class="subtle-link-btn" onclick="openPrivateChapter('${f.chapterId}')">← ${privateEsc(getChapterTitle(f.chapterId))}</button><div class="pp-focus-reading">${f.html}</div><div class="pp-question-heading"><strong>Practice this focus</strong><span>Answers sync with your main platform account.</span></div>`:'';
@@ -28869,6 +29128,10 @@ function privateBootUI(){
  let root=document.getElementById('privateProgress');if(!root){root=document.createElement('div');root.id='privateProgress';document.getElementById('mainTopbar').append(root)}
  renderPrivateSidebar();updatePrivateProgress();bootSprint();syncTopbarHeight();
 }
+
+function privateSubsetMatch(q,key){const p=DATA.prediction_packages;if(getPrivatePrefs().package==='500'){if(key==='original')return p.safe500.slice(0,500).includes(q.number);if(key==='added')return !p.safe500.slice(0,500).includes(q.number);if(key==='remainder')return !p.top100.includes(q.number)}else{if(key==='original')return window.ORIGINAL_2025_2026_IDS.includes(q.number);if(key==='added')return !window.ORIGINAL_2025_2026_IDS.includes(q.number);if(key==='remainder')return !p.safe500.includes(q.number)}return true}
+function privateSubsetFilterHTML(){const prefs=getPrivatePrefs(),pool=privateQuestionPool(null,true,true);const labels=prefs.package==='500'?[['all','الباقة كاملة'],['original','الـ500 الأصلية'],['added','إضافات تجريبي نوفمبر'],['remainder','الباقي خارج باقة الـ100']]:[['all','الباقة كاملة'],['original','الـ1,054 الأصلية'],['added','إضافات نوفمبر'],['remainder','الباقي خارج باقة الـ500']];return `<label>محتوى الباقة<select aria-label="Private package subset" onchange="setPrivateSubset(this.value)">${labels.map(([key,title])=>`<option value="${key}" ${(prefs.subset||'all')===key?'selected':''}>${title} (${pool.filter(q=>privateSubsetMatch(q,key)).length})</option>`).join('')}</select></label>`}
+function setPrivateSubset(value){getPrivatePrefs().subset=value;savePrivatePrefs();if(state.currentView==='chapter')navigateTo('chapter');else navigateTo('home');if(typeof updateSprint==='function')updateSprint()}
 
 // Exam sprint: Cairo time is explicit, independent of the computer timezone.
 const SPRINT_KEY='emle_private_sprint_v1';
