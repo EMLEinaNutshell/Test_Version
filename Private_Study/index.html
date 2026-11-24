@@ -11880,7 +11880,7 @@ function syncAdminCopyAccess() {
 .session-controls .sf-result{display:flex;align-items:center;gap:7px;align-self:center;margin-top:24px;color:var(--teal);font-size:12px;font-weight:600;white-space:nowrap}.sf-result-dot{height:7px;width:7px;border-radius:50%;background:var(--teal)}
 @media(max-width:600px){.session-controls{padding:14px;gap:14px}.sf-field{min-width:100%}.session-controls .sf-result{margin:0}.sf-menu{max-height:285px}.sf-option{min-height:46px}}
 
-</style><link rel="stylesheet" href="private.css?v=5"></head>
+</style><style>#quizCardRenderArea{min-width:0}.quiz-mode-toolbar .qmt-right{min-width:0;max-width:100%;flex-wrap:wrap}.quiz-mode-toolbar .review-status-tag{white-space:normal}</style><link rel="stylesheet" href="private.css?v=6"></head>
 
 <body>
 
@@ -28679,6 +28679,7 @@ function renderQuizModeToolbarHTML(qs) {
           <span>${isList ? '🎴 Single Card' : '📄 List View (10 Qs)'}</span>
         </button>
       </div>
+
       <div class="qmt-right">
         ${isReview ? `
           <span class="review-status-tag" title="In Review Mode, questions are displayed for reading/study only. Unanswered questions will NOT be counted as wrong answers in your records.">
