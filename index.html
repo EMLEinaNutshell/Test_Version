@@ -8,7 +8,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EMLE in a Nutshell — Clinical Library &amp; QBank</title>
+<title>إضافات 176 | EMLE in a Nutshell — Clinical Library &amp; QBank</title>
 
 <style>
 
@@ -11880,7 +11880,8 @@ function syncAdminCopyAccess() {
 .session-controls .sf-result{display:flex;align-items:center;gap:7px;align-self:center;margin-top:24px;color:var(--teal);font-size:12px;font-weight:600;white-space:nowrap}.sf-result-dot{height:7px;width:7px;border-radius:50%;background:var(--teal)}
 @media(max-width:600px){.session-controls{padding:14px;gap:14px}.sf-field{min-width:100%}.session-controls .sf-result{margin:0}.sf-menu{max-height:285px}.sf-option{min-height:46px}}
 
-</style><style>.platform-clues-toggle{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);background:var(--surface);margin-right:auto}.platform-clues-toggle:has(input:checked){background:#fef9c3;border-color:#eab308;color:#713f12}.platform-clues-toggle input{width:15px;height:15px;margin:0;accent-color:#0d9488}.platform-key-clue{background:#fef08a;color:#263220;border-radius:3px;padding:1px 2px}.platform-clues-toggle:focus-within{outline:2px solid var(--teal);outline-offset:2px}body.dark-mode .platform-key-clue{background:#854d0e;color:#fef9c3}#quizCardRenderArea{min-width:0}.quiz-mode-toolbar .qmt-right{min-width:0;max-width:100%;flex-wrap:wrap}.quiz-mode-toolbar .review-status-tag{white-space:normal}.qc-qnum-title{white-space:normal;overflow-wrap:anywhere}.qc-title-wrap{max-width:100%}</style><style>#quizCardRenderArea{min-width:0}.quiz-mode-toolbar .qmt-right{min-width:0;max-width:100%;flex-wrap:wrap}.quiz-mode-toolbar .review-status-tag{white-space:normal}</style></head>
+</style><style>.platform-clues-toggle{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);background:var(--surface);margin-right:auto}.platform-clues-toggle:has(input:checked){background:#fef9c3;border-color:#eab308;color:#713f12}.platform-clues-toggle input{width:15px;height:15px;margin:0;accent-color:#0d9488}.platform-key-clue{background:#fef08a;color:#263220;border-radius:3px;padding:1px 2px}.platform-clues-toggle:focus-within{outline:2px solid var(--teal);outline-offset:2px}body.dark-mode .platform-key-clue{background:#854d0e;color:#fef9c3}#quizCardRenderArea{min-width:0}.quiz-mode-toolbar .qmt-right{min-width:0;max-width:100%;flex-wrap:wrap}.quiz-mode-toolbar .review-status-tag{white-space:normal}.qc-qnum-title{white-space:normal;overflow-wrap:anywhere}.qc-title-wrap{max-width:100%}</style><style>#quizCardRenderArea{min-width:0}.quiz-mode-toolbar .qmt-right{min-width:0;max-width:100%;flex-wrap:wrap}.quiz-mode-toolbar .review-status-tag{white-space:normal}</style><script src="additional-review.js"></script>
+</head>
 
 <body>
 
@@ -16938,7 +16939,7 @@ function savePortalPosition() {
     const snap = buildHistorySnapshot(state.currentView, state.currentView === 'topic' ? state.currentTopicId : null);
     Object.assign(snap, {version:1,scrollY:window.scrollY,quizChapterFilter:state.quizChapterFilter,splitNotesOpen:state.splitNotesOpen,
       sessionSeconds:sessionElapsedSeconds,questionSeconds:qTimerSeconds,paused:quizTimersPaused});
-    sessionStorage.setItem('emle_tab_position_v1',JSON.stringify(snap));
+    sessionStorage.setItem('emle_tab_position_extra176_v1',JSON.stringify(snap));
   } catch(e) {}
 }
 window.addEventListener('pagehide',savePortalPosition);
@@ -16946,7 +16947,7 @@ window.addEventListener('beforeunload',savePortalPosition);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)savePortalPosition()});
 function restorePortalPosition() {
   try {
-    const saved=JSON.parse(sessionStorage.getItem('emle_tab_position_v1')||'null');
+    const saved=JSON.parse(sessionStorage.getItem('emle_tab_position_extra176_v1')||'null');
     if(!saved || saved.version!==1 || !document.getElementById('page-'+saved.view))return false;
     if(saved.view==='topic' && !findTopicById(saved.topicId))return false;
     if(saved.chapterId)state.currentChapterId=saved.chapterId;
@@ -17492,7 +17493,10 @@ function renderBreadcrumbs() {
 
     let backCall = "navigateTo('quizzes')";
 
-    if (state.quizFilter.startsWith("topic_")) {
+    if (state.quizFilter === 'pred_additions') {
+      quizTitle = window.ADDITIONAL_REVIEW.title;
+      backCall = "navigateTo('predictions')";
+    } else if (state.quizFilter.startsWith("topic_")) {
 
       const tid = state.quizFilter.replace("topic_", "");
 
@@ -22613,7 +22617,13 @@ function renderPredictionsPage() {
         </div>
       </div>
 
-      <!-- Tier 3: All 1,074 -->
+      <div class="pred-action-card pred-card-top500" id="additionalReviewCard">
+ <div><span class="pac-badge pac-badge-teal">إضافات مراجعة · نوفمبر 2026</span>
+ <h2 class="pac-title">📚 باقة الإضافات — 176 سؤال</h2>
+ <p class="pac-desc">176 سؤالًا خارج باقة الـ523، موزعة حسب سجل الظهور ونوع الامتحان. اختر مجموعة داخل سيشن الحل أو راجع الإضافات كلها.</p>
+ <ul class="pac-features"><li>✅ باقة منفصلة بجانب الـ523</li><li>✅ نفس الشرح والهينت وحفظ الإجابات</li><li>✅ فلتر للمجموعات الأربع: 65 / 57 / 53 / 1</li><li>📌 الأولوية للمراجعة، وليست ضمانًا لظهور السؤال</li></ul></div>
+ <div><button class="pac-btn pac-btn-teal" onclick="startQuiz('pred_additions')"><span>ابدأ حل الإضافات (176)</span><span>&larr;</span></button></div></div>
+ <!-- Tier 3: All 1,074 -->
       <div class="pred-action-card pred-card-all">
         <div>
           <span class="pac-badge pac-badge-blue">🌐 البنك الشامل • 1,074 سؤال</span>
@@ -22803,6 +22813,10 @@ function applyQuizChapterFilterAndAdjustIndex() {
 }
 
 function computeQuestionsForFilter(filter) {
+  if (filter === 'pred_additions') {
+    const byNumber = new Map(DATA.questions.map(q => [q.number,q]));
+    return window.ADDITIONAL_REVIEW.numbers.map(n => byNumber.get(n)).filter(Boolean);
+  }
 
   if (!filter) return DATA.questions.slice();
 
@@ -22938,6 +22952,7 @@ let _pendingQuizSession = null;
 
 
 function getQuizSessionDisplayName(filter) {
+  if (filter === 'pred_additions') return window.ADDITIONAL_REVIEW.title;
 
   if (!filter) return "QBank Session";
 
@@ -23245,6 +23260,7 @@ function startQuiz(filter) {
   const answeredCount = qs.filter(q => state.qStatus[q.number] && typeof state.qStatus[q.number].selected === "number").length;
 
   const isCustomOrReview = (
+    filter === 'pred_additions' ||
 
     filter === "custom_exam" ||
 
@@ -29199,10 +29215,14 @@ function enhanceSessionFilterMenus(){
 function closeSessionFilterMenus(){document.querySelectorAll('.sf-menu').forEach(e=>e.hidden=true);document.querySelectorAll('.sf-trigger').forEach(e=>e.setAttribute('aria-expanded','false'))}
 document.addEventListener('click',e=>{if(!e.target.closest('.sf-field'))closeSessionFilterMenus()});
 
-function sessionPackageKind(){return state.quizFilter==='pred_top500'?'500':['pred_all1054','pred_all'].includes(state.quizFilter)?'1000':state.quizFilter==='pred_top100'?'100':null}
+function sessionPackageKind(){if(state.quizFilter==='pred_additions')return 'additions';return state.quizFilter==='pred_top500'?'500':['pred_all1054','pred_all'].includes(state.quizFilter)?'1000':state.quizFilter==='pred_top100'?'100':null}
 function sessionStatusMatch(q,key){const s=state.qStatus[q.number]||{},answered=Number.isInteger(s.selected)&&s.selected>=0&&!!s.status;if(key==='unanswered')return !answered;if(key==='correct')return answered&&s.status==='correct'&&!s.hintUsed;if(key==='wrong')return answered&&s.status==='wrong';if(key==='hint')return answered&&(s.status==='hint'||!!s.hintUsed);if(key==='flagged')return !!s.flagged;return true}
 function sessionSubsetPool(){let qs=(state.baseSessionQs||[]).slice();const kind=sessionPackageKind(),choice=state.sessionSubset||'all',p=DATA.prediction_packages;
- if(kind==='500'){const original=new Set(p.safe500.slice(0,500)),top100=new Set(p.top100);if(choice==='original')qs=qs.filter(q=>original.has(q.number));if(choice==='added')qs=qs.filter(q=>!original.has(q.number));if(choice==='remainder')qs=qs.filter(q=>!top100.has(q.number))}
+ if(kind==='additions'){
+   const group=window.ADDITIONAL_REVIEW.groups.find(g=>g.id===choice);
+   if(group){const ids=new Set(group.numbers);qs=qs.filter(q=>ids.has(q.number))}
+ }
+ else if(kind==='500'){const original=new Set(p.safe500.slice(0,500)),top100=new Set(p.top100);if(choice==='original')qs=qs.filter(q=>original.has(q.number));if(choice==='added')qs=qs.filter(q=>!original.has(q.number));if(choice==='remainder')qs=qs.filter(q=>!top100.has(q.number))}
  else if(kind==='1000'){const old=new Set(window.ORIGINAL_2025_2026_IDS),safe=new Set(p.safe500);if(choice==='original')qs=qs.filter(q=>old.has(q.number));if(choice==='added')qs=qs.filter(q=>!old.has(q.number));if(choice==='remainder')qs=qs.filter(q=>!safe.has(q.number))}
  else if(!kind && state.quizPredictionTier && state.quizPredictionTier!=='all')qs=qs.filter(q=>isQuestionInTier(q,state.quizPredictionTier));
  return qs;
@@ -29211,7 +29231,8 @@ function applySessionControls(){
  const current=getQuestionsForFilter(state.quizFilter)[state.quizIndex];let qs=sessionSubsetPool().filter(q=>sessionStatusMatch(q,state.sessionStatus||'all'));
  const order=state.sessionOrder||'original';
  if(order==='concepts')qs=sortQuestionsByConcept(qs);
- if(order==='probability'){const scored=new Map(computePredictionsAnalysis().all.map(q=>[q.number,q._predScore]));qs.sort((a,b)=>(scored.get(b.number)??-1)-(scored.get(a.number)??-1)||(b.freq||0)-(a.freq||0)||a.number-b.number)}
+ if(order==='probability' && sessionPackageKind()==='additions'){const ranks=new Map(window.ADDITIONAL_REVIEW.numbers.map((n,i)=>[n,i]));qs.sort((a,b)=>ranks.get(a.number)-ranks.get(b.number))}
+ else if(order==='probability'){const scored=new Map(computePredictionsAnalysis().all.map(q=>[q.number,q._predScore]));qs.sort((a,b)=>(scored.get(b.number)??-1)-(scored.get(a.number)??-1)||(b.freq||0)-(a.freq||0)||a.number-b.number)}
  if(order==='shuffle')qs=shuffleArray(qs);
  state.activeQuizQs=qs;if(state.quizFilter==='custom_exam')state.customQs=qs.slice();state.quizIndex=Math.max(0,qs.findIndex(q=>q.number===current?.number));state.quizListPage=Math.floor(state.quizIndex/10);
  const dots=document.getElementById('quizDotsStrip');if(dots)delete dots._lastSig;renderQuizPage(true);
@@ -29223,12 +29244,15 @@ function restoreConceptGrouping(){state.sessionOrder='concepts';applySessionCont
 function renderQuizTierFilterBar(){
  const bar=document.getElementById('quizTierFilterBar');if(!bar)return;if(!state.baseSessionQs)state.baseSessionQs=getUnfilteredQuestionsForFilter(state.quizFilter).slice();
  const kind=sessionPackageKind(),counts=getTierCountsForBaseQuestions(state.baseSessionQs),subset=state.sessionSubset||'all';let packageUI='';
- if(kind==='500'||kind==='1000'){
+ if(kind==='additions' && window.ADDITIONAL_REVIEW.groups.length>1){
+   const options=[['all','كل الإضافات',window.ADDITIONAL_REVIEW.count],...window.ADDITIONAL_REVIEW.groups.map(g=>[g.id,g.label,g.count])];
+   packageUI='<label>مجموعة الإضافات<select aria-label="Additional review group" onchange="setSessionControl(\'sessionSubset\',this.value)">'+options.map(([key,label,n])=>'<option value="'+key+'" '+(subset===key?'selected':'')+'>'+label+' ('+n+')</option>').join('')+'</select></label>';
+ }else if(kind==='500'||kind==='1000'){
  const saved=state.sessionSubset;const options=kind==='500'?[['all','الـ523 كاملين'],['original','الـ500 الأصلية'],['added','إضافات تجريبي نوفمبر · 23'],['remainder','الباقي خارج باقة الـ100']]:[['all','الـ1,074 كاملين'],['original','الـ1,054 الأصلية'],['added','الـ20 المضافة في نوفمبر'],['remainder','الباقي خارج باقة الـ500']];
  packageUI='<label>محتوى الباقة<select aria-label="Package subset" onchange="setSessionControl(\'sessionSubset\',this.value)">'+options.map(([k,label])=>{state.sessionSubset=k;const n=sessionSubsetPool().length;return `<option value="${k}" ${subset===k?'selected':''}>${label} (${n})</option>`}).join('')+'</select></label>';state.sessionSubset=saved;
  }else if(!kind){packageUI='<label>Filter by Package<select aria-label="Filter by Package" onchange="setQuizPredictionTier(this.value)">'+[['all','Full Session'],['top100','Top 100'],['top500','Top 500 · 523'],['pred2526','2025/2026 · 1,074']].map(([k,label])=>`<option value="${k}" ${(state.quizPredictionTier||'all')===k?'selected':''}>${label} (${counts[k]})</option>`).join('')+'</select></label>'}
  const pool=sessionSubsetPool();
- bar.innerHTML=`<div class="session-controls">${packageUI}<label>ترتيب الأسئلة<select aria-label="Question order" onchange="setSessionControl('sessionOrder',this.value)">${[['original','ترتيب السيشن الأصلي'],['concepts','By Concepts'],['probability','الأكثر احتمالية في الامتحان'],['shuffle','Shuffled']].map(([k,l])=>`<option value="${k}" ${(state.sessionOrder||'original')===k?'selected':''}>${l}</option>`).join('')}</select></label><label>حالة الحل<select aria-label="Answer status" onchange="setSessionControl('sessionStatus',this.value)">${[['all','كل الأسئلة'],['unanswered','لسه متحلّتش'],['correct','صح بدون هينت'],['wrong','غلط'],['hint','حليتها بهينت'],['flagged','فلاجز']].map(([k,l])=>`<option value="${k}" ${(state.sessionStatus||'all')===k?'selected':''}>${l} (${pool.filter(q=>sessionStatusMatch(q,k)).length})</option>`).join('')}</select></label><span>${getQuestionsForFilter(state.quizFilter).length} سؤال مطابق</span></div>`;
+ bar.innerHTML=`<div class="session-controls">${packageUI}<label>ترتيب الأسئلة<select aria-label="Question order" onchange="setSessionControl('sessionOrder',this.value)">${[['original','ترتيب السيشن الأصلي'],['concepts','By Concepts'],['probability',kind==='additions'?'ترتيب المراجعة المقترح':'الأكثر احتمالية في الامتحان'],['shuffle','Shuffled']].map(([k,l])=>`<option value="${k}" ${(state.sessionOrder||'original')===k?'selected':''}>${l}</option>`).join('')}</select></label><label>حالة الحل<select aria-label="Answer status" onchange="setSessionControl('sessionStatus',this.value)">${[['all','كل الأسئلة'],['unanswered','لسه متحلّتش'],['correct','صح بدون هينت'],['wrong','غلط'],['hint','حليتها بهينت'],['flagged','فلاجز']].map(([k,l])=>`<option value="${k}" ${(state.sessionStatus||'all')===k?'selected':''}>${l} (${pool.filter(q=>sessionStatusMatch(q,k)).length})</option>`).join('')}</select></label><span>${getQuestionsForFilter(state.quizFilter).length} سؤال مطابق</span></div>`;
  enhanceSessionFilterMenus();
 }
 

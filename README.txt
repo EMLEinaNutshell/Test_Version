@@ -1,6 +1,6 @@
-EMLE local release 2026-11-24
-2072 questions; November trial and simulation: 100 questions each.
-Published 500-question package preserved and expanded to 523.
-This folder is prepared for upload; it has not been deployed by this build.
-
-Feedback requires Firebase deployment first. See the separate EMLE_Feedback_Firebase_2026_11_24.zip / DEPLOY_AR.md. Do not publish the prototype folder.
+EMLE — نسخة إضافات 176 — 25 نوفمبر 2026
+مبنية على Final (24-11).
+افتح صفحة التوقعات ثم باقة الإضافات (176).
+باقة الـ523 والأسئلة والإجابات الأصلية محفوظة دون تعديل.
+فلتر المجموعات داخل سيشن الحل: 65 متكرر فعليًا، 57 فعلي حديث، 53 تجريبي يوليو، 1 أقدم.
+هذه نسخة محلية جاهزة للرفع، ولم يتم نشرها. ارفع جميع ملفات المجلد معًا.
