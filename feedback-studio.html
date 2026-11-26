@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="same-origin">
+  <meta name="theme-color" content="#102c36"><title>EMLE | Feedback Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="feedback-studio.css?v=6">
+</head>
+<body>
+<section id="authScreen" class="auth-screen">
+  <div class="auth-brand"><span class="brand-mark">E<span>·</span></span><span>EMLE <small>FEEDBACK STUDIO</small></span></div>
+  <div class="auth-card"><span class="eyebrow">مساحة الإدارة المستقلة</span><h1>قريب من تجربة طلابك.</h1><p>الردود، نتائج الامتحانات، والاقتراحات.<br>كلها في مساحة واحدة مخصصة للفيدباك.</p><div class="auth-preview" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span>STUDENT VOICE / EMLE</span></div><button id="signIn" class="button primary" disabled>جارٍ تجهيز تسجيل الدخول…</button><button id="switchAccount" class="button ghost" hidden>الخروج واختيار حساب آخر</button><p id="authMessage" role="status">الوصول متاح لحساب الأدمن المصرح له فقط.</p></div>
+  <a class="auth-back" href="feedback.html">فتح استبيان الطلاب ↗</a>
+</section>
+<div id="app" class="app" hidden>
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">E<span>·</span></span><div>EMLE<small>FEEDBACK STUDIO</small></div></div>
+    <div class="workspace-tag"><span class="status-dot"></span> مساحة الإدارة <small>نوفمبر 2026</small></div>
+    <nav aria-label="أقسام الفيدباك"><button data-view="overview" class="nav-item active" aria-current="page"><span>◫</span> نظرة عامة</button><button data-view="responses" class="nav-item"><span>☷</span> جميع الردود <b id="navCount">0</b></button><button data-view="voices" class="nav-item"><span>❝</span> آراء واقتراحات</button></nav>
+    <div class="sidebar-bottom"><div class="survey-link"><small>رابط الاستبيان المختصر</small><a href="https://is.gd/EMLEfeedback" target="_blank" rel="noopener noreferrer" dir="ltr">is.gd/EMLEfeedback ↗</a><button id="copyLink" class="copy-button">نسخ الرابط</button></div><div class="admin-profile"><span class="avatar">A</span><div><strong>حساب الإدارة</strong><small id="adminEmail"></small></div></div><button id="signOut" class="signout">تسجيل الخروج ↗</button></div>
+  </aside>
+  <main>
+    <header class="topbar"><div class="breadcrumb">EMLE <span>/</span> تجربة الطلاب <span>/</span> <b id="viewCrumb">نظرة عامة</b></div><div class="connection"><span class="status-dot"></span><span id="syncLabel">في انتظار التحميل</span></div></header>
+    <div class="content">
+      <section class="page-heading"><div><span class="eyebrow">NOVEMBER 2026 · FEEDBACK</span><h1 id="viewTitle">صورة أوضح لتجربة الطلاب</h1><p id="viewDescription">تابع النتائج، واقرأ ما نجح وما يحتاج إلى تحسين.</p></div><div class="actions"><button id="openImages" class="button secondary">↓ صور الفيدباك</button><button id="refresh" class="button secondary">↻ تحديث</button><button id="export" class="button primary" disabled>↓ تصدير الردود</button></div></section>
+      <div id="notice" class="notice" role="status" hidden></div><div id="error" class="error" role="alert" hidden></div>
+      <section class="filters" aria-label="تصفية الردود"><div class="filter-top"><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="ابحث بالاسم، الإيميل، الجامعة، أو نص الرد…" aria-label="البحث في الردود"></label><label><span class="sr-only">الجامعة</span><select id="school"><option value="">كل الجامعات</option></select></label><label><span class="sr-only">المحتوى المستخدم</span><select id="resource"><option value="">كل أنواع المحتوى</option><option value="notes">VIP Notes</option><option value="questions">الأسئلة</option><option value="both">النوتس والأسئلة</option></select></label><button id="toggleFilters" class="button secondary" aria-expanded="false" aria-controls="advancedFilters">فلاتر إضافية <span id="filterCount"></span></button></div>
+      <div id="advancedFilters" class="advanced-filters" hidden><label>الباقة<select id="package"><option value="">كل الباقات</option><option value="full">البنك كامل — أتمّه</option><option value="partial">البنك كامل — جزء منه</option><option value="recent">2025 / 2026</option><option value="500">باقة الـ500</option><option value="100">باقة الـ100</option><option value="other">أخرى</option></select></label><label>حالة الحساب<select id="link"><option value="">كل الحالات</option><option value="linked">Google مؤكد</option><option value="pending">إيميل غير مؤكد</option><option value="guest">ضيف</option></select></label><label>الامتحان<select id="exam"><option value="real1">فعلي أول · 25 نوفمبر</option><option value="trial">تجريبي · 20 نوفمبر</option><option value="simulation">محاكاة · 23 نوفمبر</option><option value="real2">فعلي ثاني · 30 نوفمبر</option></select></label><label>حالة الامتحان<select id="examStatus"><option value="">كل الحالات</option><option value="result">ظهرت النتيجة</option><option value="pending">ينتظر النتيجة</option><option value="absent">لم يدخل</option><option value="empty">لم يذكر</option></select></label><label>أقل درجة<input id="minScore" type="number" min="0" max="100" placeholder="0"></label><label>أعلى درجة<input id="maxScore" type="number" min="0" max="100" placeholder="100"></label><label>آخر تعديل من<input id="dateFrom" type="date"></label><label>إلى<input id="dateTo" type="date"></label></div>
+      <div class="filter-summary"><span id="scope">جارٍ تحميل الردود…</span><button id="resetFilters" class="text-button">مسح الفلاتر</button></div></section>
+      <div id="privateContent" aria-live="polite"></div>
+      <div class="load-footer"><p id="loadState"></p><div><button id="loadMore" class="button secondary" hidden>تحميل 100 رد إضافي</button><button id="loadAll" class="button secondary" hidden>تحميل كل الردود</button><button id="cancelLoad" class="button ghost" hidden>إيقاف التحميل</button></div></div>
+      <footer class="page-footer"><span>EMLE in a Nutshell <b>·</b> Feedback Studio</span><span>الدرجات بإقرار الطلاب. المقارنة وصفية ولا تثبت علاقة سببية.</span></footer>
+    </div>
+  </main>
+</div>
+<dialog id="detail" class="detail-dialog" aria-labelledby="detailTitle"><div class="detail-top"><span class="eyebrow">RESPONSE DETAILS</span><button id="closeDetail" class="icon-button" aria-label="إغلاق تفاصيل الرد">×</button></div><div id="detailBody"></div></dialog>
+<dialog id="imageDialog" class="image-dialog" aria-labelledby="imageTitle"><h2 id="imageTitle">تحميل صور الفيدباك</h2><p>كل رد في صورة مربعة كاملة. لو المميزات والسلبيات معًا مزدحمتين جدًا نفصلهما فقط، دون تجزئة أي قسم. نرفع دقة الصورة عند الضرورة للنصوص الاستثنائية الطول.</p><fieldset id="imageOptions" style="border:0;padding:0;margin:0"><label>المحتوى<select id="imageMode"><option value="positive">المميزات فقط</option><option value="negative">السلبيات والاقتراحات فقط</option><option value="both">المميزات والسلبيات معًا</option></select></label><label>الردود المطلوبة<select id="imageScope"><option value="selected">ردود أختارها</option><option value="matching">كل الردود المطابقة للفلاتر</option><option value="all">كل الفيدباكس — بدون فلاتر</option></select></label><div id="imageSelectionTools"><button id="imageSelectAll" class="text-button" type="button">تحديد القائمة المعروضة</button> · <button id="imageSelectNone" class="text-button" type="button">إلغاء التحديد</button></div><div id="imageSelection" class="image-selection"></div><p id="imageSelectionNote"></p></fieldset><p id="imageProgress" role="status"></p><div class="actions"><button id="imageDownload" class="button primary">تحميل الصور</button><button id="imageClose" class="button secondary">إغلاق</button></div></dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script><script src="feedback-config.js?v=20261124-1"></script><script src="feedback-image.js?v=6"></script><script src="feedback-zip.js?v=6"></script><script src="feedback-studio.js?v=6"></script>
+</body></html>
